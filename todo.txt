@@ -1,0 +1,48 @@
+work on worldgen
+    - separate biomes from the math
+    - world layers (y axis):
+    0-250 - surface biomes
+    250-1000 - easy caves (low lava, small, twisting caves)
+    1000-3000 - hard caves 
+
+epic improvements:
+    - test out individual thread for each lighting color channel?
+
+worldgen analysis tool:
+    - render each chunk to the canvas, then expand outward
+    - toggle certain features of worldgen
+
+
+inventory ui assets
+
+equipment and ui
+
+random idea:
+    try making some kind of weird minimap via scanning each tile once,
+    drawing it as a single canvas pixel, and then saving it?
+
+next update:
+    * Slime entity
+    * Floating Skull entity
+    * Big Bones Entity
+    * Explosion sound
+    * Positional audio (at least distance scaled) for non-player entities
+    * More Tile SFX
+        - Separate breaking SFX for different tiles
+        - Maybe some tile-place SFX
+    * Finish implementing pine trees.
+    * Zombie SFX
+    * Flower SFX
+    * Sword swing and pickaxe swing SFX
+    * Sun and moon?
+    * Burning status effect
+    * Poisoned status effect
+    * Settings Menu
+        * Volume
+        * Keybinds
+    * Need scrolling on world load menu
+    * Furniture tiles
+        * Bed tile
+        * Table tile
+        * Chair tile
+        * Bookshelf tile

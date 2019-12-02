@@ -1,0 +1,17 @@
+{
+    "Lua.diagnostics.globals": [
+        "love",
+        "baseitem",
+        "itemlist",
+        "swinganim",
+        "consumable",
+        "pointanim",
+        "jabanim",
+        "newtile",
+        "tilelist",
+        "isSolid",
+        "tilemanager",
+        "adjacentToNonSolidTile",
+        "recipe"
+    ]
+}

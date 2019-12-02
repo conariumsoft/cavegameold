@@ -1,0 +1,1321 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../../luadoc.css" type="text/css" />
+	<!--meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/-->
+</head>
+
+<body>
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+<div id="main">
+
+<div id="navigation">
+
+
+<h1>LuaDoc</h1>
+<ul>
+	
+	<li><a href="../../index.html">Index</a></li>
+	
+</ul>
+
+
+<!-- Module list -->
+
+
+
+<!-- File list -->
+
+<h1>Files</h1>
+<ul>
+
+	<li>
+		<a href="../../files/src/backgrounds.html">src/backgrounds.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/chunking.html">src/chunking.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/collision.html">src/collision.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/data.html">src/data.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/editor.html">src/editor.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/entities.html">src/entities.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/gameloop.html">src/gameloop.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/grid.html">src/grid.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/guiutil.html">src/guiutil.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/input.html">src/input.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/inventory.html">src/inventory.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/items.html">src/items.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/jcon.html">src/jcon.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/json.html">src/json.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/jui.html">src/jui.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/jutils.html">src/jutils.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/lighting.html">src/lighting.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/loottables.html">src/loottables.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/menus.html">src/menus.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/noise.html">src/noise.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/playergui.html">src/playergui.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/recipes.html">src/recipes.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/rendering.html">src/rendering.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/settings.html">src/settings.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/statuseffects.html">src/statuseffects.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/structuregenerator.html">src/structuregenerator.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/terrain.html">src/terrain.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/terraingenerator.html">src/terraingenerator.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/tiles.html">src/tiles.lua</a>
+	</li>
+
+	<li><strong>src/world.lua</strong></li>
+	
+	<li>
+		<a href="../../files/src/worldloading.html">src/worldloading.lua</a>
+	</li>
+
+</ul>
+
+
+
+
+
+
+</div> <!-- id="navigation" -->
+
+<div id="content">
+
+<h1>File <code>src/world.lua</code></h1>
+
+
+
+
+<p>Gameworld main loop, controls rendering, input, and physics of terrain and entities. <u>This script really needs to be split up</u></p>
+
+
+
+<p><b>Author:</b>
+
+	Joshua O'Leary
+
+</p>
+
+
+
+
+
+<h2>Functions</h2>
+<table class="function_list">
+
+	<tr>
+	<td class="name" nowrap><a href="#is_solid">is_solid</a>&nbsp;(world, tx, ty)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#world.new">world.new</a>&nbsp;(worldname, seed)</td>
+	<td class="summary">Generates a new world instance.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#world:addEntity">world:addEntity</a>&nbsp;(entityname, ...)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#world:chunkRandomTileUpdates">world:chunkRandomTileUpdates</a>&nbsp;(chunk)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#world:chunkTileUpdates">world:chunkTileUpdates</a>&nbsp;(chunk)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#world:damageTile">world:damageTile</a>&nbsp;(tilex, tiley, additionaldamage)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#world:drawchunks">world:drawchunks</a>&nbsp;()</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#world:getBackground">world:getBackground</a>&nbsp;(tilex, tiley)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#world:getDaylight">world:getDaylight</a>&nbsp;()</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#world:getLight">world:getLight</a>&nbsp;(tilex, tiley)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#world:getPlayer">world:getPlayer</a>&nbsp;()</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#world:getTile">world:getTile</a>&nbsp;(tilex, tiley)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#world:getTileDamage">world:getTileDamage</a>&nbsp;(tilex, tiley)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#world:getTileState">world:getTileState</a>&nbsp;(tilex, tiley)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#world:getchunk">world:getchunk</a>&nbsp;(cx, cy)</td>
+	<td class="summary">Get chunk at chunk region (cx, cy) </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#world:map_clearChunkFields">world:map_clearChunkFields</a>&nbsp;()</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#world:map_fillChunkFields">world:map_fillChunkFields</a>&nbsp;()</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#world:map_loadNewChunks">world:map_loadNewChunks</a>&nbsp;()</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#world:map_pullLoadedChunks">world:map_pullLoadedChunks</a>&nbsp;()</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#world:map_unloadOldChunks">world:map_unloadOldChunks</a>&nbsp;()</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#world:map_updateCurrentChunks">world:map_updateCurrentChunks</a>&nbsp;()</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#world:playerExitRequest">world:playerExitRequest</a>&nbsp;()</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#world:randomTick">world:randomTick</a>&nbsp;(wx, wy)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#world:rawget">world:rawget</a>&nbsp;(tilex, tiley, field, unsafe)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#world:rawset">world:rawset</a>&nbsp;(tilex, tiley, field, value, unsafe)</td>
+	<td class="summary">Directly sets a field without triggering updates.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#world:savedata">world:savedata</a>&nbsp;()</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#world:setBackground">world:setBackground</a>&nbsp;(tilex, tiley, id)</td>
+	<td class="summary">Sets the background and fills the tileupdate flag for that tile.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#world:setTile">world:setTile</a>&nbsp;(tilex, tiley, tile, drop, ignorecallback)</td>
+	<td class="summary">Sets the tile and fills the tileupdate flags of adjacent tiles.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#world:setTileDamage">world:setTileDamage</a>&nbsp;(tilex, tiley, damage)</td>
+	<td class="summary">Sets the damage value of the tile.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#world:setTileState">world:setTileState</a>&nbsp;(tilex, tiley, state)</td>
+	<td class="summary">Sets the state of the tile and triggers tileupdates.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#world:setchunkloaded">world:setchunkloaded</a>&nbsp;(cx, cy)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#world:tileUpdate">world:tileUpdate</a>&nbsp;(tilex, tiley)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#world:update">world:update</a>&nbsp;(dt)</td>
+	<td class="summary"> </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#world:updateEntities">world:updateEntities</a>&nbsp;(dt)</td>
+	<td class="summary"> </td>
+	</tr>
+
+</table>
+
+
+
+
+
+
+<br/>
+<br/>
+
+
+
+
+<h2><a name="functions"></a>Functions</h2>
+<dl class="function">
+
+
+
+<dt><a name="is_solid"></a><strong>is_solid</strong>&nbsp;(world, tx, ty)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>world</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>tx</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>ty</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="world.new"></a><strong>world.new</strong>&nbsp;(worldname, seed)</dt>
+<dd>
+Generates a new world instance. Worldname is the name of the folder where it will read and save data to. If the folder exists, then it will load chunks when it find them, otherwise, it will just generate new chunks.
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>worldname</em></code>: folder to store world in
+	</li>
+	
+	<li>
+	  <code><em>seed</em></code>: doesn't work
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+<ul>World Instance</ul>
+
+
+
+</dd>
+
+
+
+
+<dt><a name="world:addEntity"></a><strong>world:addEntity</strong>&nbsp;(entityname, ...)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>entityname</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>...</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="world:chunkRandomTileUpdates"></a><strong>world:chunkRandomTileUpdates</strong>&nbsp;(chunk)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>chunk</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="world:chunkTileUpdates"></a><strong>world:chunkTileUpdates</strong>&nbsp;(chunk)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>chunk</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="world:damageTile"></a><strong>world:damageTile</strong>&nbsp;(tilex, tiley, additionaldamage)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>tilex</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>tiley</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>additionaldamage</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="world:drawchunks"></a><strong>world:drawchunks</strong>&nbsp;()</dt>
+<dd>
+
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="world:getBackground"></a><strong>world:getBackground</strong>&nbsp;(tilex, tiley)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>tilex</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>tiley</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="world:getDaylight"></a><strong>world:getDaylight</strong>&nbsp;()</dt>
+<dd>
+
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="world:getLight"></a><strong>world:getLight</strong>&nbsp;(tilex, tiley)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>tilex</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>tiley</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="world:getPlayer"></a><strong>world:getPlayer</strong>&nbsp;()</dt>
+<dd>
+
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="world:getTile"></a><strong>world:getTile</strong>&nbsp;(tilex, tiley)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>tilex</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>tiley</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="world:getTileDamage"></a><strong>world:getTileDamage</strong>&nbsp;(tilex, tiley)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>tilex</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>tiley</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="world:getTileState"></a><strong>world:getTileState</strong>&nbsp;(tilex, tiley)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>tilex</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>tiley</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="world:getchunk"></a><strong>world:getchunk</strong>&nbsp;(cx, cy)</dt>
+<dd>
+Get chunk at chunk region (cx, cy)
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>cx</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>cy</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+<ul>chunk</ul>
+
+
+
+</dd>
+
+
+
+
+<dt><a name="world:map_clearChunkFields"></a><strong>world:map_clearChunkFields</strong>&nbsp;()</dt>
+<dd>
+
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="world:map_fillChunkFields"></a><strong>world:map_fillChunkFields</strong>&nbsp;()</dt>
+<dd>
+
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="world:map_loadNewChunks"></a><strong>world:map_loadNewChunks</strong>&nbsp;()</dt>
+<dd>
+
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="world:map_pullLoadedChunks"></a><strong>world:map_pullLoadedChunks</strong>&nbsp;()</dt>
+<dd>
+
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="world:map_unloadOldChunks"></a><strong>world:map_unloadOldChunks</strong>&nbsp;()</dt>
+<dd>
+
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="world:map_updateCurrentChunks"></a><strong>world:map_updateCurrentChunks</strong>&nbsp;()</dt>
+<dd>
+
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="world:playerExitRequest"></a><strong>world:playerExitRequest</strong>&nbsp;()</dt>
+<dd>
+
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="world:randomTick"></a><strong>world:randomTick</strong>&nbsp;(wx, wy)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>wx</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>wy</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="world:rawget"></a><strong>world:rawget</strong>&nbsp;(tilex, tiley, field, unsafe)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>tilex</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>tiley</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>field</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>unsafe</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="world:rawset"></a><strong>world:rawset</strong>&nbsp;(tilex, tiley, field, value, unsafe)</dt>
+<dd>
+Directly sets a field without triggering updates.
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>tilex</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>tiley</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>field</em></code>: "tiles" | "damage" | "states" | "light"
+	</li>
+	
+	<li>
+	  <code><em>value</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>unsafe</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="world:savedata"></a><strong>world:savedata</strong>&nbsp;()</dt>
+<dd>
+
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="world:setBackground"></a><strong>world:setBackground</strong>&nbsp;(tilex, tiley, id)</dt>
+<dd>
+Sets the background and fills the tileupdate flag for that tile.
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>tilex</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>tiley</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>id</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="world:setTile"></a><strong>world:setTile</strong>&nbsp;(tilex, tiley, tile, drop, ignorecallback)</dt>
+<dd>
+Sets the tile and fills the tileupdate flags of adjacent tiles.
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>tilex</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>tiley</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>tile</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>drop</em></code>: drop the previous tile.
+	</li>
+	
+	<li>
+	  <code><em>ignorecallback</em></code>: should the onPlace callback be called for this tile
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="world:setTileDamage"></a><strong>world:setTileDamage</strong>&nbsp;(tilex, tiley, damage)</dt>
+<dd>
+Sets the damage value of the tile. if damage exceeds the tile's hardness, it will break and drop an item.
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>tilex</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>tiley</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>damage</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="world:setTileState"></a><strong>world:setTileState</strong>&nbsp;(tilex, tiley, state)</dt>
+<dd>
+Sets the state of the tile and triggers tileupdates.
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>tilex</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>tiley</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>state</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="world:setchunkloaded"></a><strong>world:setchunkloaded</strong>&nbsp;(cx, cy)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>cx</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>cy</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="world:tileUpdate"></a><strong>world:tileUpdate</strong>&nbsp;(tilex, tiley)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>tilex</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>tiley</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="world:update"></a><strong>world:update</strong>&nbsp;(dt)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>dt</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="world:updateEntities"></a><strong>world:updateEntities</strong>&nbsp;(dt)</dt>
+<dd>
+
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>dt</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+</dl>
+
+
+
+
+
+
+
+</div> <!-- id="content" -->
+
+</div> <!-- id="main" -->
+
+<p>Copyright &copy;2019 Conarium Software</p>
+
+<div id="about">
+	<p><a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" /></a></p>
+</div> <!-- id="about" -->
+
+</div> <!-- id="container" -->	
+</body>
+</html>

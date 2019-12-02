@@ -1,0 +1,404 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../../luadoc.css" type="text/css" />
+	<!--meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/-->
+</head>
+
+<body>
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+<div id="main">
+
+<div id="navigation">
+
+
+<h1>LuaDoc</h1>
+<ul>
+	
+	<li><a href="../../index.html">Index</a></li>
+	
+</ul>
+
+
+<!-- Module list -->
+
+
+
+<!-- File list -->
+
+<h1>Files</h1>
+<ul>
+
+	<li>
+		<a href="../../files/src/backgrounds.html">src/backgrounds.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/chunking.html">src/chunking.lua</a>
+	</li>
+
+	<li><strong>src/collision.lua</strong></li>
+	
+	<li>
+		<a href="../../files/src/data.html">src/data.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/editor.html">src/editor.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/entities.html">src/entities.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/gameloop.html">src/gameloop.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/grid.html">src/grid.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/guiutil.html">src/guiutil.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/input.html">src/input.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/inventory.html">src/inventory.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/items.html">src/items.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/jcon.html">src/jcon.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/json.html">src/json.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/jui.html">src/jui.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/jutils.html">src/jutils.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/lighting.html">src/lighting.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/loottables.html">src/loottables.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/menus.html">src/menus.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/noise.html">src/noise.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/playergui.html">src/playergui.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/recipes.html">src/recipes.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/rendering.html">src/rendering.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/settings.html">src/settings.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/statuseffects.html">src/statuseffects.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/structuregenerator.html">src/structuregenerator.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/terrain.html">src/terrain.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/terraingenerator.html">src/terraingenerator.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/tiles.html">src/tiles.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/world.html">src/world.lua</a>
+	</li>
+
+	<li>
+		<a href="../../files/src/worldloading.html">src/worldloading.lua</a>
+	</li>
+
+</ul>
+
+
+
+
+
+
+</div> <!-- id="navigation" -->
+
+<div id="content">
+
+<h1>File <code>src/collision.lua</code></h1>
+
+
+
+
+<p>Axis-Aligned Bounding-Box overlap check.</p>
+
+
+
+
+
+
+
+<h2>Functions</h2>
+<table class="function_list">
+
+	<tr>
+	<td class="name" nowrap><a href="#collision.aabb">collision.aabb</a>&nbsp;(ax, ay, aw, ah, bx, by, bw, bh)</td>
+	<td class="summary">Axis-Aligned Bounding-Box overlap check.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#collision.solve">collision.solve</a>&nbsp;(sx, sy, velx, vely)</td>
+	<td class="summary">Get the collision normal for two overlapping rectangles </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#collision.test">collision.test</a>&nbsp;(ax, ay, aw, ah, bx, by, bw, bh)</td>
+	<td class="summary">AABB separation test (Find the separation between two overlapping boxes) </td>
+	</tr>
+
+</table>
+
+
+
+
+
+
+<br/>
+<br/>
+
+
+
+
+<h2><a name="functions"></a>Functions</h2>
+<dl class="function">
+
+
+
+<dt><a name="collision.aabb"></a><strong>collision.aabb</strong>&nbsp;(ax, ay, aw, ah, bx, by, bw, bh)</dt>
+<dd>
+Axis-Aligned Bounding-Box overlap check.
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>ax</em></code>: x of box A
+	</li>
+	
+	<li>
+	  <code><em>ay</em></code>: y of box A
+	</li>
+	
+	<li>
+	  <code><em>aw</em></code>: 1/2 width of box A (distance from the edge of the box to the center)
+	</li>
+	
+	<li>
+	  <code><em>ah</em></code>: 1/2 height of box A (distance from the edge of the box to the center)
+	</li>
+	
+	<li>
+	  <code><em>bx</em></code>: x of box B
+	</li>
+	
+	<li>
+	  <code><em>by</em></code>: y of box B
+	</li>
+	
+	<li>
+	  <code><em>bw</em></code>: 1/2 width of box B (distance from the edge of the box to the center)
+	</li>
+	
+	<li>
+	  <code><em>bh</em></code>: 1/2 height of box B (distance from the edge of the box to the center)
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+<ul>boolean</ul>
+
+
+
+</dd>
+
+
+
+
+<dt><a name="collision.solve"></a><strong>collision.solve</strong>&nbsp;(sx, sy, velx, vely)</dt>
+<dd>
+Get the collision normal for two overlapping rectangles
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>sx</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>sy</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>velx</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>vely</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+<ul>number nx, ny</ul>
+
+
+
+</dd>
+
+
+
+
+<dt><a name="collision.test"></a><strong>collision.test</strong>&nbsp;(ax, ay, aw, ah, bx, by, bw, bh)</dt>
+<dd>
+AABB separation test (Find the separation between two overlapping boxes)
+
+
+<h3>Parameters:</h3>
+<ul>
+	
+	<li>
+	  <code><em>ax</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>ay</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>aw</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>ah</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>bx</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>by</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>bw</em></code>: 
+	</li>
+	
+	<li>
+	  <code><em>bh</em></code>: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+<ul>number sx, sy</ul>
+
+
+
+<h3>See also:</h3>
+<ul>
+	
+	<!-- <li><a href="#../../files/src/collision.html#collision.aabbcollision.aabb"> -->
+	<li><a href="#collision.aabb">
+		collision.aabb</li>
+	</a>
+	
+</ul>
+
+</dd>
+
+
+</dl>
+
+
+
+
+
+
+
+</div> <!-- id="content" -->
+
+</div> <!-- id="main" -->
+
+<div id="about">
+	<p><a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" /></a></p>
+</div> <!-- id="about" -->
+
+</div> <!-- id="container" -->	
+</body>
+</html>
