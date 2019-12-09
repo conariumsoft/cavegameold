@@ -113,7 +113,7 @@ function world.new(worldname, seed)
 
 	self.camera = {
 		position = jutils.vec2.new(0, 0),
-		zoom = 2.25
+		zoom = 2.5
 	}
 
 	self.player = nil

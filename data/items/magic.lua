@@ -58,8 +58,6 @@ baseitem:new("NIMDICK", {
 
         local fireDirection = jutils.vec2.new(input.getTransformedMouse())
 
-
-
     end,
     usestep = function(self, player, dt)
 
@@ -88,7 +86,6 @@ baseitem:new("VAPE", {
 
     end,
     usestep = function(self, player, dt)
-
     end,
 
     useend = function(self, player)

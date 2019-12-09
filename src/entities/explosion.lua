@@ -2,6 +2,7 @@ local grid = require("src.grid")
 local jutils = require("src.jutils")
 local config = require("config")
 local entity = require("src.entities.entity")
+local  tiles = require("src.tiles")
 
 local explosion = entity:subclass("Explosion")
 local settings = require("src.settings")
@@ -52,7 +53,7 @@ function explosion:update(dt)
 
 	if self.detonated == false then
 		self.detonated = true
-		explosion_sound:stop()
+		--explosion_sound:stop()
 		explosion_sound:play()
 		if settings.get("particles") == true then
 			self.system:emit(math.max(self.radius*2, 16))
@@ -97,6 +98,11 @@ function explosion:update(dt)
 					local dist = self.position:distance(jutils.vec2.new((tx+dx)*config.TILE_SIZE, (ty+dy)*config.TILE_SIZE))
 
 					if dist <= self.radius then
+
+						if self.world:getTile(tx+dx, ty+dy) == tiles.TNT.id then
+							self.world:setTileState(tx+dx, ty+dy, 1)
+							tiles.TNT.tileupdate(self.world, tx+dx, ty+dy)
+						end
 
 						local damage = math.ceil((self.radius-dist))/(self.radius*0.3)
 						-- ? prevent damage of liquid tiles
