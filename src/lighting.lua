@@ -5,6 +5,13 @@
 local grid = require("src.grid")
 local jutils = require("src.jutils")
 local config = require("config")
+
+local ffi = require("ffi")
+
+ffi.cdef[[
+	typedef double grid[33][33];
+]]
+
 require("love.timer")
 local mirroredchunks = {}
 local lights = {}
@@ -37,21 +44,26 @@ local function setLight(x, y, level)
 	end
 end
 
+local getLocalCoordinates = grid.getLocalCoordinates
+local coordinatesToKey = grid.coordinatesToKey
+
 local function getLightRGB(x, y)
-	local cx, cy, lx, ly = grid.getLocalCoordinates(x, y)
-	local key = grid.coordinatesToKey(cx, cy)
+	local cx, cy, lx, ly = getLocalCoordinates(x, y)
+	local key = coordinatesToKey(cx, cy)
 	local chunk = lights[key]
 	if chunk then
+		--print(lx, ly, chunk[1][lx][ly], chunk[2][lx][ly], chunk[3][lx][ly])
 		return chunk[1][lx][ly], chunk[2][lx][ly], chunk[3][lx][ly]
 	end
 	return -1, -1, -1
 end
 
 local function setLightRGB(x, y, r, g, b)
-	local cx, cy, lx, ly = grid.getLocalCoordinates(x, y)
-	local key = grid.coordinatesToKey(cx, cy)
+	local cx, cy, lx, ly = getLocalCoordinates(x, y)
+	local key = coordinatesToKey(cx, cy)
 	local chunk = lights[key]
 	if chunk then
+		--print(x, y, r, g, b)
 		chunk[1][lx][ly] = r
 		chunk[2][lx][ly] = g
 		chunk[3][lx][ly] = b
@@ -60,7 +72,8 @@ end
 
 local function getTile(x, y)
 	local cx, cy, lx, ly = grid.getLocalCoordinates(x, y)
-	local chunk = getChunk(cx, cy)
+	local key = coordinatesToKey(cx, cy)
+	local chunk = mirroredchunks[key]
 	if chunk then
 		return chunk.tiles[lx][ly]
 	end
@@ -101,7 +114,7 @@ local channels = {
 	setlight = love.thread.getChannel("setlight"),
 	light_kill = love.thread.getChannel("light_kill")
 }
-
+--[[
 local function recursiveFloodFill(x, y, inputAmount, recursions)
 	recursions = recursions or 0
 	if recursions > 200 then return end
@@ -137,7 +150,7 @@ local function recursiveFloodFill(x, y, inputAmount, recursions)
 	recursiveFloodFill(x, y+1, result-absorb, recursions+1)
 	recursiveFloodFill(x, y-1, result-absorb, recursions+1)
 end
-
+]]
 
 local function recursiveFloodFillRGB(x, y, inputr, inputg, inputb, recursions)
 	recursions = recursions or 0
@@ -178,10 +191,13 @@ local function recursiveFloodFillRGB(x, y, inputr, inputg, inputb, recursions)
 	end
 
 	local minabsorb = 0.05
-	local absorb = math.max(tiledata.absorb, bgdata.absorb)
 
 	local cr, cg, cb = getLightRGB(x, y)
 
+
+	local absorb = math.max(tiledata.absorb, bgdata.absorb)
+
+	--print(cr, cg, cb)
 	-- solve for red
 	local red = solve(tlight[1], bglight[1], cr, inputr)
 	local green = solve(tlight[2], bglight[2], cg, inputg)
@@ -189,9 +205,6 @@ local function recursiveFloodFillRGB(x, y, inputr, inputg, inputb, recursions)
 
 	absorb = absorb + minabsorb
 	
-
-	
-
 	if red < 0 then 
 		red = 0
 	end
@@ -201,7 +214,6 @@ local function recursiveFloodFillRGB(x, y, inputr, inputg, inputb, recursions)
 	if blue < 0 then 
 		blue = 0
 	end
-
 
 	if red == cr and green == cg and blue == cb then return end
 	if red <= 0 and blue <= 0 and green <= 0 then return end
@@ -220,8 +232,6 @@ local function recursiveFloodFillRGB(x, y, inputr, inputg, inputb, recursions)
 end
 
 local function numberCrunch()
-	--print("running light calc")
-
 
 	for key, chunk in pairs(lights) do
 		local cx, cy = grid.keyToCoordinates(key)
@@ -259,6 +269,8 @@ while running do
 		if package then
 			local key = package[1]
 			mirroredchunks[key] =  nil
+
+			lights[key] = nil
 
 			readyToCrunch = false
 		end
@@ -300,6 +312,8 @@ while running do
 
 	if package then running = false end
 
+	
+
 
 	----------------------------- 
 	-- light calculation gets done here
@@ -308,49 +322,69 @@ while running do
 
 		-- ! is this bad?
 		for key, chunk in pairs(mirroredchunks) do
-			--[[for i = 1, 3 do
-				lights[key][i] = {}
-				for x = 1, config.CHUNK_SIZE do
-					lights[key][i][x] = {}
-					for y = 1, config.CHUNK_SIZE do
+			local possibleChunk = lights[key]
 
-
+			if possibleChunk then
+				for i = 1, 3 do
+					for x = 1, 32 do
+						for y = 1, 32 do
+							possibleChunk[i][x][y] = 0.0
+						end
 					end
 				end
-			end]]
-			lights[key] = {
-				[1] = construct(construct(0, config.CHUNK_SIZE), config.CHUNK_SIZE),
-				[2] = construct(construct(0, config.CHUNK_SIZE), config.CHUNK_SIZE),
-				[3] = construct(construct(0, config.CHUNK_SIZE), config.CHUNK_SIZE)
-			}
+			else
+				lights[key] = {
+					[1] = ffi.new("grid", {{0.0}}),
+					[2] = ffi.new("grid", {{0.0}}),
+					[3] = ffi.new("grid", {{0.0}}),
+				}
+			end
 		end
+
+		
+
 		numberCrunch()
 
 		local num = channels.setlight:getCount()
 		for i = 1, num do
-
-			local package = channels.setlight:pop()
 	
-			if i > (num-25) then
+			local package = channels.setlight:pop()
+			
+			if i >= (num-10) then
 				local tx = package[1]
 				local ty = package[2]
 				local r = package[3]
 				local g = package[4]
 				local b = package[5]
-
-			
-				recursiveFloodFillRGB(tx, ty, r, g, b)
-			end
 	
+				recursiveFloodFillRGB(tx, ty, r, g, b)
+				--love.timer.sleep(1/60)
+			end
+			
 		end
 
 		for key, chunk in pairs(lights) do
-			channels.newlights:push({key, chunk})
+
+			local sendchunk = {}
+
+			for i = 1, 3 do
+				sendchunk[i] = {}
+				for x = 1, 32 do
+					sendchunk[i][x] = {}
+					for y = 1, 32 do
+						sendchunk[i][x][y] = chunk[i][x][y]
+					end
+				end
+			end
+
+			channels.newlights:push({key, sendchunk})
 		end
-		--love.timer.sleep(1/20)
+		love.timer.sleep(1/20)
 		
 	else
-		love.timer.sleep(1/20)
+		--love.timer.sleep(1/30)
 	end
+	
+	
 end
 print("lighting thread finished")

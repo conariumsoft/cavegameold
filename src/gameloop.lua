@@ -369,6 +369,8 @@ return function(args)
 	function love.keypressed(key)
 		if gameworld then
 			jcon.keypressed(key)
+		else
+			menus.keypressed(key)
 		end
 		input.keypressed:call(key)
 	end
@@ -389,6 +391,8 @@ return function(args)
 	function love.textinput(t)
 		if gameworld then
 			jcon.textinput(t)
+		else
+			menus.textinput(t)
 		end
 		input.textinput:call(t)
 	end

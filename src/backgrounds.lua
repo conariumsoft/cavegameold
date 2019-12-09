@@ -118,6 +118,59 @@ background("PLANK", {
 	color = {0.7, 0.5, 0.2},
 })
 
+background("WOODEN_POLE", {
+	texture = "pole",
+	color = {0.7, 0.5, 0.2},
+})
+
+background("WEIRD", {
+	texture = "weird",
+	color = {0.6, 0.6, 0.6},
+})
+
+background("EYE1", {
+	texture = "eye_1",
+	color = {0.6, 0.6, 0.6},
+})
+
+background("EYE2", {
+	texture = "eye_2",
+	color = {0.6, 0.6, 0.6},
+})
+
+background("EYE3", {
+	texture = "eye_3",
+	color = {0.6, 0.6, 0.6},
+})
+
+background("EYE4", {
+	texture = "eye_4",
+	color = {0.6, 0.6, 0.6},
+})
+
+background("SAND_EYE1", {
+	texture = "eye_1",
+	color = {0.9, 0.7, 0.35},
+})
+background("SAND_EYE2", {
+	texture = "eye_2",
+	color = {0.9, 0.7, 0.35},
+})
+background("SAND_EYE3", {
+	texture = "eye_3",
+	color = {0.9, 0.7, 0.35},
+})
+background("SAND_EYE4", {
+	texture = "eye_4",
+	color = {0.9, 0.7, 0.35},
+})
+
+background("BROGE", {
+	texture = "broge",
+	color = {0.6, 0.6, 0.6},
+})
+
+
 background("WOOD_PANEL", {
 	texture = "paneling",
 	color = {0.7, 0.5, 0.2},
@@ -128,27 +181,37 @@ background("STONE", {
 	texture = "stone",
 })
 
+background("CHISELED_STONE", {
+	color = {0.6, 0.6, 0.6},
+	texture = "chiseled_stone",
+})
+
 background("SANDSTONE", {
 	color = {0.9, 0.7, 0.35},
 	texture = "stone",
 })
 
+background("CHISELED_SANDSTONE", {
+	color = {0.9, 0.7, 0.35},
+	texture = "chiseled_stone",
+})
+
 background("GRAY_BRICK", {
 	color = {0.6, 0.6, 0.6},
-	texture = "brick",
+	texture = "brick2",
 })
 background("YELLOW_BRICK", {
 	color = {0.8, 0.7, 0.4},
-	texture = "brick",
+	texture = "brick2",
 })
 background("RED_BRICK", {
 	color = {0.9, 0.5, 0.5},
-	texture = "brick",
+	texture = "brick2",
 })
 
 background("MUD_BRICK", {
 	color = {0.4, 0.2, 0.1},
-	texture = "brick",
+	texture = "brick2",
 })
 
 background("MOSSY_GRAY_BRICK", {
@@ -158,11 +221,11 @@ background("MOSSY_GRAY_BRICK", {
 
 background("DARK_BRICK", {
 	color = {0.2, 0.2, 0.2},
-	texture = "brick",
+	texture = "brick2",
 })
 background("WHITE_BRICK", {
 	color = {1, 1, 1},
-	texture = "brick",
+	texture = "brick2",
 })
 
 return bgcollector

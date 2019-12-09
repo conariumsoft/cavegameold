@@ -111,13 +111,14 @@ function player:deserialize(data)
 	self.gui.inventory.items = data.items
 end
 
-local humanoidAudio = love.audio.newSource("assets/audio/hurt.wav", "static")
+local humanoidAudio = love.audio.newSource("assets/audio/hurt.ogg", "static")
 
 function player:damage(amount)
 	physicalentity.damage(self, amount)
 	self.knockbackTimer = 0.25
 
 	humanoidAudio:stop()
+	humanoidAudio:setPitch(self.hurt_yell_pitch)
 	humanoidAudio:play()
 
 	local e = self.world:addEntity("floatingtext", math.floor(amount), {1, 0.5, 0})

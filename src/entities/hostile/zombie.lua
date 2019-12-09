@@ -47,6 +47,7 @@ function zombie:init()
 
 	self.scale = jutils.vec2.new(ztype.scale, ztype.scale)
 	self.displayname = "Zombie"
+	self.hurt_yell_pitch = 0.75
 	self.texture = badguytexture
 	self.textureorigin = jutils.vec2.new(8, 12)
 	self.boundingbox = ztype.boundingbox

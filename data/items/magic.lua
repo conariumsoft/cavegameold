@@ -47,3 +47,51 @@ baseitem:new("PURPLE_STAFF", {
         player.itemdata = {}
     end
 })
+
+
+baseitem:new("NIMDICK", {
+    displayname = "NIMDOC",
+    texture = "nimdoc.png",
+    stack = 1,
+    rarity = 3,
+    use = function(self, player)
+
+        local fireDirection = jutils.vec2.new(input.getTransformedMouse())
+
+
+
+    end,
+    usestep = function(self, player, dt)
+
+    end,
+
+    useend = function(self, player)
+
+    end
+})
+
+baseitem:new("DRANK", {
+    displayname = "DRANK",
+    texture = "drank.png",
+    stack = 15,
+    rarity = 2,
+})
+
+baseitem:new("VAPE", {
+    displayname = "JOSH'S VAPE",
+    texture = "vape.png",
+    stack = 1,
+    rarity = 6,
+    use = function(self, player)
+
+        local fireDirection = jutils.vec2.new(input.getTransformedMouse())
+
+    end,
+    usestep = function(self, player, dt)
+
+    end,
+
+    useend = function(self, player)
+
+    end
+})

@@ -1,7 +1,7 @@
 local tiles = require("src.tiles")
 
-local treeMinimumHeight = 25
-local treeMaximumHeight = 45
+local treeMinimumHeight = 15
+local treeMaximumHeight = 35
 
 return function(world, tilex, tiley)
 	local goalHeight = math.random(treeMinimumHeight, treeMaximumHeight)
@@ -22,16 +22,26 @@ return function(world, tilex, tiley)
 	local result = checkTrunkValid()
 
 	if result == true then
-		--if world:getTile(tilex-1, tiley-1) == tiles.AIR.id and world:getTile(tilex-1, tiley) ~= tiles.AIR.id then
-		--	world:setTile(tilex-1, tiley-1, tiles.ROOT_LEFT.id)
-		--end
-		--if world:getTile(tilex+1, tiley-1) == tiles.AIR.id and world:getTile(tilex+1, tiley) ~= tiles.AIR.id then
-		--	world:setTile(tilex+1, tiley-1, tiles.ROOT_RIGHT.id)
-		--end
 
-		world:setTile(tilex, tiley, tiles.ROOT.id)
-		world:setTile(tilex-1, tiley, tiles.ROOT.id)
-		world:setTile(tilex+1, tiley, tiles.ROOT.id)
+		-- downward checking to make sure the entirety of the tree lines up
+		
+		for dx = -1, 1, 1 do
+			local stop = false
+
+			for dy = 0, 10 do
+				if stop == false then
+					if world:getTile(tilex+dx, tiley+dy) == tiles.AIR.id then
+						if world:getTile(tilex+dx, tiley+dy+1) ~= tiles.AIR.id then
+							stop = true
+							world:setTile(tilex+dx, tiley+dy, tiles.ROOT.id)
+						else
+							world:setTile(tilex+dx, tiley+dy, tiles.LOG.id)
+						end
+					end
+				end
+			end
+		end
+		
 		
 		for inc = 1, goalHeight do
 			

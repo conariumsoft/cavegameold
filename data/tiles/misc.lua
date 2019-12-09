@@ -64,6 +64,11 @@ newtile("TOXIC_GAS", {
     randomupdate = gas,
 })
 
+newtile("COBWEB", {
+    texture = "leaves",
+    color = {1, 1, 1, 0.75}
+})
+
 
 newtile("WOOB", {
 	texture = "default",
@@ -76,5 +81,5 @@ newtile("BUBBLEGUM", {
 })
 
 newtile("ICE", {
-
+    texture = "glass",
 })

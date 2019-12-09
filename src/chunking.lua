@@ -7,6 +7,16 @@ local json = require("src.json")
 local config = require("config")
 local tiles = require("src.tiles")
 local backgrounds = require("src.backgrounds")
+
+local ffi = require("ffi")
+
+ffi.cdef[[
+	int printf(const char *fmt, ...);
+]]
+
+
+ffi.C.printf("C PRINT!!%s", "a")
+
 local chunking = {}
 
 local construct = jutils.table.constructArray
@@ -75,6 +85,11 @@ function chunking:encode(chunk)
 			index = index + 1
 		end
 	end
+
+
+	-- here is a test
+
+	
 
 	-- TODO: use compression
 	return json.encode(savedata)

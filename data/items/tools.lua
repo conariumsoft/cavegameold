@@ -18,7 +18,9 @@ end
 local PICKAXE_TOOLTIP = "{speed} Speed\n{usedistance} Range\n{strength} Pickaxe Power"
 --|| PICKAXES SECTION
 do
-	local pickaxeAudio = love.audio.newSource("assets/audio/smash.wav", "static")
+	local pickaxeAudio = love.audio.newSource("assets/audio/smash.ogg", "static")
+	local pickaxeSwingAudio = love.audio.newSource("assets/audio/swing.ogg", "static")
+	local drillEngineAudio = love.audio.newSource("assets/audio/drill.ogg", "static")
 
 	local function pickaxeEquip(pickaxe, player)
 		player.showMouseTileDistance = pickaxe.usedistance
@@ -31,6 +33,9 @@ do
 	local function pickaxeUse(pickaxe, player)
 		local mx, my = input.getTransformedMouse()
 
+		pickaxeSwingAudio:stop()
+		pickaxeSwingAudio:play()
+
 		local tx, ty = grid.pixelToTileXY(mx, my)
 		local px, py = getPlayerTile(player)
 
@@ -40,6 +45,28 @@ do
 			if tileid > 0 then
 				pickaxeAudio:stop()
 				player.world:damageTile(tx, ty, pickaxe.strength)
+				pickaxeAudio:play()
+			end
+		end
+		return true
+	end
+
+	local function drillUse(drill, player)
+		local mx, my = input.getTransformedMouse()
+
+		drillEngineAudio:stop()
+		--drillEngineAudio:setPitch(math.random(9, 11)/10)
+		drillEngineAudio:play()
+
+		local tx, ty = grid.pixelToTileXY(mx, my)
+		local px, py = getPlayerTile(player)
+
+		if magnitude(px, py, tx, ty) < drill.usedistance then
+
+			local tileid = player.world:getTile(tx, ty)
+			if tileid > 0 then
+				pickaxeAudio:stop()
+				player.world:damageTile(tx, ty, drill.strength)
 				pickaxeAudio:play()
 			end
 		end
@@ -58,6 +85,15 @@ do
 		pickaxe.defaultRotation = -45
 		pickaxe.tooltip = PICKAXE_TOOLTIP
 	end
+
+
+	local drill = pickaxe:subclass("Drill") do
+		drill.texture = love.graphics.newImage("assets/items/drill.png")
+		drill.playerHoldPosition = jutils.vec2.new(10, 4)
+		drill.playeranim = pointanim(false)
+		drill.use = drillUse
+	end
+
 	--[[
 		Pickaxe progression:
 
@@ -140,61 +176,32 @@ do
 		rarity = 2,
 	})
 
-	baseitem:new("STEAM_DRILL", {
+	drill:new("STEAM_DRILL", {
 		displayname = "STEAM DRILL",
-		texture = "drill.png",
 		color = {0.9,0.6,0.6},
 		speed = (1/5),
 		strength = 5,
-		stack = 1,
-		repeating = true,
 		usedistance = 16,
 		rarity = 4,
-		tooltip = PICKAXE_TOOLTIP,
-		holdbegin = pickaxeEquip,
-		holdend = pickaxeUnequip,
-		playerHoldPosition = jutils.vec2.new(10, 4),
-		playeranim = pointanim(false),
-		use = pickaxeUse,
 	})
 
-	baseitem:new("POWER_DRILL", {
+	drill:new("POWER_DRILL", {
 		displayname = "POWER DRILL",
-		texture = "drill.png",
 		color = {1,0.8,0.2},
 		speed = (1/10),
 		strength = 5,
-		stack = 1,
-		repeating = true,
 		usedistance = 20,
 		rarity = 4,
-		tooltip = PICKAXE_TOOLTIP,
-		holdbegin = pickaxeEquip,
-		playerHoldPosition = jutils.vec2.new(10, 4),
-		playeranim = pointanim(false),
-		holdend = pickaxeUnequip,
-		use = pickaxeUse,
 	})
 
 
-	baseitem:new("ATOMIC_DRILL", {
+	drill:new("ATOMIC_DRILL", {
 		displayname = "ATOMIC DRILL",
-		texture = "drill.png",
 		color = {0.8,1,0.8},
 		speed = (1/20),
 		strength = 5,
-		inWorldScale = 2,
-		stack = 1,
-		repeating = true,
-		defaultRotation = math.rad(45),
 		usedistance = 24,
 		rarity = 5,
-		playerHoldPosition = jutils.vec2.new(0, 8),
-		playeranim = pointanim(true),
-		tooltip = PICKAXE_TOOLTIP,
-		holdbegin = pickaxeEquip,
-		holdend = pickaxeUnequip,
-		use = pickaxeUse,
 
 	})
 

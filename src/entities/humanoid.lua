@@ -20,6 +20,7 @@ function humanoid:init()
 	self.mass = 1
 	self.xfriction = 4
 	self.jump_power = 300
+	self.hurt_yell_pitch = 1
 	self.animation = {
 		running = false,
 		walking = false,
@@ -79,12 +80,13 @@ function humanoid:collisionCallback(tileid, tilepos, separation, normal)
 	
 end
 
-local humanoidAudio = love.audio.newSource("assets/audio/hurt.wav", "static")
+local humanoidAudio = love.audio.newSource("assets/audio/hurt.ogg", "static")
 
 function humanoid:damage(amount)
 	physicalentity.damage(self, amount)
 	self.knockbackTimer = 0.25
 	humanoidAudio:stop()
+	humanoidAudio:setPitch(self.hurt_yell_pitch)
 	humanoidAudio:play()
 
 	local e = self.world:addEntity("floatingtext", jutils.math.round(amount, 0), {1, 0.1, 0})

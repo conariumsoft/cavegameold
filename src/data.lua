@@ -26,7 +26,7 @@ return function(args)
     local item_list = items:getList()
     local tile_list = tiles:getList()
 
-    local showing_items = false
+    local showing_items = true
 
     local scroll = 0
     local scroll_amplifier = 20

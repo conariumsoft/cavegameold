@@ -313,7 +313,6 @@ local tileitem = consumable:subclass("TileItem") do
 	tileitem.defaultRotation = 0
 	tileitem.stack = 999
 	tileitem.speed = 1/6
-	-- TODO: re-add animations for itemstack tiles
 	
 end
 do

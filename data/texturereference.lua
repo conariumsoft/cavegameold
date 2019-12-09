@@ -59,8 +59,18 @@ local references = {
 		sandstone = tileQuad(0, 3),
 		supported_platform = tileQuad(1, 3),
 		
-		gridbricks = tileQuad(4, 3),
+		brick2 = tileQuad(2, 3),
+
+		weird = tileQuad(3, 3),
+		pole = tileQuad(4, 3),
 		chiseled_stone = tileQuad(5, 3),
+
+		broge = tileQuad(1, 4),
+
+		eye_1 = tileQuad(2, 4),
+		eye_2 = tileQuad(3, 4),
+		eye_3 = tileQuad(2, 5),
+		eye_4 = tileQuad(3, 5),
 
 		pot = tileQuad(7, 3),
 

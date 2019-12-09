@@ -21,9 +21,6 @@ local newWorld
 local loadWorld
 local settings
 
--- fonts
-
-
 -- static UI components shared between menus
 local menu_background = jui.image:new({
     image = love.graphics.newImage("assets/brickbg.png"),
@@ -54,8 +51,6 @@ local menu_content = jui.rectangle:new({
 })
 
 -- core UI styles
-
-
 local mainMenuButtonStyle = {
     scaleSize = jutils.vec2.new(1, 0),
     pixelSize = jutils.vec2.new(0, 50)
@@ -64,6 +59,15 @@ local mainMenuButtonStyle = {
 local settingsButtonStyle = {
     scaleSize = jutils.vec2.new(1, 0),
     pixelSize = jutils.vec2.new(0, 30)
+}
+
+local core_button_style = {
+    image = love.graphics.newImage("assets/ui/button.png"),
+    sourceWidth = 16,
+    sourceHeight = 16,
+    cornerWidth = 7,
+    cornerHeight = 7,
+    imageScale = 2,
 }
 
 local splashUI = {
@@ -165,7 +169,7 @@ local world_name_input = jui.textinput:new({
     clearOnReturn = false,
     clearTextOnFocus = false,
     clearDefaultOnFocus = true,
-    isFocused = false,
+    isFocused = true,
     font = guiutil.fonts.font_16,
     textColor = {1, 1, 1},
     textXAlign = "left",
@@ -572,15 +576,30 @@ local volume_text = jui.text:new({
 })
 
 local volume_slider = {
-    jui.nineslice:new({}),
+    jui.nineslice:new(jutils.table.combine(core_button_style, {
+        scaleSize = jutils.vec2.new(1, 0),
+        pixelSize = jutils.vec2.new(0, 30),
+    })),
     {
         s = {
             jui.slider:new({
+                scaleSize = jutils.vec2.new(1, 0),
+                pixelSize = jutils.vec2.new(-20, 24),
+                scalePosition = jutils.vec2.new(0, 0),
+                pixelPosition = jutils.vec2.new(10, 3),
+                backgroundColor = {0, 0, 0, 0},
+                borderEnabled = false,
                 maxValue = 100,
                 minValue = 0,
                 defaultValue = settings_mod.get("volume"),
                 increment = 1,
                 smooth = false,
+                scrubber = jui.rectangle:new({
+                    borderEnabled = false,
+                    scaleSize = jutils.vec2.new(0, 1),
+                    pixelSize = jutils.vec2.new(20, 0),
+                    backgroundColor = {0.75, 0.75, 0.75}
+                }),
                 valueChanged = function(newval)
                     settings_mod.set("volume", newval)
                     volume_text.text = "Volume: "..newval
@@ -591,6 +610,10 @@ local volume_slider = {
             }
         }
     }
+}
+
+local settingstext = {
+    vsync = "V-SYNC: "..tostring(settings_mod.get("vsync"))
 }
 
 local settingsUI = {
@@ -630,9 +653,19 @@ local settingsUI = {
                                     padding = 8,
                                 }),
                                 {
-                                    [1] = guiutil.make_button({text="V-SYNC: ON", font = guiutil.fonts.font_16}, settingsButtonStyle),
-                                    [2] = guiutil.make_button({text = "PARTICLES: ON", font = guiutil.fonts.font_16}, settingsButtonStyle),
-                                    [3] = guiutil.make_button({text="FULLSCREEN: NO", font = guiutil.fonts.font_16}, settingsButtonStyle)
+                                    [1] = guiutil.make_button({text = settingstext.vsync, font = guiutil.fonts.font_16}, settingsButtonStyle,
+                                    function()
+                                        settings_mod.set("vsync", not settings_mod.get("vsync"))
+                                        settingstext.vsync = "V-SYNC: "..tostring(settings_mod.get("vsync"))
+                                    end),
+                                    [2] = guiutil.make_button({text = "PARTICLES: ON", font = guiutil.fonts.font_16}, settingsButtonStyle,
+                                    function()
+                                    
+                                    end),
+                                    [3] = guiutil.make_button({text="FULLSCREEN: NO", font = guiutil.fonts.font_16}, settingsButtonStyle,
+                                    function()
+                                    
+                                    end),
                                 }
                             }
                         }
@@ -671,24 +704,22 @@ loadWorld = jui.scene:new({}, loadWorldUI)
 settings = jui.scene:new({}, settingsUI)
 
 local splash_screen_time = 1
-
 ---
 menus.world_chosen = false
 ---
 menus.selected_world = nil
 
-function love.keypressed(key)
+function menus.keypressed(key)
     if current_menu == newWorld then
         world_name_input:keypressed(key)
     end
 end
 
-function love.textinput(t)
+function menus.textinput(t)
     if current_menu == newWorld then
         world_name_input:textinput(t)
     end
 end
-
 
 -- background color gradient
 -- uses a cycling value multiplied by color channels to achieve

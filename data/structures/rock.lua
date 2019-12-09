@@ -1,0 +1,32 @@
+return {
+	tiles = {
+		["0_1"] = "STONE",
+		["-2_3"] = "STONE",
+		["-1_5"] = "STONE",
+		["1_3"] = "STONE",
+		["0_3"] = "STONE",
+		["-2_0"] = "STONE",
+		["0_-1"] = "STONE",
+		["0_-2"] = "CAMPFIRE_2_1",
+		["-2_1"] = "STONE",
+		["-1_3"] = "STONE",
+		["-1_1"] = "STONE",
+		["0_5"] = "STONE",
+		["1_1"] = "STONE",
+		["-2_2"] = "STONE",
+		["1_0"] = "STONE",
+		["0_4"] = "STONE",
+		["0_2"] = "STONE",
+		["-1_-2"] = "CAMPFIRE_1_1",
+		["0_6"] = "STONE",
+		["1_2"] = "STONE",
+		["-1_0"] = "STONE",
+		["-1_6"] = "STONE",
+		["-1_2"] = "STONE",
+		["-1_-1"] = "STONE",
+		["0_0"] = "STONE",
+		["-1_4"] = "STONE",
+	},
+	backgrounds = {
+	}
+}

@@ -8,6 +8,9 @@ local settings = require("src.settings")
 
 explosion.particle = love.graphics.newImage("assets/particles/explosion.png")
 
+local explosion_sound = love.audio.newSource("assets/audio/explode.ogg", "static")
+
+
 function explosion:init(position, radius, strength, damagetile)
 	entity.init(self)
 	self:teleport(position)
@@ -49,6 +52,8 @@ function explosion:update(dt)
 
 	if self.detonated == false then
 		self.detonated = true
+		explosion_sound:stop()
+		explosion_sound:play()
 		if settings.get("particles") == true then
 			self.system:emit(math.max(self.radius*2, 16))
 		end

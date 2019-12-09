@@ -1,7 +1,7 @@
 --- Terrain generation utilities and math.
 -- @author Joshua O'Leary
 -- @copyright 2019 Conarium Software
-local BIOME_X_STRETCH = 500
+local BIOME_X_STRETCH = 1000
 
 local noise = require("src.noise")
 local jutils = require("src.jutils")

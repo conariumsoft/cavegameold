@@ -8,7 +8,7 @@ end
 
 function bullet:entityCollision(otherEntity, separation, normal)
 	otherEntity:damage(5)
-	otherEntity.velocity.x = otherEntity.velocity.x - otherEntity*200
+	otherEntity.velocity.x = otherEntity.velocity.x * 0.5
 	otherEntity.velocity.y = -100
 	self.dead = true
 end

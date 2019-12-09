@@ -14,50 +14,13 @@ local bigtree = require("data.structures.trees.bigtree")
 local terrainMath = require("src.terrain")
 local biomes = require("src.biomes")
 
-local dungeonlist = {
-	"data.structures.dungeons.a",
-	"data.structures.castle"
+local treeGroveDensity = 0.3 -- 0 - 1, how dense groves of trees are populated
+
+
+local houses = {
+	"data.structures.underhouse.house1",
+	"data.structures.underhouse.house2",
 }
-
-local treeGroveDensity = 0.15 -- 0 - 1, how dense groves of trees are populated
-local treeGroveRarity = 0.3 -- 0 - 1, how common tree groves are
-local treeGroveSize = 256 -- the size of groves of trees
-
-
-local function treeGeneration(world, tilex, tiley)
-
-	if terrainMath.getSurfaceNoise(tilex, tiley) < 1 then
-		if terrainMath.getBiomeNoise(tilex) > 0.4 then
-
-			local treeNoise = noise.noise(tilex, tiley, treeGroveSize, treeGroveSize)
-			local tree3Noise = noise.noise(tilex+128, tiley, 18, 18)
-
-			local doTree = math.random()
-			if treeNoise > (treeGroveRarity) and treeGroveDensity > doTree then
-
-				if world:getTile(tilex, tiley) == tiles.GRASS.id then
-					if tree3Noise > 0.8 then
-						bigtree(world, tilex, tiley+1)
-					else
-						maketree(world, tilex, tiley)
-					end
-				end
-			end
-		end
-
-		if world:getTile(tilex, tiley) == tiles.SAND.id then
-			local roll = math.random()
-
-			if roll > 0.9 then
-				if terrainMath.getSurfaceNoise(tilex, tiley) < 1 then
-					if world:getTile(tilex, tiley-1) == tiles.AIR.id then
-						world:setTile(tilex, tiley-1, tiles.CACTUS.id)
-					end
-				end
-			end
-		end
-	end
-end
 
 local function generateFromFile(structure, world, tx, ty)
 	for key, name in pairs(structure.tiles) do
@@ -80,44 +43,6 @@ local function generateFromFile(structure, world, tx, ty)
 	end
 end
 
--- a modified form of generateFromFile, used for tree generation
--- only air and leaves tiles can be overwritten.
-local function generate_tree_file(structure, world, tx, ty)
-	for key, name in pairs(structure.tiles) do
-
-		local x, y = grid.keyToCoordinates(key)
-
-
-	end
-end
-
-local lastDungeonPos = jutils.vec2.new(0, 0)
-
-local function brickDungeonGeneration(world, tilex, tiley)
-
-	local current = jutils.vec2.new(tilex, tiley)
-
-	local generatorRoll = math.random(1, 20)
-
-	if world:getTile(tilex, tiley) == tiles.STONE.id and world:getTile(tilex, tiley-20) == tiles.AIR.id then
-		if lastDungeonPos:distance(current) > 80 then
-			
-			lastDungeonPos = current
-			if generatorRoll ~= 1 then return end
-
-			local dungeonToGenerate = dungeonlist[math.random(1, #dungeonlist)]
-
-			local struct = require(dungeonToGenerate)
-
-			generateFromFile(struct, world, tilex, tiley)
-			
-		end
-	end
-end
-
-
-local structures = {}
-
 return function(world, tilex, tiley)
 
 	local surface_noise = terrainMath.getSurfaceNoise(tilex, tiley)
@@ -129,13 +54,35 @@ return function(world, tilex, tiley)
 	if surface_noise > -10 and surface_noise < 10 then
 		local chosen_biome = biomes.getBiome(tilex)
 
+		if terrainMath.getSurfaceNoise(tilex, tiley) < 1 then
+			local watchtowerNoise = noise.noise(tilex, tiley, 64, 64)
+
+
+			if watchtowerNoise > 0 and watchtowerNoise < 0.02 and math.random() > 0.95 then
+				generateFromFile(require("data.structures.hendrix"), world, tilex, tiley)
+			end
+		end
+
 
 		if chosen_biome == "desert" then
 			-- TODO: pyramid generation
+
+			if world:getTile(tilex, tiley) == tiles.SAND.id then
+				local roll = math.random()
+	
+				if roll > 0.9 then
+					if terrainMath.getSurfaceNoise(tilex, tiley) < 1 then
+						if world:getTile(tilex, tiley-1) == tiles.AIR.id then
+							world:setTile(tilex, tiley-1, tiles.CACTUS.id)
+						end
+					end
+				end
+			end
+
 			if math.floor(surface_noise) == 1 then
 				if tilex % 64 == 0 then
 					if math.random() > 0.95 then
-						print("bruj")
+						
 						generateFromFile(require("data.structures.pyramid"), world, tilex, tiley)
 					end
 				end
@@ -144,14 +91,30 @@ return function(world, tilex, tiley)
 
 		if chosen_biome == "forest" then
 			-- TODO: tree generation
-			if math.floor(surface_noise) == 0 then
-				local treeNoise = noise.noise(tilex, tiley, treeGroveSize, treeGroveSize)
+			local tree3Noise = noise.noise(tilex+128, tiley, 18, 18)
+			local doTree = math.random()
+			if treeGroveDensity > doTree then
 
-				local doTree = math.random()
-				if treeNoise > (treeGroveRarity) and treeGroveDensity > doTree then
-					-- TODO: special handling for generating trees
-					generateFromFile(require("data.structures.uglytree"), world, tilex, tiley)
-					
+				if world:getTile(tilex, tiley) == tiles.GRASS.id then
+					if tree3Noise > 0.95 then
+						bigtree(world, tilex, tiley-1)
+					else
+						maketree(world, tilex, tiley)
+					end
+				end
+			end
+		end
+
+		if chosen_biome == "plains" then			
+			if math.floor(surface_noise) == 1 then
+				local mineshaftNoise = noise.noise(tilex, tiley, 64, 64)
+				if mineshaftNoise > 0.95 then
+					local rand = math.random()
+
+					if rand > 0.9 then
+						print("bruj")
+						generateFromFile(require("data.structures.mineshaft"), world, tilex, tiley-2)
+					end
 				end
 			end
 		end
@@ -159,22 +122,26 @@ return function(world, tilex, tiley)
 
 	if surface_noise > 300 then
 		-- TODO: small structures not very deep underground
+		local undergroundHouseNoise = noise.noise(tilex, tiley, 128, 128)
+		if undergroundHouseNoise > 0.99 then
 
+			if world:getTile(tilex, tiley) == tiles.AIR.id then
+				local chance = math.random()
+				if chance > 0.99 then
+					generateFromFile(require(houses), world, tilex, tiley)
+				end
+			end
+		end
 	end
 
 	if surface_noise > 1000 then
 		-- TODO: larger dungeons
-
-		if tilex % 512 == 0 and tiley % 512 == 0 then
+		local castleNoise = noise.noise(tilex, tiley, 128, 128)
+		if castleNoise > 0.99 and math.random() > 0.9 then 
 			local chance = math.random()
-
 			if chance > 0.99 then
 				generateFromFile(require("data.structures.castle"), world, tilex, tiley)
 			end
 		end
 	end
-
-	treeGeneration(world, tilex, tiley)
-	brickDungeonGeneration(world, tilex, tiley)
-
 end

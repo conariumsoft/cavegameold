@@ -836,10 +836,12 @@ end
 -- ENTITY AND COLLISION HANDLING
 
 local lightthing = 0
+local emitlighttimer = 0
 
 ---
 function world:updateEntities(dt)
 	lightthing = lightthing + dt
+	emitlighttimer = emitlighttimer + dt
 	for idx, entity in pairs(self.entities) do
 		entity:update(dt)
 
@@ -857,9 +859,11 @@ function world:updateEntities(dt)
 			end
 		end
 
-		if entity.lightemitter then
-			local tx, ty = grid.pixelToTileXY(entity.position.x, entity.position.y)
-			channels.setlight:push({tx, ty, entity.lightemitter[1], entity.lightemitter[2], entity.lightemitter[3]})
+		if emitlighttimer > (1/20) then
+			if entity.lightemitter then
+				local tx, ty = grid.pixelToTileXY(entity.position.x, entity.position.y)
+				channels.setlight:push({tx, ty, entity.lightemitter[1], entity.lightemitter[2], entity.lightemitter[3]})
+			end
 		end
 
 		-- remove entity references if they are dead (allow garbage collection)
@@ -898,6 +902,9 @@ function world:updateEntities(dt)
 	end
 	if lightthing > (1/10) then
 		lightthing = 0
+	end
+	if emitlighttimer > (1/20) then
+		emitlighttimer = 0
 	end
 end
 

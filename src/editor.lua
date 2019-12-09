@@ -53,9 +53,6 @@ local current_tool = "stamp"
 	remove
 ]]
 
-
-
-
 local pointing_history = 1
 
 
@@ -551,13 +548,13 @@ return function(args)
 				rendering.queuetile(tileid, 8, 0, 1, 1, 1, x, y)
 			end
 		end
-		
 	
 		local mousex, mousey = input.getTransformedMouse()
 		local mx, my = grid_pixelToTileXY(mousex, mousey)
 		if view.pointbg then
 			rendering.queuebackground(view.bgselection, 0.5, 0.5, 0.5, mx, my)
 		else
+			print(view.selection)
 			rendering.queuetile(view.selection, 0, 0, 0.5, 0.5, 0.5, mx, my)
 		end
 		rendering.drawqueue()

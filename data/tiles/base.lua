@@ -80,6 +80,7 @@ newtile("TORCH", {
 		[4] = "torch_d",
 	},
 	light = {1.5, 1.5, 1.25},
+	tags = {"fakeempty"},
 	tileupdate = function(world, x, y)
 		if not torchValid(world, x, y) then
 			world:setTile(x, y, tilelist.AIR.id, true)
@@ -100,6 +101,7 @@ newtile("RED_TORCH", {
 		[4] = "torch_d",
 	},
 	light = {1.5, 0, 0},
+	tags = {"fakeempty"},
 	tileupdate = function(world, x, y)
 		if not torchValid(world, x, y) then
 			world:setTile(x, y, tilelist.AIR.id, true)
@@ -120,6 +122,7 @@ newtile("BLUE_TORCH", {
 		[4] = "torch_d",
 	},
 	light = {0, 0, 1.5},
+	tags = {"fakeempty"},
 	tileupdate = function(world, x, y)
 		if not torchValid(world, x, y) then
 			world:setTile(x, y, tilelist.AIR.id, true)
@@ -139,6 +142,7 @@ newtile("GREEN_TORCH", {
 		[3] = "torch_c",
 		[4] = "torch_d",
 	},
+	tags = {"fakeempty"},
 	light = {0, 1.5, 0},
 	tileupdate = function(world, x, y)
 		if not torchValid(world, x, y) then
@@ -203,7 +207,7 @@ newtile("PLATFORM", {
 
 newtile("STONE_PLATFORM", {
 	texture = "supported_platform",
-	color = {0.7, 0.5, 0.2},
+	color = {0.6, 0.6, 0.6},
 	solid = false,
 	collide = true,
 	absorb = 0,

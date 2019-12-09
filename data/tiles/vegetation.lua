@@ -29,13 +29,8 @@ end
 local function logValidCheck(world, x, y)
 
 	local below = supports_log(world:getTile(x, y+1))
-	local above = supports_log(world:getTile(x, y-1))
-	local left = supports_log(world:getTile(x-1, y))
-	local right = supports_log(world:getTile(x+1, y))
 
-	if below or above or left or right then
-		-- do something epic
-	else
+	if not below then
 		world:setTile(x, y, tilelist.AIR.id, true)
 	end
 end
@@ -43,8 +38,8 @@ end
 local function leavesRandomUpdate(world, x, y)
 	local die = true
 
-	for dx = -3, 3 do
-		for dy = -3, 3 do
+	for dx = -4, 4 do
+		for dy = -4, 4 do
 			if world:getTile(x+dx, y+dy) == tilelist.LOG.id then
 				die = false
 			end
@@ -144,7 +139,7 @@ newtile("LEAVES", {
 
 -- ? what is the purpose of this tile
 newtile("DEAD_LEAVES", {
-	color = {0.6, 0.5, 0.1},
+	color = {0.6, 0.7, 0.1},
 	solid = false,
 	collide = false,
 	texture = "leaves",
