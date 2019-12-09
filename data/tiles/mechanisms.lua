@@ -97,7 +97,6 @@ newtile("SOLID_TOGGLE_BRICK", {
 	end
 })
 
-
 newtile("WIRE", {
 	texture = "wire",
 	tags = {"mechanism", "transmitter"},
