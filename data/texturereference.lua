@@ -74,6 +74,8 @@ local references = {
 
 		pot = tileQuad(7, 3),
 
+		cobweb = tileQuad(6, 3),
+
 		campfire_1_2 = tileQuad(8, 3),
 		campfire_2_2 = tileQuad(9, 3),
 		furnace_1_2 = tileQuad(10, 3),
