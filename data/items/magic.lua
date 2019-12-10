@@ -54,16 +54,77 @@ baseitem:new("NIMDICK", {
     texture = "nimdoc.png",
     stack = 1,
     rarity = 3,
-    speed = 1/20,
+    speed = 1/5,
     repeating = true,
     use = function(self, player)
 
         local mousePos = jutils.vec2.new(input.getTransformedMouse())
-        
-        local fireDirection = (mousePos- player.position):unitvec()
+        local startPos = player.position
+        local direction = (mousePos-player.position):unitvec()
+
+        local run = true
+        local limiter = 10
+        local decayIncrease = 0
+
+        while run == true do
+            limiter = limiter - 1
+            decayIncrease = decayIncrease + 0.1
+
+            if limiter < 0 then
+                print("ran outta steam")
+                run = false
+                return
+            end
+            local result, colx, coly, sx, sy, nx, ny = player.world:castRay(startPos, direction, 400, 6)
+
+            run = result
+
+            if result == true then
+                player.world:addEntity("laser", startPos, jutils.vec2.new(colx, coly), decayIncrease)
+                startPos = jutils.vec2.new(colx, coly)
+            else
+                player.world:addEntity("laser", startPos, startPos + (direction*600), decayIncrease)
+            end
+
+            if nx ~= 0 then
+                direction.x = -direction.x
+            end
     
-        local result, sx, sy, nx, ny = player.world:castRay(player.position, fireDirection, 250, 8)
-        print(result, sx, sy, nx, ny)
+            -- mirror the ray on the X axis
+            if ny ~= 0 then
+                direction.y = -direction.y
+            end
+
+            direction.x = direction.x + (math.random() - 0.5)/2
+            direction.y = direction.y + (math.random() - 0.5)/2
+
+        end
+
+      --[[  
+        
+        local fireDirection = (mousePos-player.position):unitvec()
+    
+        local result, colx, coly, sx, sy, nx, ny = player.world:castRay(player.position, fireDirection, 250, 4)
+        if result == false then
+            
+            return
+        end
+
+        print(colx/8, coly/8)
+        
+
+        -- mirror the ray on the Y axis
+        
+
+        local collPos = jutils.vec2.new(colx, coly)
+
+        local pass2, colx2, coly2, sx, sy, nx, ny = player.world:castRay(collPos, fireDirection, 300, 4)
+        if pass2 == false then
+            player.world:addEntity("laser", collPos, collPos + (fireDirection*200))
+            return
+        end
+
+        player.world:addEntity("laser", collPos, jutils.vec2.new(colx2, coly2))]]
     end,
     usestep = function(self, player, dt)
 

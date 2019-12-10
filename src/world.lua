@@ -43,8 +43,7 @@ local entitylist = {
 	glowstick 		= require("src.entities.projectiles.glowstick"),
 	magicball 		= require("src.entities.projectiles.magicball"),
 	-- 
-
-	
+	laser 			= require("src.entities.projectiles.laser"),	
 }
 
 -- these get LERP'd between for sky colors
@@ -310,46 +309,6 @@ function world:addEntity(entityname, ...)
 	return entity
 end
 
-local function lineIntersectsLine(l1p1, l1p2, l2p1, l2p2)
-	local q = (l1p1.y - l2p1.y) * (l2p2.x - l2p1.x) - (l1p1.x - l2p1.x) * (l2p2.x - l2p1.y)
-	local d = (l1p2.x - l1p1.x) * (l2p2.y - l2p1.y) - (l1p2.y - l1p1.y) * (l2p2.x - l2p1.x)
-
-
-	if d == 0 then return false end
-
-	local r = q / d
-
-	q = (l1p1.y - l2p1.y) * (l1p2.x - l1p1.x) - (l1p1.x - l2p1.x) * (l1p2.y - l1p1.y)
-	local s = q / d
-
-	if (r < 0 or r > 1 or s < 0 or s > 1) then return false end
-
-	return true
-end
-
-
---[[
-	rectangle object:
-	{
-		x,
-		y,
-		width,
-		height
-	}
-]]
-
-local function rectangleContainsPoint(r, p)
-	return (p.x > r.x) and (p.x < r.x+r.width) and (p.y > r.y) and (p.y < r.y+r.height)
-end
-
-local function lineIntersectsRect(p1, p2, r)
-	return lineIntersectsLine(p1, p2, jutils.vec2.new(r.x, r.y), jutils.vec2.new(r.x+r.width, r.y)) or
-		   lineIntersectsLine(p1, p2, jutils.vec2.new(r.x+r.width, r.y), jutils.vec2.new(r.x+r.width, r.y+r.height)) or
-		   lineIntersectsLine(p1, p2, jutils.vec2.new(r.x + r.width, r.y + r.height), jutils.vec2.new(r.x, r.y+r.height)) or
-		   lineIntersectsLine(p1, p2, jutils.vec2.new(r.x, r.y + r.height), jutils.vec2.new(r.x, r.y)) or
-		   (rectangleContainsPoint(r, p1) and rectangleContainsPoint(r, p2))
-end
-
 local collision = require("src.collision")
 
 function world:castRay(origin, direction, raydistance, rayaccuracy)
@@ -357,7 +316,7 @@ function world:castRay(origin, direction, raydistance, rayaccuracy)
 
 	local last_point = origin
 
-	for i = 1, max_ray_search_distance, 1 do
+	for i = 2, max_ray_search_distance, 1 do
 		local current_point = origin + (direction*i)	
 		local raytx, rayty = grid.pixelToTileXY(current_point.x, current_point.y)		
 		local tileat = self:getTile(raytx, rayty)
@@ -371,13 +330,10 @@ function world:castRay(origin, direction, raydistance, rayaccuracy)
 				local tx, ty, tw, th = (raytx*config.TILE_SIZE)+(config.TILE_SIZE/2), (rayty*config.TILE_SIZE)+(config.TILE_SIZE/2), config.TILE_SIZE/2, config.TILE_SIZE/2
 				local sx, sy = collision.test(center.x, center.y, 2, 2, tx, ty, tw, th)
 
-				if (sx and sy) then
-			
-					local separation = jutils.vec2.new(sx, sy)
-				
+				if (sx and sy) then	
 					local normalx, normaly = collision.solve(sx, sy, direction.x, direction.y)
-					print("YES", tiledata.name)
-					return true, sx, sy, normalx, normaly
+					--print("YES", tiledata.name)
+					return true, current_point.x, current_point.y, sx, sy, normalx, normaly
 				end
 			end
 		end
@@ -448,6 +404,29 @@ function world:getLight(tilex, tiley)
 		end
 	end
 	return {-1, -1, -1}
+end
+
+function world:setLight(tilex, tiley, r, g, b)
+	assert(type(tilex) == "number")
+	assert(type(tiley) == "number")
+	local cx, cy, lx, ly = grid.getLocalCoordinates(tilex, tiley)
+	local chunk = self:getchunk(cx, cy)
+
+	if chunk then
+
+		if chunk.loaded == false then
+			return
+		end
+
+		local exists = chunk["light"]
+
+		if exists then
+			chunk["light"][1][lx][ly] = r
+			chunk["light"][2][lx][ly] = g
+			chunk["light"][3][lx][ly] = b
+
+		end
+	end
 end
 
 ---
