@@ -612,9 +612,37 @@ local volume_slider = {
     }
 }
 
-local settingstext = {
-    vsync = "V-SYNC: "..tostring(settings_mod.get("vsync"))
-}
+local function translateBool(b)
+    return (b==true) and "ON" or "OFF"
+end
+
+local function setText(prefix, property, suffix)
+
+    local value = settings_mod.get(property)
+
+    suffix = suffix or ""
+
+
+    if type(value) == "boolean" then
+        value = translateBool(value)
+    end
+
+    return prefix..": "..value..suffix
+end
+
+local vsyncbutton 
+vsyncbutton = guiutil.make_button({text = setText("V-SYNC", "vsync"), font = guiutil.fonts.font_16}, settingsButtonStyle,
+function()
+    settings_mod.set("vsync", not settings_mod.get("vsync"))
+    vsyncbutton[2]["text"][1].text = "V-SYNC: "..translateBool(settings_mod.get("vsync"))
+end)
+
+local particlesbutton
+particlesbutton = guiutil.make_button({text = "PARTICLES: ON", font = guiutil.fonts.font_16}, settingsButtonStyle,
+function()
+
+end)
+
 
 local settingsUI = {
     a = {
@@ -653,15 +681,8 @@ local settingsUI = {
                                     padding = 8,
                                 }),
                                 {
-                                    [1] = guiutil.make_button({text = settingstext.vsync, font = guiutil.fonts.font_16}, settingsButtonStyle,
-                                    function()
-                                        settings_mod.set("vsync", not settings_mod.get("vsync"))
-                                        settingstext.vsync = "V-SYNC: "..tostring(settings_mod.get("vsync"))
-                                    end),
-                                    [2] = guiutil.make_button({text = "PARTICLES: ON", font = guiutil.fonts.font_16}, settingsButtonStyle,
-                                    function()
-                                    
-                                    end),
+                                    [1] = vsyncbutton,
+                                    [2] = particlesbutton,
                                     [3] = guiutil.make_button({text="FULLSCREEN: NO", font = guiutil.fonts.font_16}, settingsButtonStyle,
                                     function()
                                     

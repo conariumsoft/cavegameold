@@ -1,25 +1,21 @@
-epic improvements:
-    - test out individual thread for each lighting color channel?
-
-
 inventory ui assets
 
 equipment and ui
-
 
 next update:
     * Slime entity
     * Floating Skull entity
     * Big Bones Entity
-    * Explosion sound
+    * Explosion sound [done]
     * Positional audio (at least distance scaled) for non-player entities
     * More Tile SFX
         - Separate breaking SFX for different tiles
         - Maybe some tile-place SFX
     * Finish implementing pine trees.
-    * Zombie SFX
+    * Zombie SFX [done?]
     * Flower SFX
-    * Sword swing and pickaxe swing SFX
+    * Sword swing SFX
+    * pickaxe swing SFX [done]
     * Sun and moon?
     * Burning status effect
     * Poisoned status effect

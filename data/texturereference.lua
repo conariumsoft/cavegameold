@@ -7,20 +7,20 @@ end
 
 local references = {
 	tiles = { 
-		default = tileQuad(0, 0),
-		stone = tileQuad(1, 0),
-		plank = tileQuad(2, 0),
-		soil = tileQuad(3, 0),
-		mossybrick = tileQuad(4, 0),
-		paneling = tileQuad(5, 0),
-		leaves_opaque = tileQuad(6, 0),
-		leaves = tileQuad(7, 0),
+		default 		= tileQuad(0, 0),
+		stone 			= tileQuad(1, 0),
+		plank 			= tileQuad(2, 0),
+		soil			= tileQuad(3, 0),
+		mossybrick 		= tileQuad(4, 0),
+		paneling 		= tileQuad(5, 0),
+		leaves_opaque 	= tileQuad(6, 0),
+		leaves	 		= tileQuad(7, 0),
 		alchemy_lab_1_1 = tileQuad(8, 0),
 		alchemy_lab_2_1 = tileQuad(9, 0),
 		alchemy_lab_3_1 = tileQuad(10, 0),
-		refinery_1_1 = tileQuad(11,0),
-		refinery_2_1 = tileQuad(12, 0),
-		refinery_3_1 = tileQuad(13, 0),
+		refinery_1_1 	= tileQuad(11,0),
+		refinery_2_1 	= tileQuad(12, 0),
+		refinery_3_1 	= tileQuad(13, 0),
 
 		gas_blank = tileQuad(10, 4),
 		--
@@ -98,7 +98,6 @@ local references = {
 		torch_b = tileQuad(12, 5),
 		torch_c = tileQuad(13, 5),
 		torch_d = tileQuad(14, 5),
-
 
 		cactus = tileQuad(0, 6),
 		cactus_flowering = tileQuad(1, 6),
