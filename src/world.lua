@@ -352,7 +352,7 @@ function world:castRay(origin, direction)
 			local tiledata = tiles:getByID(tileat)
 			if tiledata.collide == false then return false end
 
-			local ex, ey, ew, eh = current_point.x, current_point.y,
+			local ex, ey, ew, eh = current_point.x, current_point.y
 
 			local tx, ty, tw, th = (raytx*config.TILE_SIZE)+(config.TILE_SIZE/2), (raytx*config.TILE_SIZE)+(config.TILE_SIZE/2), config.TILE_SIZE/2, config.TILE_SIZE/2)
 
