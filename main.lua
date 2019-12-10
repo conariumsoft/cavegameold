@@ -26,12 +26,14 @@
 	supporting developers:
 		karl darling - game design, business
 		nate hayes - game design, testing
+	
+	business :
+		tyler stewart
 
 	contributors:
 		bumpylegoman02 - bug testing & feedback
 		BillyJ - bug testing & feedback
 		Mescalyne - music, inspiring this project & teaching me many skills
-		WheezyBackports - testing, feedback, fun ideas
 
 	other credits:
 		json.lua - JSON parser written by rxi.
