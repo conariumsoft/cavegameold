@@ -113,7 +113,7 @@ newtile("WIRE", {
 })
 
 newtile("SWITCH", {
-	texture = "cactus",
+	texture = "switch",
 	tags = {"mechanism"},
 	tileupdate = function(world, x, y)
 		
@@ -144,6 +144,15 @@ newtile("SWITCH", {
 			local state = player.world:getTileState(x, y)
 
 			player.world:setTileState(x, y, (state == 0) and 1 or 0) -- boolean inverter for all u brainlets out there
+		end
+	end,
+
+	customRenderLogic = function(tx, ty, state, damage)
+
+		if state == 1 then
+			return "switch", {1, 1, 1}, 0
+		else
+			return "switch", {1,1,1}, 180
 		end
 	end,
 })

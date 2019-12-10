@@ -630,16 +630,36 @@ local function setText(prefix, property, suffix)
     return prefix..": "..value..suffix
 end
 
+--! make the buttons up here.
 local vsyncbutton 
 vsyncbutton = guiutil.make_button({text = setText("V-SYNC", "vsync"), font = guiutil.fonts.font_16}, settingsButtonStyle,
 function()
     settings_mod.set("vsync", not settings_mod.get("vsync"))
-    vsyncbutton[2]["text"][1].text = "V-SYNC: "..translateBool(settings_mod.get("vsync"))
+    vsyncbutton[2]["text"][1].text = setText("V-SYNC", "vsync")
 end)
 
 local particlesbutton
-particlesbutton = guiutil.make_button({text = "PARTICLES: ON", font = guiutil.fonts.font_16}, settingsButtonStyle,
+particlesbutton = guiutil.make_button({text = setText("PARTICLES", "particles"), font = guiutil.fonts.font_16}, settingsButtonStyle,
 function()
+    settings_mod.set("particles", not settings_mod.get("particles"))
+    particlesbutton[2]["text"][1].text = setText("PARTICLES", "particles")
+end)
+
+local fullscreenbutton
+fullscreenbutton = guiutil.make_button({text=setText("FULLSCREEN", "fullscreen"), font = guiutil.fonts.font_16}, settingsButtonStyle,
+function()
+    settings_mod.set("fullscreen", not settings_mod.get("fullscreen"))
+    fullscreenbutton[2]["text"][1].text = setText("FULLSCREEN", "fullscreen")
+end)
+
+local debuginfobutton
+debuginfobutton = guiutil.make_button({text="DEBUG INFO: OFF", font = guiutil.fonts.font_16}, settingsButtonStyle,
+function ()
+    
+end)
+
+local smoothingbutton
+smoothingbutton = guiutil.make_button({text="SMOOTHENING: ON", font = guiutil.fonts.font_16}, settingsButtonStyle, function()
 
 end)
 
@@ -683,10 +703,7 @@ local settingsUI = {
                                 {
                                     [1] = vsyncbutton,
                                     [2] = particlesbutton,
-                                    [3] = guiutil.make_button({text="FULLSCREEN: NO", font = guiutil.fonts.font_16}, settingsButtonStyle,
-                                    function()
-                                    
-                                    end),
+                                    [3] = fullscreenbutton,
                                 }
                             }
                         }
@@ -707,8 +724,8 @@ local settingsUI = {
                                 }),
                                 {
                                     [1] = volume_slider,
-                                    [2] = guiutil.make_button({text="DEBUG INFO: OFF", font = guiutil.fonts.font_16}, settingsButtonStyle),
-                                    [3] = guiutil.make_button({text="SMOOTHENING: ON", font = guiutil.fonts.font_16}, settingsButtonStyle)
+                                    [2] = debuginfobutton,
+                                    [3] = smoothingbutton
                                 }
                             }
                         }

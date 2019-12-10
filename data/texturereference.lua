@@ -111,6 +111,7 @@ local references = {
 		mechanarium_3_1 = tileQuad(14, 6),
 
 		wire = tileQuad(1, 7),
+		switch = tileQuad(2, 6),
 		
 		anvil_1_1 = tileQuad(8, 7),
 		anvil_2_1 = tileQuad(9, 7),
