@@ -180,14 +180,8 @@ local function grassTileLayeredRender(grasstype, grasscolor, x, y, state, dmg)
 		end
 
 		statelistings[grasstype][state] = texturetable
-		
-		local count = 0
 
-		for _, p in pairs(statelistings[grasstype]) do
-			count = count + 1
-		end
 
-		print("num", grasstype, count)
 		return texturetable
 	end
 end

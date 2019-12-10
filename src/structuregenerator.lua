@@ -111,7 +111,6 @@ return function(world, tilex, tiley)
 					local rand = math.random()
 
 					if rand > 0.9 then
-						print("bruj")
 						generateFromFile(require("data.structures.mineshaft"), world, tilex, tiley-2)
 					end
 				end

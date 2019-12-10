@@ -24,7 +24,6 @@ consumable:new("GLOWSTICK", {
 		local stickentity = world:addEntity("glowstick", new, jutils.vec2.new(input.getTransformedMouse()), 300, 0.1, player)
 		--stickentity:teleport(player.position)
 
-		print("brother what theVUCK")
 	    return true
 	end
 })

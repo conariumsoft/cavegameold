@@ -148,7 +148,6 @@ newtile("SWITCH", {
 	end,
 
 	customRenderLogic = function(tx, ty, state, damage)
-
 		if state == 1 then
 			return "switch", {1, 1, 1}, 0
 		else

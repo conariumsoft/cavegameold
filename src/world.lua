@@ -95,14 +95,16 @@ end
 -- @param seed doesn't work
 -- @return World Instance
 function world.new(worldname, seed)
+
+	-- world constructor
 	local self = world.__init()
 
-	print("world loading", worldname)
-
+	-- make sure world directories exist
 	love.filesystem.createDirectory("worlds/"..worldname)
 	love.filesystem.createDirectory("conversionmaps")
 	love.filesystem.createDirectory("worlds/"..worldname.."/chunks")
 
+	-- generate game threads
 	self.lightthread = love.thread.newThread("src/lighting.lua")
 	self.lightthread:start()
 
@@ -110,43 +112,38 @@ function world.new(worldname, seed)
 	self.chunkthread:start(worldname)
 	love.thread.getChannel("setambient"):push(self.ambientlight)
 
+	self.worldname = worldname
+	self.seed = seed
 
 	self.camera = {
 		position = jutils.vec2.new(0, 0),
 		zoom = 2.5
 	}
 
-	self.player = nil
-	self.worldname = worldname
-	self.entities = {}
-	self.tileentitymap = {}
-	self.chunks = {}
-	self.waitinglist = {}
-	self.seed = seed
-	self.chunkdrawradius = config.CHUNK_DRAW_RADIUS
-	self.generationradius = 1
-	self.focuspoint = jutils.vec2.new(0, 0)
-	self.terrainGenerator = require("src.terraingenerator")
-	self.structureGenerator = require("src.structuregenerator")
-	self.chunknum = 0
-	self.firstpassnum = 0
-	self.secondpassnum = 0
-	self.loadednum = 0
-	self.fullnum = 0
-	self.dx = 0
-	self.dy = 0
+	-- ambience
 	self.ambientlight = 0
 	self.worldtime = 6*60
 	self.dayspassed = 0
-	self.cyclePhase = "midnight"
-	self.tryingToEnd = false
+
+	self.player = nil
 	self.spawnPointY = (terrainMath.getSurfaceLevel(0)*config.TILE_SIZE)
+	self.focuspoint = jutils.vec2.new(0, 0)
+	
+	self.entities = {}
+	self.tileentitymap = {}
+	self.waitinglist = {}
+	
+	self.terrainGenerator = require("src.terraingenerator")
+	self.structureGenerator = require("src.structuregenerator")
+
+	self.chunks = {}
 	self.finishedTerrain = false
 
+	-- if the world is trying to kill
+	self.tryingToEnd = false
+	
 	self.update_tick = 0
-
 	self.random_tick_speed = 1
-
 	self.debug_fullbright = false
 	self.no_save = false
 
@@ -155,22 +152,16 @@ function world.new(worldname, seed)
 
 	if info == nil then
 
-		local map = {
-			tiles = {},
-			backgrounds = {}
-		}
+		local map = { tiles = {}, backgrounds = {}}
 		for name, data in pairs(tiles:getList()) do
 			map.tiles[name] = data.id
 		end
-
 		for name, data in pairs(backgrounds:getList()) do
 			map.backgrounds[name] = data.id
 		end
 
 		local data = json.encode(map)
-		
 		love.filesystem.write("conversionmaps/"..config.DATA_VERSION, data)
-
 	end
 
 
@@ -192,7 +183,7 @@ function world.new(worldname, seed)
 	-- read entity save file
 	local info = love.filesystem.getInfo("worlds/"..self.worldname.."/entities.json", "file")
 	if info ~= nil then
-		print("existing file found... lastmodified: "..info.modtime)
+		--print("existing worldfile found... lastmodified: "..info.modtime)
 		local contents = love.filesystem.read("string", "worlds/"..self.worldname.."/entities.json")
 		if contents then
 			local data = json.decode(contents)
@@ -318,6 +309,59 @@ function world:addEntity(entityname, ...)
 	table.insert(self.entities, entity)
 	return entity
 end
+
+local function lineIntersectsLine(l1p1, l1p2, l2p1, l2p2)
+	local q = (l1p1.y - l2p1.y) * (l2p2.x - l2p1.x) - (l1p1.x - l2p1.x) * (l2p2.x - l2p1.y)
+	local d = (l1p2.x - l1p1.x) * (l2p2.y - l2p1.y) - (l1p2.y - l1p1.y) * (l2p2.x - l2p1.x)
+
+
+	if d == 0 then return false end
+
+	local r = q / d
+
+	q = (l1p1.y - l2p2.y) * (l1p2.x - l1p1.x) - (l1p1.x - l2p1.x) * (l1p2.y - l1p1.y)
+	local s = q / d
+
+	if (r < 0 or r > 1 or s < 0 or s > 1) then return false end
+
+	return true
+end
+
+local function lineIntersectsRect(p1, p2, r)
+
+
+end
+
+
+function world:castRay(origin, direction)
+	local max_ray_search_distance = 100
+
+	local last_point = origin
+
+	for i = 1, max_ray_search_distance do
+		local current_point = origin + (direction*i)
+		local function encapsulation()
+			
+			local raytx, rayty = grid.pixelToTileXY(current_point.x, current_point.y)
+			
+			local tileat = self:getTile(raytx, rayty)
+
+			if tileat == 0 then return false end
+			if tileat == -1 then return false end
+
+			local tiledata = tiles:getByID(tileat)
+			if tiledata.collide == false then return false end
+
+			local ex, ey, ew, eh = current_point.x, current_point.y,
+
+			local tx, ty, tw, th = (raytx*config.TILE_SIZE)+(config.TILE_SIZE/2), (raytx*config.TILE_SIZE)+(config.TILE_SIZE/2), config.TILE_SIZE/2, config.TILE_SIZE/2)
+
+		end
+		encapsulation()
+		last_point = current_point
+	end
+end
+
 
 ---------------------------------------
 -- World's map functionality
@@ -1112,7 +1156,6 @@ function world:draw()
 
 	local camera_pos = self.camera.position
 
-	self.dx, self.dy = love.graphics.inverseTransformPoint(love.mouse.getX(), love.mouse.getY())
 
 	-- draw cloud background
 	local bgscroll = 2

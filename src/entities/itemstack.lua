@@ -32,7 +32,6 @@ function itemstack:update(dt)
 				if self.id == entity.id then
 					self.amount = self.amount + entity.amount
 					entity.dead = true
-					print("bruh?")
 				end
 			end
 		end

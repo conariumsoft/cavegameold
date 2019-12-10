@@ -58,7 +58,7 @@ function terrain_math.getSurfaceLevel(x)
 		local res = terrain_math.getSurfaceNoise(x, i)
 
 		if res > -1 and res < 1 then
-			print("surface level:", res, i)
+			--print("surface level:", res, i)
 			return i
 		end
 	end

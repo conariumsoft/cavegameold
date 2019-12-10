@@ -8,14 +8,6 @@ local config = require("config")
 local tiles = require("src.tiles")
 local backgrounds = require("src.backgrounds")
 
-local ffi = require("ffi")
-
-ffi.cdef[[
-	int printf(const char *fmt, ...);
-]]
-
-
-ffi.C.printf("C PRINT!!%s", "a")
 
 local chunking = {}
 
