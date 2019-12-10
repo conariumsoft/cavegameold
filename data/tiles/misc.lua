@@ -1,3 +1,6 @@
+local jutils = require("src.jutils")
+local grid = require("src.grid")
+
 newtile("CHEST_GENERATOR", {
 	tileupdate = function(world, x, y)
 		world:setTile(x, y, tilelist.CHEST_1_1.id)
@@ -65,8 +68,27 @@ newtile("TOXIC_GAS", {
 })
 
 newtile("COBWEB", {
-    texture = "leaves",
-    color = {1, 1, 1, 0.75}
+    texture = "cobweb",
+    color = {1, 1, 1, 0.75},
+    solid = false,
+    hardness = 0.5,
+    customCollision = function(entity, separation, normal)
+        if separation and normal then
+            
+            if separation.x and separation.y and normal.x and normal.y then
+                entity.velocity.x = jutils.math.clamp(-20, entity.velocity.x, 20)
+                entity.velocity.y = jutils.math.clamp(-200, entity.velocity.y, 10)
+                local tx, ty = grid.pixelToTileXY(entity.position.x, entity.position.y)
+                local tile = entity.world:getTile(tx, ty)
+                if tile == tilelist.COBWEB.id then
+                    local randydandy = math.random()
+                    if randydandy > 0.95 then 
+                        entity.world:setTile(tx, ty, tilelist.AIR.id)
+                    end 
+                end
+            end
+        end
+    end,
 })
 
 
