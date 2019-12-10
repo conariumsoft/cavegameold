@@ -54,10 +54,16 @@ baseitem:new("NIMDICK", {
     texture = "nimdoc.png",
     stack = 1,
     rarity = 3,
+    speed = 1/20,
+    repeating = true,
     use = function(self, player)
 
-        local fireDirection = jutils.vec2.new(input.getTransformedMouse())
-
+        local mousePos = jutils.vec2.new(input.getTransformedMouse())
+        
+        local fireDirection = (mousePos- player.position):unitvec()
+    
+        local result = player.world:castRay(player.position, fireDirection, 250, 8)
+        print(result)
     end,
     usestep = function(self, player, dt)
 

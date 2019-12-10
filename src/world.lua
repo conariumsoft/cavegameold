@@ -319,7 +319,7 @@ local function lineIntersectsLine(l1p1, l1p2, l2p1, l2p2)
 
 	local r = q / d
 
-	q = (l1p1.y - l2p2.y) * (l1p2.x - l1p1.x) - (l1p1.x - l2p1.x) * (l1p2.y - l1p1.y)
+	q = (l1p1.y - l2p1.y) * (l1p2.x - l1p1.x) - (l1p1.x - l2p1.x) * (l1p2.y - l1p1.y)
 	local s = q / d
 
 	if (r < 0 or r > 1 or s < 0 or s > 1) then return false end
@@ -327,39 +327,53 @@ local function lineIntersectsLine(l1p1, l1p2, l2p1, l2p2)
 	return true
 end
 
-local function lineIntersectsRect(p1, p2, r)
 
+--[[
+	rectangle object:
+	{
+		x,
+		y,
+		width,
+		height
+	}
+]]
 
+local function rectangleContainsPoint(r, p)
+	return (p.x > r.x) and (p.x < r.x+r.width) and (p.y > r.y) and (p.y < r.y+r.height)
 end
 
+local function lineIntersectsRect(p1, p2, r)
+	return lineIntersectsLine(p1, p2, jutils.vec2.new(r.x, r.y), jutils.vec2.new(r.x+r.width, r.y)) or
+		   lineIntersectsLine(p1, p2, jutils.vec2.new(r.x+r.width, r.y), jutils.vec2.new(r.x+r.width, r.y+r.height)) or
+		   lineIntersectsLine(p1, p2, jutils.vec2.new(r.x + r.width, r.y + r.height), jutils.vec2.new(r.x, r.y+r.height)) or
+		   lineIntersectsLine(p1, p2, jutils.vec2.new(r.x, r.y + r.height), jutils.vec2.new(r.x, r.y)) or
+		   (rectangleContainsPoint(r, p1) and rectangleContainsPoint(r, p2))
+end
 
-function world:castRay(origin, direction)
-	local max_ray_search_distance = 100
+function world:castRay(origin, direction, raydistance, rayaccuracy)
+	local max_ray_search_distance = raydistance
 
-	local last_point = origin
-
-	for i = 1, max_ray_search_distance do
+	for i = 1, max_ray_search_distance, rayaccuracy do
 		local current_point = origin + (direction*i)
-		local function encapsulation()
 			
-			local raytx, rayty = grid.pixelToTileXY(current_point.x, current_point.y)
-			
-			local tileat = self:getTile(raytx, rayty)
+		local raytx, rayty = grid.pixelToTileXY(current_point.x, current_point.y)		
+		local tileat = self:getTile(raytx, rayty)
 
-			if tileat == 0 then return false end
-			if tileat == -1 then return false end
+		if tileat ~= 0 then
 
 			local tiledata = tiles:getByID(tileat)
-			if tiledata.collide == false then return false end
+			if tiledata.collide == true then
+				print(tiledata.name)
+				self:setTile(raytx, rayty, 0)
+				local tx, ty, tw, th = (raytx*config.TILE_SIZE), (raytx*config.TILE_SIZE), config.TILE_SIZE, config.TILE_SIZE
 
-			local ex, ey, ew, eh = current_point.x, current_point.y
-
-			local tx, ty, tw, th = (raytx*config.TILE_SIZE)+(config.TILE_SIZE/2), (raytx*config.TILE_SIZE)+(config.TILE_SIZE/2), config.TILE_SIZE/2, config.TILE_SIZE/2
-
+				local result = lineIntersectsRect(origin, current_point, {x=tx, y=ty, width=tw, height=th})
+				print("result", result)
+				if result == true then return true end
+			end
 		end
-		encapsulation()
-		last_point = current_point
 	end
+	return false
 end
 
 
