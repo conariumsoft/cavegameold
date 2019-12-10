@@ -52,8 +52,6 @@ function love.load(cmdlineargs)
 		require("src.editor")(cmdlineargs)
 	elseif runMode == "-data" then
 		require("src.data")(cmdlineargs)
-	elseif runMode == "-analysis" then
-		require("src.analyzer")(cmdlineargs)
 	else
 		require("src.gameloop")(cmdlineargs)
 	end

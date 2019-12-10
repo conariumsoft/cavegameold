@@ -12,7 +12,6 @@ local grid = require("src.grid")
 local maketree = require("data.structures.trees.maketree")
 local bigtree = require("data.structures.trees.bigtree")
 local terrainMath = require("src.terrain")
-local biomes = require("src.biomes")
 
 local treeGroveDensity = 0.3 -- 0 - 1, how dense groves of trees are populated
 
@@ -52,7 +51,7 @@ return function(world, tilex, tiley)
 	end
 
 	if surface_noise > -10 and surface_noise < 10 then
-		local chosen_biome = biomes.getBiome(tilex)
+		local chosen_biome = terrainMath.getBiomeAt(tilex)
 
 		if terrainMath.getSurfaceNoise(tilex, tiley) < 1 then
 			local watchtowerNoise = noise.noise(tilex, tiley, 64, 64)

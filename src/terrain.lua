@@ -8,6 +8,27 @@ local jutils = require("src.jutils")
 
 local terrain_math = {}
 
+terrain_math.biomes = {
+	[1] = "plains", 
+	[2] = "forest",
+	[3] = "plains",
+	[4] = "desert",
+	[5] = "plains",
+	[6] = "wetlands",
+	[7] = "forest",
+	[8] = "desert",
+	[9] = "wetlands",
+	
+}
+
+
+function terrain_math.getBiomeAt(x)
+    local biome_noise = terrain_math.getBiomeNoise(x)
+    local scaled = math.max( math.floor(biome_noise * #terrain_math.biomes), 1)
+        
+    return terrain_math.biomes[scaled]
+end
+
 
 function terrain_math.getBiomeNoise(x)
 

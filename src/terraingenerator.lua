@@ -20,7 +20,6 @@ local jutils = require("src.jutils")
 local noise = require("src.noise")
 
 local terrainMath = require("src.terrain")
-local biomes = require("src.biomes")
 
 local getSurfaceNoise = terrainMath.getSurfaceNoise
 local getBiomeNoise = terrainMath.getBiomeNoise -- these are just surface biomes
@@ -51,7 +50,7 @@ local function chunkSurfacePass(chunk)
 
 					
 		
-					local chosen_biome = biomes.getBiome(worldx+x)
+					local chosen_biome = terrainMath.getBiomeAt(worldx+x)
 
 					if chosen_biome == "desert" then
 
