@@ -62,8 +62,8 @@ baseitem:new("NIMDICK", {
         
         local fireDirection = (mousePos- player.position):unitvec()
     
-        local result = player.world:castRay(player.position, fireDirection, 250, 8)
-        print(result)
+        local result, sx, sy, nx, ny = player.world:castRay(player.position, fireDirection, 250, 8)
+        print(result, sx, sy, nx, ny)
     end,
     usestep = function(self, player, dt)
 

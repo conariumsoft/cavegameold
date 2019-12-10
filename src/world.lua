@@ -350,28 +350,38 @@ local function lineIntersectsRect(p1, p2, r)
 		   (rectangleContainsPoint(r, p1) and rectangleContainsPoint(r, p2))
 end
 
+local collision = require("src.collision")
+
 function world:castRay(origin, direction, raydistance, rayaccuracy)
 	local max_ray_search_distance = raydistance
 
-	for i = 1, max_ray_search_distance, rayaccuracy do
-		local current_point = origin + (direction*i)
-			
+	local last_point = origin
+
+	for i = 1, max_ray_search_distance, 1 do
+		local current_point = origin + (direction*i)	
 		local raytx, rayty = grid.pixelToTileXY(current_point.x, current_point.y)		
 		local tileat = self:getTile(raytx, rayty)
 
 		if tileat ~= 0 then
-
 			local tiledata = tiles:getByID(tileat)
 			if tiledata.collide == true then
-				print(tiledata.name)
-				self:setTile(raytx, rayty, 0)
-				local tx, ty, tw, th = (raytx*config.TILE_SIZE), (raytx*config.TILE_SIZE), config.TILE_SIZE, config.TILE_SIZE
 
-				local result = lineIntersectsRect(origin, current_point, {x=tx, y=ty, width=tw, height=th})
-				print("result", result)
-				if result == true then return true end
+				local center = current_point - (current_point - (last_point))*0.5
+				local size = jutils.vec2.new(math.abs(current_point.x - last_point.x), math.abs(current_point.y - last_point.y))
+				local tx, ty, tw, th = (raytx*config.TILE_SIZE)+(config.TILE_SIZE/2), (rayty*config.TILE_SIZE)+(config.TILE_SIZE/2), config.TILE_SIZE/2, config.TILE_SIZE/2
+				local sx, sy = collision.test(center.x, center.y, 2, 2, tx, ty, tw, th)
+
+				if (sx and sy) then
+			
+					local separation = jutils.vec2.new(sx, sy)
+				
+					local normalx, normaly = collision.solve(sx, sy, direction.x, direction.y)
+					print("YES", tiledata.name)
+					return true, sx, sy, normalx, normaly
+				end
 			end
 		end
+		last_point = current_point
 	end
 	return false
 end
