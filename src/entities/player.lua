@@ -6,6 +6,7 @@ local input = require("src.input")
 local items = require("src.items")
 local rendering = require("src.rendering")
 local playergui = require("src.playergui")
+local particlesystem = require("src.particlesystem")
 
 local humanoid = require("src.entities.humanoid")
 local physicalentity = require("src.entities.physicalentity")
@@ -121,6 +122,7 @@ function player:damage(amount)
 	humanoidAudio:setPitch(self.hurt_yell_pitch)
 	humanoidAudio:play()
 
+	particlesystem.newBloodSplatter(self.position, 0.75)
 	local e = self.world:addEntity("floatingtext", math.floor(amount), {1, 0.5, 0})
 	e:teleport(self.position)
 end

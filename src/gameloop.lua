@@ -105,6 +105,14 @@ return function(args)
 
 	-- console command list
 	local commands = {
+		["fire"] = {
+			desc = "",
+			arg = "",
+			func = function(args)
+				local p = gameworld:getPlayer()
+				p:addStatusEffect("BURNING", 30)
+			end
+		},
 		["gimme"] = {
 			desc = "gives the player an item",
 			arg = "[itemname] [amount]",

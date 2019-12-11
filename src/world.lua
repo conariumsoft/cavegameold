@@ -4,26 +4,28 @@
 -- @copyright 2019 Conarium Software
 
 
-local config = require("config")
-local tiles = require("src.tiles")
-local jutils = require("src.jutils")
-local rendering = require("src.rendering")
-local items = require("src.items")
-local json = require("src.json")
-local noise = require("src.noise")
-local input = require("src.input")
-local chunking = require("src.chunking")
-local grid = require("src.grid")
-local backgrounds = require("src.backgrounds")
+local config 			= require("config")
 
-local terrainMath = require("src.terrain")
+local tiles 			= require("src.tiles")
+local jutils 			= require("src.jutils")
+local rendering 		= require("src.rendering")
+local items 			= require("src.items")
+local json 				= require("src.json")
+local noise 			= require("src.noise")
+local input 			= require("src.input")
+local chunking 			= require("src.chunking")
+local grid 				= require("src.grid")
+local backgrounds 		= require("src.backgrounds")
+local particlesystem 	= require("src.particlesystem")
+local terrainMath 		= require("src.terrain")
+local collision 		= require("src.collision")
 
 -- list of all entities that the world "can" spawn under varying conditions
 -- NOTE: this is the list that the "summon" command uses.
 -- NOTE: this is also what world:addEntity(...) uses.
 
 local entitylist = {
-	player    = require("src.entities.player"),
+	player    		= require("src.entities.player"),
 	-- hostile enemy entities
 	bee       		= require("src.entities.hostile.bee"),
 	zombie    		= require("src.entities.hostile.zombie"),
@@ -46,6 +48,23 @@ local entitylist = {
 	laser 			= require("src.entities.projectiles.laser"),	
 }
 
+local channels = {
+	addchunk 	= love.thread.getChannel("addchunk"),
+	dropchunk 	= love.thread.getChannel("dropchunk"),
+	tilechange 	= love.thread.getChannel("tilechange"),
+	bgchange 	= love.thread.getChannel("bgchange"),
+	newlights 	= love.thread.getChannel("newlights"),
+	setambient 	= love.thread.getChannel("setambient"),
+	setlight	= love.thread.getChannel("setlight"),
+	light_kill 	= love.thread.getChannel("light_kill"),
+	-- worldloading
+	loadchunk 	= love.thread.getChannel("loadchunk"),
+	savechunk 	= love.thread.getChannel("savechunk"),
+	returnchunk = love.thread.getChannel("returnchunk"),
+	finished 	= love.thread.getChannel("finished"),
+	io_kill 	= love.thread.getChannel("io_kill"),
+}
+
 -- these get LERP'd between for sky colors
 local sky_color_table = {
 	[0] = {0, 0, 0},
@@ -57,6 +76,27 @@ local sky_color_table = {
 	[18] = {0.1, 0, 0.4},
 	[21] = {0.025, 0, 0.01},
 }
+
+local function get_sky_color(time)
+	time = time % 24
+
+	return sky_color_table[time]
+end
+
+local function get_daylight(worldtime)
+	local light = 0.15
+	local timeDial = worldtime
+
+	if timeDial > (5.5*60)  and timeDial < (20*60)    then light = light + 0.15 end
+	if timeDial > (5.75*60) and timeDial < (19.75*60) then light = light + 0.10 end
+	if timeDial > (6*60)    and timeDial < (19.5*60)  then light = light + 0.10 end
+	if timeDial > (6.25*60) and timeDial < (19.25*60) then light = light + 0.10 end
+	if timeDial > (6.5*60)  and timeDial < (18.75*60) then light = light + 0.10 end
+	if timeDial > (6.75*60) and timeDial < (18.5*60)  then light = light + 0.10 end
+	if timeDial > (7.25*60) and timeDial < (18.25*60) then light = light + 0.10 end
+	if timeDial > (7.5*60)  and timeDial < (18*60)    then light = light + 0.10 end
+	return light
+end
 
 --[[
 	NOTE:
@@ -76,27 +116,16 @@ local world = {} -- TODO: make world a class object instead of ghetto-rigged met
 
 world.__index = world
 
--- NOTE: does world really need to be an instance?
--- probably not, making it a monolith
--- would likely clean up a lot of
--- annoying shit actually
-function world.__init()
-	local self = setmetatable({}, world)
-
-	return self
-end
 
 --- Generates a new world instance. 
 -- Worldname is the name of the folder where it will read and save data to.
--- If the folder exists, then it will load chunks when it find them, otherwise,
--- it will just generate new chunks.
 -- @param worldname folder to store world in
 -- @param seed doesn't work
 -- @return World Instance
 function world.new(worldname, seed)
 
 	-- world constructor
-	local self = world.__init()
+	local self = setmetatable({}, world)
 
 	-- make sure world directories exist
 	love.filesystem.createDirectory("worlds/"..worldname)
@@ -202,6 +231,7 @@ function world.new(worldname, seed)
 		end
 	end
 
+	-- new player creation
 	if madeplayer == false then
 		local player = self:addEntity("player")
 		player:teleport(jutils.vec2.new(0, self.spawnPointY))
@@ -210,9 +240,7 @@ function world.new(worldname, seed)
 		player.gui.inventory:addItem(items.ROPE_TILE.id, 999)
 		player.gui.inventory:addItem(items.HEALING_POTION.id, 30)
 		player.gui.inventory:addItem(items.BOMB.id, 99)
-		player.gui.inventory:addItem(items.RED_TORCH_TILE.id, 99)
-		player.gui.inventory:addItem(items.GREEN_TORCH_TILE.id, 99)
-		player.gui.inventory:addItem(items.BLUE_TORCH_TILE.id, 99)
+		player.gui.inventory:addItem(items.TORCH_TILE.id, 99)
 	end
 
 	noise.setSeed(self.seed)
@@ -220,29 +248,12 @@ function world.new(worldname, seed)
 	return self
 end
 
-local channels = {
-	addchunk = love.thread.getChannel("addchunk"),
-	dropchunk = love.thread.getChannel("dropchunk"),
-	tilechange = love.thread.getChannel("tilechange"),
-	bgchange = love.thread.getChannel("bgchange"),
-	newlights = love.thread.getChannel("newlights"),
-	setambient = love.thread.getChannel("setambient"),
-	setlight = love.thread.getChannel("setlight"),
-	light_kill = love.thread.getChannel("light_kill"),
-	-- worldloading
-	loadchunk = love.thread.getChannel("loadchunk"),
-	savechunk = love.thread.getChannel("savechunk"),
-	returnchunk = love.thread.getChannel("returnchunk"),
-	finished = love.thread.getChannel("finished"),
-	io_kill = love.thread.getChannel("io_kill"),
-}
 
 ---
 function world:savedata()
 	if self.no_save == true then return end
-	local numsaved = 0
+
 	for key, chunk in pairs(self.chunks) do
-		numsaved = numsaved + 1
 		channels.savechunk:push({key, chunk})
 	end
 
@@ -259,7 +270,6 @@ function world:savedata()
 		
 		if entity.save == true then
 			local data = entity:serialize()
-			--print(index, data)
 			table.insert(entityTable, data)
 		end
 	end
@@ -309,7 +319,7 @@ function world:addEntity(entityname, ...)
 	return entity
 end
 
-local collision = require("src.collision")
+
 
 function world:castRay(origin, direction, raydistance, rayaccuracy)
 	local max_ray_search_distance = raydistance
@@ -996,42 +1006,13 @@ end
 local tileUpdateDelta = 0
 local redrawTick = 0
 
-local push = 0
-
 ---
-function world:getDaylight()
-	local light = 0.15
-	local timeDial = self.worldtime
 
-	if timeDial > (5.5*60) and timeDial < (20*60) then
-		light = light + 0.15
-	end
-	if timeDial > (5.75*60) and timeDial < (19.75*60) then
-		light = light + 0.1
-	end
-	if timeDial > (6*60) and timeDial < (19.5*60) then
-		light = light + 0.1
-	end
-	if timeDial > (6.25*60) and timeDial < (19.25*60) then
-		light = light + 0.1
-	end
-	if timeDial > (6.5*60) and timeDial < (18.75*60) then
-		light = light + 0.1
-	end
-	if timeDial > (6.75*60) and timeDial < (18.5*60) then
-		light = light + 0.1
-	end
-	if timeDial > (7.25*60) and timeDial < (18.25*60) then
-		light = light + 0.1
-	end
-	if timeDial > (7.5*60) and timeDial < (18*60) then
-		light = light + 0.1
-	end
-	return light
-end
 
 ---
 function world:update(dt)
+
+	-- thread error checking
 	local err = self.lightthread:getError()
 	assert( not err, err )
 
@@ -1053,7 +1034,6 @@ function world:update(dt)
 		end
 	end
 
-	push = push + (dt/5)
 	self.worldtime = self.worldtime + (dt)
 
 	if self.worldtime > 1440 then
@@ -1076,8 +1056,8 @@ function world:update(dt)
 
 	redrawTick = redrawTick + dt
 	if redrawTick > (1/config.TILE_REDRAWS_PER_SECOND) then
-		if self.ambientlight ~= self:getDaylight() then
-			self.ambientlight = self:getDaylight()
+		if self.ambientlight ~= get_daylight(self.worldtime) then
+			self.ambientlight = get_daylight(self.worldtime)
 			channels.setambient:push(self.ambientlight)
 		end
 		
@@ -1087,6 +1067,8 @@ function world:update(dt)
 	end
 
 	self:updateEntities(dt)
+
+	particlesystem.update(dt)
 
 	-- need to set world focus point
 	-- for chunk loading origin
@@ -1107,11 +1089,7 @@ end
 -- and the colors are lerped between
 
 
-local function get_sky_color(time)
-	time = time % 24
 
-	return sky_color_table[time]
-end
 
 local SHOW_ENTITY_LIST = false
 
@@ -1206,6 +1184,7 @@ function world:draw()
 	rendering.drawqueue()
 	-- draw entities
 	self:drawEntities()
+	particlesystem.draw()
 	
 	love.graphics.pop()
 

@@ -1,6 +1,7 @@
 local config = require("config")
 local tiles = require("src.tiles")
 local jutils = require("src.jutils")
+local particlesystem = require("src.particlesystem")
 
 local physicalentity = require("src.entities.physicalentity")
 
@@ -47,7 +48,7 @@ function humanoid:init()
 end
 
 function humanoid:collisionCallback(tileid, tilepos, separation, normal)
-	physicalentity.collisionCallback(self, tileid, tilepos, separation, normal)
+	
 	if tiles:tileHasTag(tileid, "platformtile") then
 		
 		if normal.x == 0 and normal.y == -1 and self.fallthrough == false then
@@ -69,15 +70,16 @@ function humanoid:collisionCallback(tileid, tilepos, separation, normal)
 		if normal.y == 0 and normal.x ~= 0 then
 			if self.velocity.y <= 0 and math.abs(self.velocity.x) > 2 then
 				local tryY = tilepos.y*config.TILE_SIZE
-				if tryY > self.nextposition.y and self.climbcooldown <= 0 then
+				if tryY > (self.nextposition.y) and self.climbcooldown <= 0 then
 					self.velocity.x = self.velocity.x * 0.6
-					self.nextposition.y = (tryY-self.boundingbox.y)
+					self.nextposition.y = (tryY-self.boundingbox.y)-1
 					self.climbcooldown = 0.05
+					print("WE DO IT", self.nextposition.y)
 				end
 			end
 		end
 	end
-	
+	physicalentity.collisionCallback(self, tileid, tilepos, separation, normal)
 end
 
 local humanoidAudio = love.audio.newSource("assets/audio/hurt.ogg", "static")
@@ -89,12 +91,20 @@ function humanoid:damage(amount)
 	humanoidAudio:setPitch(self.hurt_yell_pitch)
 	humanoidAudio:play()
 
+	particlesystem.newBloodSplatter(self.position, 1)
+
 	local e = self.world:addEntity("floatingtext", jutils.math.round(amount, 0), {1, 0.1, 0})
 	e:teleport(self.position)
 	e.position = e.position + jutils.vec2.new(-10, -20)
 end
 
 function humanoid:addStatusEffect(effectid, duration)
+	for _, effect in pairs(self.statuseffects) do
+		if effect.id == effectid then
+			effect.time = effect.time + 1
+			return
+		end
+	end
 	table.insert(self.statuseffects, {time = duration, id = effectid, handled = false})
 end
 
@@ -198,15 +208,15 @@ function humanoid:updatePhysics(dt)
 				if self.moveLeft == true then
 					self.direction = -1
 					self.animation.walking = true
-					if self.velocity.x > -self.walkspeed then
-						self.velocity.x = self.velocity.x - (self.acceleration) * dt
+					if self.velocity.x > (-self.walkspeed) then
+						self.velocity.x = self.velocity.x - (self.acceleration * dt)
 					end
 				end
 				if self.moveRight == true then
 					self.direction = 1
 					self.animation.walking = true
 					if self.velocity.x < self.walkspeed then
-						self.velocity.x = self.velocity.x + (self.acceleration) * dt
+						self.velocity.x = self.velocity.x + (self.acceleration * dt)
 					end
 				end
 			end
@@ -223,6 +233,8 @@ function humanoid:update(dt)
 
 	self.knockbackTimer = self.knockbackTimer - dt
 	self.climbcooldown = self.climbcooldown - dt
+
+
 
 end
 

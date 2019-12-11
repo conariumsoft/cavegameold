@@ -76,8 +76,8 @@ newtile("COBWEB", {
         if separation and normal then
             
             if separation.x and separation.y and normal.x and normal.y then
-                entity.velocity.x = jutils.math.clamp(-20, entity.velocity.x, 20)
-                entity.velocity.y = jutils.math.clamp(-200, entity.velocity.y, 10)
+                entity.velocity.x = jutils.math.clamp(-10, entity.velocity.x, 10)
+                entity.velocity.y = jutils.math.clamp(-100, entity.velocity.y, 5)
                 local tx, ty = grid.pixelToTileXY(entity.position.x, entity.position.y)
                 local tile = entity.world:getTile(tx, ty)
                 if tile == tilelist.COBWEB.id then

@@ -2,6 +2,7 @@
 -- @author Joshua O'Leary
 -- @copyright 2019 Conarium Software
 local jutils = require("src.jutils")
+local particlesystem = require("src.particlesystem")
 
 local effects = {
 	MANLET = {
@@ -83,6 +84,20 @@ local effects = {
 		end,
 		comedown = function(entity)
 
+		end,
+	},
+	BURNING = {
+		comeup = function(entity)
+			entity.fireSystem = particlesystem.newFire(jutils.vec2.new(entity.position.x, entity.position.y+entity.boundingbox.y))
+		end,
+		tick = function(entity, dt)
+			if entity.fireSystem then
+				entity.fireSystem:moveTo(entity.position.x, entity.position.y+entity.boundingbox.y)
+			end
+			entity.health = entity.health - (dt*2)
+		end,
+		comedown = function(entity)
+			entity.fireSystem:release()
 		end,
 	}
 }

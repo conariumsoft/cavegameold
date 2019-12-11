@@ -11,11 +11,11 @@ function flower:init()
 	humanoid.init(self)
 
 	-- should be static properties
-	self.mass = 1.25
+	self.mass = 1.10
 	self.walkspeed = 30
-	self.xfriction = 0.2
+	self.xfriction = 0.1
 	self.hostile = true
-	self.acceleration = 120
+	self.acceleration = 180
 	self.maxhealth = math.random(15, 25)
 	self.fallthrough = false
 	self.scale = jutils.vec2.new(1, 1)
@@ -72,8 +72,6 @@ function flower:update(dt)
 
 		self.awake_anim_timer = self.awake_anim_timer + (dt* (math.abs(self.velocity.x)/8) )
 
-		local x = jutils.math.round(self.goaldirection.x, 1)
-
 		self.jumping = false
 		self.moveLeft = false
 		self.moveRight = false
@@ -81,10 +79,10 @@ function flower:update(dt)
 		self.stun = self.stun - dt
 
 		if self.stun < 0 then
-			if x > 0 then
+			if self.position.x > self.goal.x then
 				self.moveLeft = true
 				self.direction = -1
-			elseif x < 0 then
+			else
 				self.moveRight = true
 				self.direction = 1
 			end
@@ -94,7 +92,7 @@ function flower:update(dt)
 
 	for _, entity in pairs(self.world.entities) do
 		if entity:isA("Player") then
-			self.goaldirection = (self.position-entity.position):unitvec()
+			self.goal = entity.position
 			
 			local mypos = self.nextposition
 			local entpos = entity.nextposition

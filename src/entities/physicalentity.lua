@@ -36,6 +36,13 @@ end
 function physicalentity:collisionCallback(tileid, tilepos, separation, normal)
 	local data = tiles:getByID(tileid)
 	if data.solid then
+
+		if (normal.x == 1 or normal.x == -1) then
+			if (separation.y == 0) then
+				self.velocity.x = 0
+			end
+		end
+
 		if normal.y == -1 then
 			self.velocity.y = 0
 			self.falling = false
@@ -78,17 +85,14 @@ local function testCollision(self, tilex, tiley)
 
 	local normalx, normaly = collision.solve(sx, sy, self.velocity.x, self.velocity.y)
 
-	self:collisionCallback(tileid, jutils.vec2.new(tilex, tiley), separation, jutils.vec2.new(normalx, normaly))
+	
 	if tiledata.customCollision then
 		tiledata.customCollision(self, separation, jutils.vec2.new(normalx, normaly), jutils.vec2.new(tilex, tiley))
 	elseif tiledata.solid then-- default collision solver
 		if normalx ~= nil and normaly ~= nil then
 			self.nextposition = self.nextposition + separation
-			-- collides with top of tile
 
-			if normalx == 1 or normalx == -1 then
-				self.velocity.x = 0
-			end
+			self:collisionCallback(tileid, jutils.vec2.new(tilex, tiley), separation, jutils.vec2.new(normalx, normaly))
 		end
 	end
 end
@@ -167,6 +171,9 @@ function physicalentity:update(dt)
 
 	if self.touchinglava then
 		self.health = self.health - (dt*10)
+		if self:isA("Humanoid") then
+			self:addStatusEffect("BURNING", 10)
+		end
 	end
 	self.touchinglava = false
 end

@@ -45,6 +45,7 @@ newtile("WATER",{
             if separation.x and separation.y and normal.x and normal.y then
                 entity.velocity.x = jutils.math.clamp(-30, entity.velocity.x, 30)
                 entity.velocity.y = jutils.math.clamp(-200, entity.velocity.y, 40)
+                
             end
         end
     end,

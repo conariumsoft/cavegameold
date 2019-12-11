@@ -9,31 +9,31 @@ local badguytexture = love.graphics.newImage("assets/entities/badguy.png")
 
 local zombie_types = {
 	[1] = {
-		health = 60,
+		health = 50,
 		scale = 1.3,
-		xfriction = 0.3,
-		boundingbox = jutils.vec2.new(9, 18)
+		xfriction = 0.15,
+		boundingbox = jutils.vec2.new(8, 16)
 	},
 	[2] = {
-		health = 50,
-		scale = 1.2,
-		xfriction = 0.2,
+		health = 35,
+		scale = 1.1,
+		xfriction = 0.135,
 		boundingbox = jutils.vec2.new(8, 16)
 	},
 	[3] = {
-		health = 40,
-		scale = 1.1,
-		xfriction = 0.2,
+		health = 30,
+		scale = 1.0,
+		xfriction = 0.125,
 		boundingbox = jutils.vec2.new(7, 14)
 	},
 	[4] = {
-		health = 30,
-		scale = 1,
-		xfriction = 0.15,
+		health = 20,
+		scale = 0.9,
+		xfriction = 0.1,
 		boundingbox = jutils.vec2.new(6, 12)
 	},
 	[5] = {
-		health = 20,
+		health = 15,
 		scale = 0.8,
 		xfriction = 0.10,
 		boundingbox = jutils.vec2.new(5, 10)
@@ -63,6 +63,7 @@ function zombie:init()
 	self.goal = jutils.vec2.new(0, 0)
 	self.hostile = true
 	self.stun = 0
+	self.jump_wait = 0
 
 	self.animationframes = {
 		[1] = love.graphics.newQuad(0, 0, 16, 24, 64, 24),-- standing still
@@ -74,7 +75,6 @@ end
 
 function zombie:update(dt)
 	humanoid.update(self, dt)
-
 
 	self.jumping = false
 	self.moveLeft = false
@@ -98,9 +98,13 @@ function zombie:update(dt)
 
 	if (self.moveLeft == true or self.moveRight == true) then
 		if math.abs(self.velocity.x) < 20 then
-			self.jumping = true
+			self.jump_wait = self.jump_wait + dt
 		end
-		
+	end
+
+	if self.jump_wait > (1/5) then
+		self.jump_wait = 0
+		self.jumping = true
 	end
 
 	-- TODO: optimize zombie
