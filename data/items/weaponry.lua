@@ -202,3 +202,11 @@ baseitem:new("IRON_SWORD", {
     usestep = swordUseStep,
     useend = swordUseEnd,
 })
+
+baseitem:new("PUNCHY", {
+    displayname = "BLUESTEEL BRASS",
+    speed = 1/2,
+    texture = "punchy.png",
+    stack = 1,
+    rarity = 3
+})
