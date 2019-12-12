@@ -1,6 +1,86 @@
 --- User input utilities and weird workarounds.
 -- @author Joshua O'Leary
 -- @copyright 2019 Conarium Software
+
+
+local input_module = {}
+
+local events = {
+	keypressed = {},
+	textinput  = {},
+	keyreleased = {},
+	mousemoved = {},
+	wheelmoved = {},
+	mousepressed = {},
+	mousereleased = {},
+	gamepadpressed = {},
+	gamepadreleased  = {},
+}
+
+local function fire_callbacks(event, ...)
+	for _, callback in pairs(events[event]) do
+		callback(...)
+	end
+end
+
+function love.keypressed(...) fire_callbacks("keypressed", ...) end
+function love.keyreleased(...) fire_callbacks("keyreleased", ...) end
+
+function love.textinput(...)
+
+end
+
+function love.mousemoved(...)
+
+end
+
+function love.wheelmoved(...)
+
+end
+
+function love.mousepressed(...)
+
+end
+
+function love.mousereleased(...)
+
+end
+
+function love.gamepadpressed(...)
+
+end
+
+function love.gamepadreleased(...)
+
+end
+
+
+
+
+
+function input_module.getGamePointer()
+
+end
+
+function input_module.getMouse()
+
+end
+
+function input_module.listen(event, callback)
+	if events[event] then
+		
+		table.insert(events[event], callback)
+
+
+		return
+	end
+	error("input event ".. event.. " does not exist!")
+end
+
+
+
+
+
 local input = {}
 
 local mousex, mousey = 0, 0

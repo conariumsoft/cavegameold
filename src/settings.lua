@@ -13,6 +13,10 @@ local settings = {
 	gamescale = 2,
 	autoscale = false,
 	vsync = false,
+	keyboard_player_move_left = "",
+	keyboard_player_move_right = "",
+	gamepad_player_move_left = "",
+	gamepad_player_move_right = "",
 }
 
 local callbacks = {
