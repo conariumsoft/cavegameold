@@ -91,10 +91,9 @@ local function testCollision(self, tilex, tiley)
 	elseif tiledata.solid then-- default collision solver
 		if normalx ~= nil and normaly ~= nil then
 			self.nextposition = self.nextposition + separation
-
-			self:collisionCallback(tileid, jutils.vec2.new(tilex, tiley), separation, jutils.vec2.new(normalx, normaly))
 		end
 	end
+	self:collisionCallback(tileid, jutils.vec2.new(tilex, tiley), separation, jutils.vec2.new(normalx, normaly))
 end
 
 local pixelToTileXY = grid.pixelToTileXY

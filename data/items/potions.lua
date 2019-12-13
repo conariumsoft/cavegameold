@@ -33,6 +33,19 @@ potion:new("MANLET_POTION", {
     end,
 })
 
+potion:new("GLOWING_POTION", {
+	displayname = "BIOLUMINESCENT FLUID",
+	color = {0.25, 0.65, 1},
+	texture = "fullbottle1.png",
+	rarity = 3,
+	tooltip = "Genetically modified bacteria that makes you glow in the dark!",
+	consume = function(self, player)
+		player:addStatusEffect("GLOWING", 120)
+		return true
+	end,
+	
+})
+
 
 potion:new("SPEED_POTION", {
     displayname = "QUICKFOOT POTION",
@@ -80,4 +93,29 @@ potion:new("HEALING_POTION", {
         player:addStatusEffect("HEAL", 10)
         return true
     end,
+})
+
+-- TODO: make some new textures for these
+potion:new("INSTANT_HP_10", {
+	displayname = "HP10+ VIAL",
+	color = {1, 0.2, 0.5},
+	texture = "fullbottle1",
+	rarity = 1,
+	tooltip = "'Tastes like chemical grapes'\nRestores 10 HP.",
+	consume = function(self, player)
+		player.health = player.health + 10
+		return true
+	end,
+})
+
+potion:new("INSTANT_HP_50", {
+	displayname = "HP50+ VIAL",
+	color = {1, 0.5, 1},
+	texture = "fullbottle1",
+	rarity = 1,
+	tooltip = "'A rejuvenating brew of heavy metals, amphetamines, and opium!'\nRestores 50 HP.",
+	consume = function(self, player)
+		player.health = player.health + 50
+		return true
+	end,
 })

@@ -50,7 +50,6 @@ end
 function humanoid:collisionCallback(tileid, tilepos, separation, normal)
 	
 	if tiles:tileHasTag(tileid, "platformtile") then
-		
 		if normal.x == 0 and normal.y == -1 and self.fallthrough == false then
 
 			local bottom = self.nextposition.y + self.boundingbox.y

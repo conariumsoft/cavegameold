@@ -1,10 +1,18 @@
 --- Definitions for status effects on the player.
 -- @author Joshua O'Leary
 -- @copyright 2019 Conarium Software
-local jutils = require("src.jutils")
+
+local jutils         = require("src.jutils")
 local particlesystem = require("src.particlesystem")
 
 local effects = {
+	GLOWING = {
+		comeup = function(e) end,
+		tick = function(entity, dt),
+			entity.lightemitter = {0.5, 0.5, 1}
+		end,
+		comedown = function(e) end,
+	},
 	MANLET = {
 		comeup = function(entity)
 			entity.boundingbox = jutils.vec2.new(entity.boundingbox.x/2, entity.boundingbox.y/2)
