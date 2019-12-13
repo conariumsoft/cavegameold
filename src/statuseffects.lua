@@ -8,7 +8,7 @@ local particlesystem = require("src.particlesystem")
 local effects = {
 	GLOWING = {
 		comeup = function(e) end,
-		tick = function(entity, dt),
+		tick = function(entity, dt)
 			entity.lightemitter = {0.5, 0.5, 1}
 		end,
 		comedown = function(e) end,

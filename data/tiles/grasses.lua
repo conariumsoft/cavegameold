@@ -56,6 +56,18 @@ local function bluegrassCheck(world, x, y)
 	end
 end
 
+local function jbit(t)
+	local ret = 0
+	local bitfieldlen = #t
+
+	for i  = bitfieldlen, 1, -1 do
+		local exponent = 2^(i-1)
+		local bitval = (t[i] == true) and 1 or 0
+		ret = ret + (bitval*exponent)
+	end
+	return ret
+end
+
 local function grassTileUpdate(grasstype, world, x, y)
 	local function isGrass(tx, ty)
 		return (world:getTile(tx, ty) == grasstype)
@@ -67,12 +79,6 @@ local function grassTileUpdate(grasstype, world, x, y)
 		local data = tilemanager:getByID(tile)
 		if data.solid == false then return true end
 		return false
-	end
-
-	local damage = world:getTileDamage(x, y)
-
-	if damage > 0.1 then
-		world:setTile(x, y, tilelist.DIRT.id, false)
 	end
 
 	local planetop = isAir(x, y-1)
@@ -94,90 +100,55 @@ local function grassTileUpdate(grasstype, world, x, y)
 	local cornerb = (gright == true and gabove == true and airtr == true)
 	local cornerc = (gright == true and gbelow == true and airbr == true)
 	local cornerd = (gleft == true and gbelow == true and airbl == true)
+
+	local bitmask = jbit({planetop, planeleft, planebottom, planeright, cornera, cornerb, cornerc, cornerd })
 	
-	local statestring = ""
-	local function add(val)
-		local addition = (val == true and "1" or "0")
-		statestring = statestring .. addition
-	end
+	-- for testing
 
-	add(cornerd)
-	add(cornerc)
-	add(cornerb)
-	add(cornera)
-	add(planeright)
-	add(planeleft)
-	add(planebottom)
-	add(planetop)
-
-	if world:getTileState(x, y) ~= statestring then
-		world:setTileState(x, y, statestring)
+	if world:getTileState(x, y) ~= bitmask then
+		world:setTileState(x, y, bitmask)
 	end
 end
 
+local function obit(num, bitindex)
+	return bit.band(bit.rshift(num, bitindex), 1) == 1 and true or false
+end
+
 local function grassTileLayeredRender(grasstype, grasscolor, x, y, state, dmg)
-	if type(state) == "number" then
-		state = "00000000"
+	if type(state) == "string" then
+		state = 0
+	end
+
+	local function obit(num, bitindex)
+		return bit.band(bit.rshift(num, bitindex), 1) == 1 and true or false
 	end
 
 	if not statelistings[grasstype] then statelistings[grasstype] = {} end
 	if statelistings[grasstype][state] ~= nil then
 		return statelistings[grasstype][state]
 	else
-		local function get(idx)
-
-			local str = state:sub(idx, idx)
-			if str == "1" then return true end
-			return false
-		end
-
-		local planetop = get(8)
-		local planebottom = get(7)
-		local planeleft = get(6)
-		local planeright = get(5)
-		local cornera = get(4)
-		local cornerb = get(3)
-		local cornerc = get(2)
-		local cornerd = get(1)
+		local planetop 	  = obit(state, 0)
+		local planeleft   = obit(state, 1)
+		local planebottom = obit(state, 2)
+		local planeright  = obit(state, 3)
+		local cornera 	  = obit(state, 4)
+		local cornerb 	  = obit(state, 5)
+		local cornerc 	  = obit(state, 6)
+		local cornerd 	  = obit(state, 7)
 
 		local texturetable = {}
 
 		texturetable[1] = {"soil", 0, {0.45, 0.25, 0.1}}
 
-		if planetop then
-			table.insert(texturetable, {"gas_patch", 0, grasscolor})
-		end
+		if planetop    then table.insert(texturetable, {"gas_patch", 0, grasscolor}) end
+		if planeright  then table.insert(texturetable, {"gas_patch", 90, grasscolor}) end
+		if planebottom then table.insert(texturetable, {"gas_patch", 180, grasscolor}) end
+		if planeleft   then table.insert(texturetable, {"gas_patch", 270, grasscolor}) end
 
-		if planeright then
-			table.insert(texturetable, {"gas_patch", 90, grasscolor})
-		end
-
-		if planebottom then
-			table.insert(texturetable, {"gas_patch", 180, grasscolor})
-		end
-
-
-		if planeleft then
-			table.insert(texturetable, {"gas_patch", 270, grasscolor})
-		end
-
-		
-
-		if cornera then
-			table.insert(texturetable, {"gas_corner", 0, grasscolor})
-		end
-
-		if cornerb then
-			table.insert(texturetable, {"gas_corner", 90, grasscolor})
-		end
-
-		if cornerc then
-			table.insert(texturetable, {"gas_corner", 180, grasscolor})
-		end
-
-		if cornerd then
-			table.insert(texturetable, {"gas_corner", 270, grasscolor})
-		end
+		if cornera then table.insert(texturetable, {"gas_corner", 0, grasscolor}) end
+		if cornerb then table.insert(texturetable, {"gas_corner", 90, grasscolor}) end
+		if cornerc then table.insert(texturetable, {"gas_corner", 180, grasscolor}) end
+		if cornerd then table.insert(texturetable, {"gas_corner", 270, grasscolor}) end
 
 		statelistings[grasstype][state] = texturetable
 

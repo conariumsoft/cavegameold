@@ -45,7 +45,7 @@ newtile("WATER",{
             if separation.x and separation.y and normal.x and normal.y then
                 entity.velocity.x = jutils.math.clamp(-30, entity.velocity.x, 30)
                 entity.velocity.y = jutils.math.clamp(-200, entity.velocity.y, 40)
-                
+                entity.touching_water = true
             end
         end
     end,
@@ -167,7 +167,7 @@ newtile("LAVA", {
         if separation and separation.x and separation.y and normal and normal.x and normal.y then
             entity.velocity.x = jutils.math.clamp(-10, entity.velocity.x, 10)
             entity.velocity.y = jutils.math.clamp(-200, entity.velocity.y, 10)
-            entity.touchinglava = true
+            entity.touching_lava = true
 
             if entity:isA("Itemstack") then
                 entity.dead = true

@@ -20,25 +20,26 @@
 	but please, don't be a dick. :)
 	-------------------------------------------------------------------------------------
 
+	Conarium Software:
+	Karl Darling, Nate Hayes, Tyler Stewart, Joshua O'Leary, William Tomasine
+
+
 	lead developer:
-		joshuu o'leary - programming, game design, art
-
-	supporting developers:
-		karl darling - game design, business
-		nate hayes - game design, testing
+	Joshua "joshuu" O'Leary 	Programming, Art, Game Design, Content
 	
-	business :
-		tyler stewart
-
 	contributors:
-		bumpylegoman02 - bug testing & feedback
-		BillyJ - bug testing & feedback
-		Mescalyne - music, inspiring this project & teaching me many skills
+	Nate "WheezyNewports" Hayes	Scripting, Art
+	
+	support team:
+	Karl Darling			Testing, Marketing Help
+	William Tomasine		Testing
+	Tyler Stewart			Business, Fun Testing
 
-	other credits:
-		json.lua - JSON parser written by rxi.
-		LOVE (Love2D) framework.
-		Lua Programming Language
+	special thanks to:
+	"bumpylegoman02"		Stability Testing
+	"squidthonkv2"			PlayTesting
+	Evan Walter			Consultation, Moral Support
+
 ]]
 
 function love.load(cmdlineargs)

@@ -42,10 +42,8 @@ potion:new("GLOWING_POTION", {
 	consume = function(self, player)
 		player:addStatusEffect("GLOWING", 120)
 		return true
-	end,
-	
+	end,	
 })
-
 
 potion:new("SPEED_POTION", {
     displayname = "QUICKFOOT POTION",
@@ -83,6 +81,18 @@ potion:new("ENERGY_DRINK", {
     end,
 })
 
+potion:new("LYSERGAMIDE_POTION", {
+	displayname = "LYSERGAMIDES VIAL",
+	color = {0.2, 0.8, 1},
+	texture = "fullbottle2.png",
+	rarity = 6,
+	tooltip = "Far-Out Maaan!",
+	consume = function(self, player)
+		-- TODO: do this lol
+		return true
+	end,
+})
+
 potion:new("HEALING_POTION", {
     displayname = "GENERIC HEALTH POTION",
     color = {1, 0.5, 1},
@@ -99,7 +109,7 @@ potion:new("HEALING_POTION", {
 potion:new("INSTANT_HP_10", {
 	displayname = "HP10+ VIAL",
 	color = {1, 0.2, 0.5},
-	texture = "fullbottle1",
+	texture = "fullbottle1.png",
 	rarity = 1,
 	tooltip = "'Tastes like chemical grapes'\nRestores 10 HP.",
 	consume = function(self, player)
@@ -111,7 +121,7 @@ potion:new("INSTANT_HP_10", {
 potion:new("INSTANT_HP_50", {
 	displayname = "HP50+ VIAL",
 	color = {1, 0.5, 1},
-	texture = "fullbottle1",
+	texture = "fullbottle1.png",
 	rarity = 1,
 	tooltip = "'A rejuvenating brew of heavy metals, amphetamines, and opium!'\nRestores 50 HP.",
 	consume = function(self, player)

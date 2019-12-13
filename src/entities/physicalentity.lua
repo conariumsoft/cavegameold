@@ -19,11 +19,12 @@ function physicalentity:init()
 	self.lastgroundy = 0
 	self.falltime = 0
 	self.falling = true
-	self.fallthrough = false
+	self.fall_through_platforms = false
 	self.noclip = false
-	self.applyGravity = true
-	self.touchinglava = false
-	self.internalTimer = 0
+	self.apply_gravity = true
+	self.touching_lava = false
+	self.touching_water = false
+	self.internal_physics_step = 0
 end
 
 function physicalentity:teleport(point)
@@ -130,7 +131,7 @@ function physicalentity:updatePhysics(step)
 		local TERMINAL = config.physics.TERMINAL_VELOCITY
 		
 		-- apply gravity if falling
-		if self.falling and self.applyGravity then
+		if self.falling and self.apply_gravity then
 			if self.velocity.y < TERMINAL then
 				self.velocity.y = self.velocity.y + ((config.physics.GRAVITY*self.mass)*step)
 			end
@@ -162,19 +163,21 @@ end
 function physicalentity:update(dt)
 	entity.update(self, dt)
 
-	self.internalTimer = self.internalTimer + dt
-	while self.internalTimer > (1/100) do
-		self.internalTimer = self.internalTimer - (1/100)
+	self.internal_physics_step = self.internal_physics_step + dt
+	while self.internal_physics_step > (1/100) do
+		self.internal_physics_step = self.internal_physics_step - (1/100)
 		self:updatePhysics(1/100)
 	end
 
-	if self.touchinglava then
+	if self.touching_lava then
+		-- TODO: fix this shit fucktard
 		self.health = self.health - (dt*10)
 		if self:isA("Humanoid") then
 			self:addStatusEffect("BURNING", 10)
 		end
 	end
-	self.touchinglava = false
+	self.touching_lava = false
+	self.touching_water = false
 end
 
 function physicalentity:draw()
