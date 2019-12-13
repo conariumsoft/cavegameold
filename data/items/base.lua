@@ -316,10 +316,7 @@ local tileitem = consumable:subclass("TileItem") do
 	
 end
 do
-
-	local num = tiles:getNumberOfTiles()
-	for i = 1, num-1 do
-		local data = tiles:getByID(i)
+	for name, data in pairs(tiles:getList()) do
 		if data.makeItem ~= false then
 			tileitem:new(data.name.."_TILE", {
 				displayname = string.gsub(data.name, "_", " "),
