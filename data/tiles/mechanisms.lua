@@ -97,12 +97,39 @@ newtile("SOLID_TOGGLE_BRICK", {
 	end
 })
 
+local function jbit(t)
+	local ret = 0
+	local bitfieldlen = #t
+
+	for i  = bitfieldlen, 1, -1 do
+		local exponent = 2^(i-1)
+		local bitval = (t[i] == true) and 1 or 0
+		ret = ret + (bitval*exponent)
+	end
+	return ret
+end
+
 newtile("WIRE", {
 	texture = "wire",
 	tags = {"mechanism", "transmitter"},
 	tileupdate = function(world, x, y)
 		--propagatePower(world, x, y)
+
+		-- TODO: get these values (as booleans)
+		local wire_left
+		local wire_right
+		local wire_above
+		local wire_below
+		local powered
+
+		-- TODO: figure out what this does ok
+		local bitmask = jbit{wire_above, wire_left, wire_below, wire_right, powered}
+		
+		-- TODO: update this tile's state (only if bitmask != current state, <- figure out why)
+		
 	end,
+	-- TODO: may need to use the layeredRender method instead
+	-- TODO: decode the bitmask number however seems best. (check grasses.lua obit function for help)
 	customRenderLogic = function(tx, ty, state, damage)
 		if state == 1 then
 			return "wire", {1, 1, 1}, 0
