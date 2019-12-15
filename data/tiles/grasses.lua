@@ -56,6 +56,27 @@ local function bluegrassCheck(world, x, y)
 	end
 end
 
+local function mossy_stone_check(stonetype, world, x, y)
+	local stayalive = adjacentToNonSolidTile(world, x, y)
+
+	if not stayalive then world:setTile(x, y, tilelist.STONE.id) return end
+
+	for dx = -1, 1 do
+		for dy = -1, 1 do
+			if world:getTile(x+dx, y+dy) == tilelist.STONE.id and adjacentToNonSolidTile(world, x+dx, y+dy) then
+				world:setTile(x+dx, y+dy, stonetype)
+			end
+		end
+
+	end
+
+	if world:getTile(x, y+1) == tilelist.AIR.id then
+		if math.random() > 0.99 then
+			world:setTile(x, y+1, tilelist.VINE.id)
+		end
+	end
+end
+
 local function jbit(t)
 	local ret = 0
 	local bitfieldlen = #t
@@ -68,33 +89,36 @@ local function jbit(t)
 	return ret
 end
 
-local function grassTileUpdate(grasstype, world, x, y)
-	local function isGrass(tx, ty)
-		return (world:getTile(tx, ty) == grasstype)
+local function bitmask_tile_update(tiletype, world, x, y)
+
+	local function is_tile(tile, tx, ty)
+		return world:getTile(tx, ty) == tile
 	end
-	local function isAir(tx, ty)
+
+	local function is_empty(tx, ty)
 		local tile = world:getTile(tx, ty)
 		if tile == tilelist.AIR.id then return true end
-		if tilemanager:tileHasTag(tile, "fakeemtpy") then return true end
+		if tilemanager:tileHasTag(tile, "fakeempty") then return true end
 		local data = tilemanager:getByID(tile)
 		if data.solid == false then return true end
 		return false
 	end
 
-	local planetop = isAir(x, y-1)
-	local planebottom = isAir(x, y+1)
-	local planeleft = isAir(x-1, y)
-	local planeright = isAir(x+1, y)
 
-	local airtl = isAir(x-1, y-1)
-	local airbl = isAir(x-1, y+1)
-	local airtr = isAir(x+1, y-1)
-	local airbr = isAir(x+1, y+1)
+	local planetop = is_empty(x, y-1)
+	local planebottom = is_empty(x, y+1)
+	local planeleft = is_empty(x-1, y)
+	local planeright = is_empty(x+1, y)
 
-	local gabove = isGrass(x, y-1)
-	local gbelow = isGrass(x, y+1)
-	local gleft = isGrass(x-1, y)
-	local gright = isGrass(x+1, y)
+	local airtl = is_empty(x-1, y-1)
+	local airbl = is_empty(x-1, y+1)
+	local airtr = is_empty(x+1, y-1)
+	local airbr = is_empty(x+1, y+1)
+
+	local gabove = is_tile(tiletype, x, y-1)
+	local gbelow = is_tile(tiletype, x, y+1)
+	local gleft = is_tile(tiletype, x-1, y)
+	local gright = is_tile(tiletype, x+1, y)
 
 	local cornera = (gleft == true and gabove == true and airtl == true)
 	local cornerb = (gright == true and gabove == true and airtr == true)
@@ -114,18 +138,14 @@ local function obit(num, bitindex)
 	return bit.band(bit.rshift(num, bitindex), 1) == 1 and true or false
 end
 
-local function grassTileLayeredRender(grasstype, grasscolor, x, y, state, dmg)
+local function tile_layered_render(tiletype, basetexture, basecolor, grasscolor, x, y, state, dmg)
 	if type(state) == "string" then
 		state = 0
 	end
 
-	local function obit(num, bitindex)
-		return bit.band(bit.rshift(num, bitindex), 1) == 1 and true or false
-	end
-
-	if not statelistings[grasstype] then statelistings[grasstype] = {} end
-	if statelistings[grasstype][state] ~= nil then
-		return statelistings[grasstype][state]
+	if not statelistings[tiletype] then statelistings[tiletype] = {} end
+	if statelistings[tiletype][state] ~= nil then
+		return statelistings[tiletype][state]
 	else
 		local planetop 	  = obit(state, 0)
 		local planeleft   = obit(state, 1)
@@ -138,7 +158,7 @@ local function grassTileLayeredRender(grasstype, grasscolor, x, y, state, dmg)
 
 		local texturetable = {}
 
-		texturetable[1] = {"soil", 0, {0.45, 0.25, 0.1}}
+		texturetable[1] = {basetexture, 0, basecolor}
 
 		if planetop    then table.insert(texturetable, {"gas_patch", 0, grasscolor}) end
 		if planeright  then table.insert(texturetable, {"gas_patch", 90, grasscolor}) end
@@ -150,8 +170,7 @@ local function grassTileLayeredRender(grasstype, grasscolor, x, y, state, dmg)
 		if cornerc then table.insert(texturetable, {"gas_corner", 180, grasscolor}) end
 		if cornerd then table.insert(texturetable, {"gas_corner", 270, grasscolor}) end
 
-		statelistings[grasstype][state] = texturetable
-
+		statelistings[tiletype][state] = texturetable
 
 		return texturetable
 	end
@@ -161,10 +180,10 @@ newtile("GRASS", {
 	color = {1, 1, 1},
 	randomupdate = grassCheck,
 	tileupdate = function(world, x, y)
-		grassTileUpdate(tilelist.GRASS.id, world, x, y)
+		bitmask_tile_update(tilelist.GRASS.id, world, x, y)
 	end,
 	layeredRender = function(x, y, state, dmg)
-		return grassTileLayeredRender(tilelist.GRASS.id, {0.2, 0.95, 0.2}, x, y, state, dmg)
+		return tile_layered_render(tilelist.GRASS.id, "soil", {0.45, 0.25, 0.1}, {0.2, 0.95, 0.2}, x, y, state, dmg)
 	end,
 	tags = {"plantable-on", "grass"},
 	drop = "DIRT_TILE",
@@ -178,11 +197,43 @@ newtile("BLUE_GRASS", {
 	absorb = 0.1,
 	randomupdate = bluegrassCheck,
 	tileupdate = function(world, x, y)
-		grassTileUpdate(tilelist.BLUE_GRASS.id, world, x, y)
+		bitmask_tile_update(tilelist.BLUE_GRASS.id, world, x, y)
 	end,
 	layeredRender = function(x, y, state, dmg)
-		return grassTileLayeredRender(tilelist.BLUE_GRASS.id, {0, 0, 1}, x, y, state, dmg)
+		return tile_layered_render(tilelist.BLUE_GRASS.id, "soil", {0.45, 0.25, 0.1}, {0, 0, 1}, x, y, state, dmg)
 	end,
 	tags = {"plantable-on"},
 	drop = "DIRT_TILE",
+})
+
+newtile("MOSSY_STONE", {
+	color = {0.6, 0.6, 0.6},
+	texture = "stone",
+	drop = "STONE_TILE",
+	randomupdate = function(world, x, y)
+		mossy_stone_check(tilelist.MOSSY_STONE.id, world, x, y)
+	end,
+	tileupdate = function(world, x, y)
+		bitmask_tile_update(tilelist.MOSSY_STONE.id, world, x, y)
+	end,
+	layeredRender = function(x, y, state, dmg)
+		return tile_layered_render(tilelist.MOSSY_STONE.id, "stone", {0.6, 0.6, 0.6}, {0.05, 0.5, 0.05}, x, y, state, dmg)
+	end,
+
+})
+
+newtile("YELLOW_MOSS_STONE", {
+	color = {0.6, 0.6, 0.6},
+	texture = "stone",
+	drop = "STONE_TILE",
+	randomupdate = function(world, x, y)
+		mossy_stone_check(tilelist.YELLOW_MOSS_STONE.id, world, x, y)
+	end,
+	tileupdate = function(world, x, y)
+		bitmask_tile_update(tilelist.YELLOW_MOSS_STONE.id, world, x, y)
+	end,
+	layeredRender = function(x, y, state, dmg)
+		return tile_layered_render(tilelist.YELLOW_MOSS_STONE.id, "stone", {0.6, 0.6, 0.6}, {0.35, 0.4, 0}, x, y, state, dmg)
+	end,
+
 })
