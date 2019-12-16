@@ -637,15 +637,14 @@ function system:draw()
 
 			love.graphics.setColor(0, 0, 0, 0.5)
 			love.graphics.rectangle("fill", 0, 0, self:getScreenSize())
+			love.graphics.push()
+			love.graphics.origin()
 			menu:draw()
+			love.graphics.pop()
 			if not self.openContainer then
 				self:drawRecipes()
 			end
 			self:drawFullInventory()
-			love.graphics.push()
-			love.graphics.origin()
-			
-			love.graphics.pop()
 		else
 			self.recipe_scroll = 0
 			self:drawHotbar()

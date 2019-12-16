@@ -160,6 +160,7 @@ local function tile_layered_render(tiletype, basetexture, basecolor, grasscolor,
 
 		texturetable[1] = {basetexture, 0, basecolor}
 
+
 		if planetop    then table.insert(texturetable, {"gas_patch", 0, grasscolor}) end
 		if planeright  then table.insert(texturetable, {"gas_patch", 90, grasscolor}) end
 		if planebottom then table.insert(texturetable, {"gas_patch", 180, grasscolor}) end

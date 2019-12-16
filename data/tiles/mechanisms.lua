@@ -1,5 +1,6 @@
 local jutils = require("src.jutils")
 local config = require("config")
+local bit 	 = require("bit")
 
 --[[
 
@@ -40,17 +41,45 @@ tile("BATTERY", {
 --[[
 ]]
 
-local function propagatePower(world, x, y)
-	
-	local t = world:getTile(x, y)
+local function jbit(t)
+	local ret = 0
+	local bitfieldlen = #t
 
-	if t == tilelist.WIRE.id and world:getTileState(x, y) == 0 then
-		world:setTileState(x, y, 1)
+	for i  = bitfieldlen, 1, -1 do
+		local exponent = 2^(i-1)
+		local bitval = (t[i] == true) and 1 or 0
+		ret = ret + (bitval*exponent)
+	end
+	return ret
+end
+
+local function obit(num, bitindex)
+	return bit.band(bit.rshift(num, bitindex), 1) == 1 and true or false
+end
+
+local function is_wire(world, x, y)
+	return world:getTile(x, y) == tilelist.WIRE.id
+end
+
+local function is_wire_powered(world, x, y)
+	local state = world:getTileState(x, y)
+
+	if state == -1 then return false end
+	if state == -2 then return true end
+	return obit(state, 4)
+end
+
+local function propagatePower(world, x, y)
+	if is_wire(world, x, y) == true and is_wire_powered(world, x, y) == false then
+		world:setTileState(x, y, -2)
 		propagatePower(world, x+1, y)
 		propagatePower(world, x-1, y)
 		propagatePower(world, x, y+1)
 		propagatePower(world, x, y-1)
+		return
 	end
+
+	local t = world:getTile(x, y)
 
 	if t == tilelist.TNT.id then
 		world:setTileState(x, y, 1)
@@ -64,14 +93,24 @@ end
 local function dePower(world, x, y)
 	local t = world:getTile(x, y)
 
-	if t == tilelist.WIRE.id and world:getTileState(x, y) == 1 then
-		world:setTileState(x, y, 0)
+	if t == tilelist.WIRE.id and is_wire_powered(world, x, y) == true then
+		world:setTileState(x, y, -1)
 		dePower(world, x+1, y)
 		dePower(world, x-1, y)
 		dePower(world, x, y+1)
 		dePower(world, x, y-1)
 	end
 end
+
+newtile("UNLIT_LAMP", {
+	texture = "weird",
+	color = {0.3, 0.5, 0.3},
+	hardness = 3,
+	solid = true,
+	tileupdate = function(world, x, y)
+
+	end
+})
 
 newtile("TOGGLE_BRICK", {
 	texture = "brick",
@@ -97,44 +136,84 @@ newtile("SOLID_TOGGLE_BRICK", {
 	end
 })
 
-local function jbit(t)
-	local ret = 0
-	local bitfieldlen = #t
-
-	for i  = bitfieldlen, 1, -1 do
-		local exponent = 2^(i-1)
-		local bitval = (t[i] == true) and 1 or 0
-		ret = ret + (bitval*exponent)
-	end
-	return ret
-end
+local wirestatelisting = {}
 
 newtile("WIRE", {
 	texture = "wire",
-	tags = {"mechanism", "transmitter"},
+	tags = {"mechanism", "power_source"},
+	solid = false,
+	collide = false,
 	tileupdate = function(world, x, y)
 		--propagatePower(world, x, y)
 
+		local state = world:getTileState(x, y)
+		local powered = false
+		if state == -1 then
+
+		elseif state == -2 then
+			powered = true
+		else
+			powered = is_wire_powered(world, x, y)
+		end
+
+		local function is_wire(tx, ty)
+			return world:getTile(tx, ty) == tilelist.WIRE.id
+		end
+	
+		local function is_empty(tx, ty)
+			local tile = world:getTile(tx, ty)
+			if tile == tilelist.AIR.id then return true end
+			if tilemanager:tileHasTag(tile, "fakeempty") then return true end
+			local data = tilemanager:getByID(tile)
+			if data.solid == false then return true end
+			return false
+		end
+
 		-- TODO: get these values (as booleans)
-		local wire_left
-		local wire_right
-		local wire_above
-		local wire_below
-		local powered
+		local wire_left = is_wire(x-1, y)
+		local wire_right = is_wire(x+1, y)
+		local wire_above = is_wire(x, y-1)
+		local wire_below = is_wire(x, y+1)
+		
 
 		-- TODO: figure out what this does ok
 		local bitmask = jbit{wire_above, wire_left, wire_below, wire_right, powered}
 		
 		-- TODO: update this tile's state (only if bitmask != current state, <- figure out why)
-		
+		if world:getTileState(x, y) ~= bitmask then
+			world:setTileState(x, y, bitmask)
+		end
 	end,
 	-- TODO: may need to use the layeredRender method instead
 	-- TODO: decode the bitmask number however seems best. (check grasses.lua obit function for help)
-	customRenderLogic = function(tx, ty, state, damage)
-		if state == 1 then
-			return "wire", {1, 1, 1}, 0
+	layeredRender = function(tx, ty, state, damage)
+		if wirestatelisting[state] ~= nil then
+			return wirestatelisting[state]
 		else
-			return "wire", {0.5, 0.5, 0.5}, 0
+			local wiretop = obit(state, 0)
+			local wireleft = obit(state, 1)
+			local wirebottom = obit(state, 2)
+			local wireright = obit(state, 3)
+			local powered = obit(state, 4)
+
+
+			local textable = {}
+
+			local color = (powered == true) and {1, 1, 1} or {0.5, 0.5, 0.5}
+
+			textable[1] = {"wire_base", 0, color}
+
+			if wiretop then table.insert(textable, {"wire", 0, color}) end
+			if wireleft then table.insert(textable, {"wire", 270, color}) end
+			if wirebottom then table.insert(textable, {"wire", 180, color}) end
+			if wireright then table.insert(textable, {"wire", 90, color}) end
+
+
+
+			wirestatelisting[state] = textable
+
+			return textable
+
 		end
 	end,
 })

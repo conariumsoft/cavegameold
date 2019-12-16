@@ -33,6 +33,7 @@ local entitylist = {
 	slime     		= require("src.entities.hostile.slime"),
 	flower 	 		= require("src.entities.hostile.flower"),
 	skull 			= require("src.entities.hostile.skull"),
+	caster			= require("src.entities.hostile.caster"),
 	-- misc game objects
 	itemstack		= require("src.entities.itemstack"),
 	explosion 		= require("src.entities.explosion"),

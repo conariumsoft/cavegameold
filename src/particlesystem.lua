@@ -15,6 +15,9 @@ local particle_quads = {
 
 local active_systems = {}
 
+local new_mod = {}
+
+function new_mod.new_static_psystem() end
 
 function particle_module.newDefaultSystem()
     local sys = love.graphics.newParticleSystem(particle_texture_sheet, 100)
@@ -78,10 +81,9 @@ function particle_module.newBloodSplatter(position, gore)
     table.insert(active_systems, system)
 end
 
-function particle_module.newFire(position, amount)
+function particle_module.newFire()
     local system = love.graphics.newParticleSystem(particle_texture_sheet, 50)
     system:setQuads(particle_quads.rectangle)
-	system:setPosition(position.x, position.y)
 	system:setParticleLifetime(0.1, 0.65)
 	system:setEmissionArea("normal", 3, 0, 0)
     system:setEmissionRate(45)
@@ -97,9 +99,9 @@ function particle_module.newFire(position, amount)
 		0.9, 0.75, 0.3, 0.8,
 		0.8, 0.05, 0.05, 0.8
     )
-    system:emit(15)
+    --system:emit(15)
 
-    table.insert(active_systems, system)
+    --table.insert(active_systems, system)
 
     return system
 
@@ -109,6 +111,7 @@ end
 
 function particle_module.update(dt)
     for index, system in pairs(active_systems) do
+
         system:update(dt)
 
         if system:getCount() == 0 then
@@ -118,14 +121,15 @@ function particle_module.update(dt)
     end
 end
 
+-- TODO: create a better system
+-- need ephemeral psystems (systems that exist briefly and are destroyed thereafter)
+-- as well as systems that are passed back to the game and controlled by game scripts (while being pointer-safe)
+
 function particle_module.draw()
     for _, system in pairs(active_systems) do
         love.graphics.setColor(1, 1, 1)
         love.graphics.draw(system, 0, 0)
     end
 end
-
-
-
 
 return particle_module

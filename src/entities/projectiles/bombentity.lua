@@ -16,6 +16,9 @@ function bombentity:init(timer, creator)
 	self.textureorigin = jutils.vec2.new(8,8)
 	self.boundingbox = jutils.vec2.new(4, 4)
 	self.mass = 0.8
+	-- bombs can destroy other bombs, so im setting their health to be massive as an ez fix
+	self.health = 10000
+	self.maxhealth = 10000
 	self.scale = jutils.vec2.new(0.5, 0.5)
 	self.save = false
 	self.lightemitter = {0.8, 0.5, 0.3}

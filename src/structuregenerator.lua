@@ -126,7 +126,7 @@ return function(world, tilex, tiley)
 			if world:getTile(tilex, tiley) == tiles.AIR.id then
 				local chance = math.random()
 				if chance > 0.99 then
-					generateFromFile(require(houses), world, tilex, tiley)
+					generateFromFile(require(houses[math.random(#houses)]), world, tilex, tiley)
 				end
 			end
 		end

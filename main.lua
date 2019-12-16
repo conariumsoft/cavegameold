@@ -39,7 +39,6 @@
 	"bumpylegoman02"		Stability Testing
 	"squidthonkv2"			PlayTesting
 	Evan Walter			Consultation, Moral Support
-
 ]]
 
 function love.load(cmdlineargs)
@@ -57,8 +56,6 @@ function love.load(cmdlineargs)
 	else
 		require("src.gameloop")(cmdlineargs)
 	end
-	
-
 end
 
 local funny_crash_messages = {

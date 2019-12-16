@@ -350,7 +350,7 @@ end
 local oscillator = 0
 
 function player:draw()
-	humanoid.draw(self)
+	
 
 	oscillator = oscillator + (1/20)
 
@@ -435,7 +435,7 @@ function player:draw()
 		love.graphics.setLineWidth(1)
 		love.graphics.rectangle("line", tmx*config.TILE_SIZE, tmy*config.TILE_SIZE, config.TILE_SIZE, config.TILE_SIZE)
 	end
-
+	humanoid.draw(self)
 	self.gui:draw()
 end
 

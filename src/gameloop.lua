@@ -105,26 +105,23 @@ return function(args)
 
 	-- console command list
 	local commands = {
-		["fire"] = {
-			desc = "",
-			arg = "",
-			func = function(args)
-				local p = gameworld:getPlayer()
-				p:addStatusEffect("BURNING", 30)
-			end
-		},
 		["gimme"] = {
 			desc = "gives the player an item",
 			arg = "[itemname] [amount]",
 			func = function(args)
-				local amount = args[2] or 1
 				local player = gameworld:getPlayer()
+
+				local amount = args[2]
+				if amount == nil then amount = 1 end
+				amount = tonumber(amount)
+				if type(amount) ~= "number" then jcon.message("AMOUNT MUST B NUMBER", {1, 0, 0}) return end
+
 				local item = items[string.upper(args[1])]
 				if item then
 					player.gui.inventory:addItem(item.id, tonumber(amount))
-				else
-					jcon.message("Item "..args[1].. " does not exist!", {1, 0, 0})
+					return
 				end
+				jcon.message("Item "..args[1].. " does not exist!", {1, 0, 0})
 			end
 		},
 		["tp"] = {
@@ -188,17 +185,12 @@ return function(args)
 			func = function(args)
 			end
 		},
-		["log"] = {
-			desc = "",
-			func = function(args)
-			end,
-		},
 		["time"] = {
 			desc = "",
 			func = function(args)
 				if args[1] then
 					local t = tonumber(args[1])
-					if t then
+					if t and type(t) == "number" then
 						gameworld.worldtime = t
 					end
 				else
@@ -231,7 +223,75 @@ return function(args)
 		["settile"] = {
 			desc = "",
 			func = function(args)
+
+				local player = gameworld:getPlayer()
+
+				local tx, ty = grid.pixelToTileXY(player.position.x, player.position.y)
+
+				local tile = tiles[string.upper(args[1])]
+				if not tile then jcon.message("NOT A TILE NERD", {1, 0, 0}) return end
+
+				local x = args[2]
+
+				local y = args[3]
+
+				local x2 = args[4]
+ 
+				local y2 = args[5]
+
+				if tile and x and y then
+
+					-- relative position
+					if x:sub(1, 1) == "~" then
+						
+						local xadd = tonumber(x:sub(2))
+						x = tx
+						if xadd then
+							x = x+xadd
+						end
+					end
+
+					-- relative y
+					if y:sub(1, 1) == "~" then
+						
+						local yadd = tonumber(y:sub(2))
+						y = ty
+						if yadd then
+							y = y+yadd
+						end
+					end
+
+					-- span mode
+					if x2 and y2 then
+
+						if x2:sub(1, 1) == "~" then
+							
+							local x2add = tonumber(x2:sub(2))
+							x2 = tx
+							if x2add then
+								x2 = x2+x2add
+							end
+						end
 	
+						if y2:sub(1, 1) == "~" then
+							
+							local y2add = tonumber(y2:sub(2))
+							y2 = ty
+							if y2add then
+								y2 = y2+y2add
+							end
+						end
+
+						for dx = x, x2 do
+							for dy = y, y2 do
+								gameworld:setTile(dx, dy, tile.id)
+							end
+						end
+					-- single tile mode
+					else
+						gameworld:setTile(tonumber(x), tonumber(y), tile.id)
+					end
+				end
 			end
 		},
 	
@@ -377,6 +437,11 @@ return function(args)
 	function love.keypressed(key)
 		if gameworld then
 			jcon.keypressed(key)
+
+			if key == "f3" then
+				show_debug_info = not show_debug_info
+			end
+
 		else
 			menus.keypressed(key)
 		end

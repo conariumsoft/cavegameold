@@ -41,6 +41,7 @@ function humanoid:init()
 	self.moveUp = false
 	self.moveDown = false
 	self.jumping = false
+	self.onfire = false
 
 	self.touchingrope = false
 	self.grabrope = false
@@ -100,7 +101,7 @@ end
 function humanoid:addStatusEffect(effectid, duration)
 	for _, effect in pairs(self.statuseffects) do
 		if effect.id == effectid then
-			effect.time = effect.time + 1
+			effect.time = effect.time + duration/5
 			return
 		end
 	end
@@ -187,6 +188,7 @@ function humanoid:updatePhysics(dt)
 	end
 
 	if self.onrope == true then
+		self.falling = false
 		local rope_accelleration = 200
 		if self.moveUp == true then self.velocity.y = self.velocity.y - (rope_accelleration) * dt end
 		if self.moveDown == true then self.velocity.y = self.velocity.y + (rope_accelleration) * dt end
@@ -224,6 +226,23 @@ function humanoid:updatePhysics(dt)
 end
 
 function humanoid:update(dt)
+
+	if self.onfire then
+		if self.fireEmitter == nil then
+			self.fireEmitter = particlesystem.newFire()
+			print("BABABOOEY")
+		end
+		self.fireEmitter:setPosition(0, self.boundingbox.y)
+		self.fireEmitter:update(dt)
+	end
+
+	if self.onfire == false then
+		if self.fireEmitter then
+			self.fireEmitter:release()
+			self.fireEmitter = nil
+
+		end
+	end
 	
 	physicalentity.update(self, dt)
 
@@ -232,9 +251,16 @@ function humanoid:update(dt)
 
 	self.knockbackTimer = self.knockbackTimer - dt
 	self.climbcooldown = self.climbcooldown - dt
+end
 
+function humanoid:draw()
+	
+	physicalentity.draw(self)
 
-
+	if self.fireEmitter then
+		love.graphics.setColor(1, 1, 1)
+		love.graphics.draw(self.fireEmitter, self.position.x, self.position.y)
+	end
 end
 
 return humanoid

@@ -96,16 +96,13 @@ local effects = {
 	},
 	BURNING = {
 		comeup = function(entity)
-			entity.fireSystem = particlesystem.newFire(jutils.vec2.new(entity.position.x, entity.position.y+entity.boundingbox.y))
+			entity.onfire = true
 		end,
 		tick = function(entity, dt)
-			if entity.fireSystem then
-				entity.fireSystem:moveTo(entity.position.x, entity.position.y+entity.boundingbox.y)
-			end
-			entity.health = entity.health - (dt*2)
+			entity.health = entity.health - (dt*4)
 		end,
 		comedown = function(entity)
-			entity.fireSystem:release()
+			entity.onfire = false
 		end,
 	}
 }
