@@ -51,6 +51,22 @@ local function leavesRandomUpdate(world, x, y)
 	end
 end
 
+local function pine_leavesRandomUpdate(world, x, y)
+	local die = true
+
+	for dx = -6, 6 do
+		for dy = -6, 6 do
+			if world:getTile(x+dx, y+dy) == tilelist.LOG.id then
+				die = false
+			end
+		end
+	end
+
+	if die then
+		world:setTile(x, y, tilelist.AIR.id)
+	end
+end
+
 newtile("OVERGROWTH", {
 	color = {0.2, 0.8, 0.2},
 	randomupdate = function(world, x, y) end,
@@ -126,6 +142,18 @@ newtile("LOG", {
 	tags = {"LOG"}
 })
 
+newtile("PINE_LOG", {
+	color = {0.45, 0.25, 0.1},
+	solid = true,
+	collide = false,
+	texture = "log",
+	absorb = 0,
+	tileupdate = logValidCheck,
+	drop = "PLANK_TILE",
+	hardness = 8,
+	tags = {"PINE_LOG"}
+})
+
 newtile("LEAVES", {
 	color = {0.2, 0.8, 0.2},
 	solid = false,
@@ -133,6 +161,17 @@ newtile("LEAVES", {
 	absorb = 0,
 	texture = "leaves",
 	randomupdate = leavesRandomUpdate,
+	hardness = 1,
+	drop = "SAPLING_TILE"
+})
+
+newtile("PINE_LEAVES", {
+	color = {0.0, 0.2, 0.0},
+	solid = false,
+	collide = false,
+	absorb = 0,
+	texture = "leaves",
+	randomupdate = pine_leavesRandomUpdate,
 	hardness = 1,
 	drop = "SAPLING_TILE"
 })
@@ -197,6 +236,42 @@ newtile("SAPLING", {
 	validplacement = plantValidityCheck,
 	tags = {"plant"},
 	hardness = 1,
+})
+
+newtile("PINE_ROOT", {
+	color = {0.45, 0.25, 0.1},
+	solid = true,
+	collide = false,
+	texture = "root",
+	drop = "PLANK_TILE",
+	hardness = 8,
+	tags = {"PINE_LOG"}
+})
+
+newtile("PINE_ROOT_LEFT", {
+	collide = false,
+	texture = "root_left",
+	color = {0.45, 0.25, 0.1},
+	hardness = 8,
+	drop = "PLANK_TILE", 
+	tileupdate = function(world, x, y)
+		if world:getTile(x+1, y) ~= tilelist.ROOT.id then
+			world:setTile(x, y, tilelist.AIR.id, true)
+		end
+	end,
+})
+
+newtile("PINE_ROOT_RIGHT", {
+	collide = false,
+	texture = "root_right",
+	color = {0.45, 0.25, 0.1},
+	hardness = 8,
+	drop = "PLANK_TILE",
+	tileupdate = function(world, x, y)
+		if world:getTile(x-1, y) ~= tilelist.ROOT.id then
+			world:setTile(x, y, tilelist.AIR.id, true)
+		end
+	end,
 })
 
 newtile("MUSHROOM_PSILOCYN", {
