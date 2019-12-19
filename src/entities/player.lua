@@ -390,6 +390,7 @@ function player:draw()
 				local followmouse = data.playeranim.follow
 				local rotation = 0
 				if followmouse then
+
 					rotation = math.rad(180+ self.position:angleBetween(jutils.vec2.new(input.getTransformedMouse())))
 				end
 				rendering.drawItem(item, self.position.x, self.position.y, data.inWorldScale*(self.direction), data.inWorldScale, (data.defaultRotation*self.direction) +rotation, data.playerHoldPosition.x, data.playerHoldPosition.y)

@@ -5,14 +5,13 @@ local physicalentity = require("src.entities.physicalentity")
 
 local projectile = physicalentity:subclass("Projectile")
 
-function projectile:init(start, goal, prop, mass, creator)
+function projectile:init(start, goal, prop, mass)
 	physicalentity.init(self)
 	self.nextposition = start
 	self.position = start
 	self.direction = (goal-start):unitvec()
 	self.propulsion = prop
 	self.mass = mass
-	self.creator = creator
 	self.xfriction = 0.2
 	self.velocity = self.direction*self.propulsion
 
@@ -25,7 +24,7 @@ function projectile:update(dt)
 	-- TODO: entity collision checks controlled by the world script
 	-- i've got similar loops in about 3 other entitties already :(
 	for _, entity in pairs(self.world.entities) do
-		if entity:isA("PhysicalEntity") and entity ~= self.creator and entity ~= self then
+		if entity:isA("PhysicalEntity") and entity:isA("Player") == false and entity ~= self then
 			self.goaldirection = (self.position-entity.position):unitvec()
 			local mypos = self.nextposition
 			local entpos = entity.nextposition

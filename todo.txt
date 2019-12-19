@@ -1,30 +1,27 @@
+arrows
+bow item
+armour slots
+iron armour
+    helmet
+    chestplate
+    leggings
+
+ascended zombie
+    - has achieved enlightenment through deliberate application of patience, virtue, and a DMT Vape pen
+
+slime entity
+flower SFX
+zombie hurt sfx
+zombie yell sfx
+zombie death sfx
+sun and moon
+scrolling on world load menu
+furniture tiles
+    bed tile
+    table tile
+    chair tile
+    bookshelf tile
+
 inventory ui assets
 
 equipment and ui
-
-next update:
-    * Slime entity
-    * Floating Skull entity
-    * Big Bones Entity
-    * Explosion sound [done]
-    * Positional audio (at least distance scaled) for non-player entities
-    * More Tile SFX
-        - Separate breaking SFX for different tiles
-        - Maybe some tile-place SFX
-    * Finish implementing pine trees.
-    * Zombie SFX [done?]
-    * Flower SFX
-    * Sword swing SFX
-    * pickaxe swing SFX [done]
-    * Sun and moon?
-    * Burning status effect
-    * Poisoned status effect
-    * Settings Menu
-        * Volume
-        * Keybinds
-    * Need scrolling on world load menu
-    * Furniture tiles
-        * Bed tile
-        * Table tile
-        * Chair tile
-        * Bookshelf tile

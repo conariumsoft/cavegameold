@@ -45,6 +45,7 @@ local entitylist = {
 	stickybomb 		= require("src.entities.projectiles.stickybombentity"),
 	glowstick 		= require("src.entities.projectiles.glowstick"),
 	magicball 		= require("src.entities.projectiles.magicball"),
+	arrow 			= require("src.entities.projectiles.arrow"),
 	-- 
 	laser 			= require("src.entities.projectiles.laser"),	
 }

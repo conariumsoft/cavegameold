@@ -242,8 +242,6 @@ local function numberCrunch()
 			end
 		end
 	end
-
-	
 end
 
 local running = true
