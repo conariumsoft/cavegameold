@@ -93,13 +93,9 @@ baseitem:new("FLINTLOCK", {
     end
 })
 
-
-
-
 baseitem:new("ARROW", {
     displayname = "ARROW",
     stack = 300,
-
 })
 
 baseitem:new("BOW", {
