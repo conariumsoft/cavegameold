@@ -103,6 +103,34 @@ local function chunkSurfacePass(chunk)
 							chunk.tiles[x][y] = tiles.MUD.id
 							chunk.backgrounds[x][y] = backgrounds.MUD.id
 						end
+					elseif chosen_biome == "alpine" then
+
+							
+
+						if getSurfaceNoise(worldx+x, worldy+y-1) <= 0 then
+							chunk.tiles[x][y] = tiles.DIRT.id
+
+						elseif getSurfaceNoise(worldx+x, worldy+y-20) <= 0 then
+
+							chunk.tiles[x][y] = tiles.DIRT.id
+							chunk.backgrounds[x][y] = backgrounds.DIRT.id
+						else
+							chunk.backgrounds[x][y] = backgrounds.DIRT.id
+							local yee = (worldy+y-200)/20
+							local chance = noise.noise(worldx+x, worldy+y, 2, 2)-yee
+
+
+							if chance > 0.5 then
+								chunk.tiles[x][y] = tiles.DIRT.id
+							end
+							
+						end
+
+						local rockformations = noise.noise(worldx+x, worldy+y, 40, 30)
+
+						if rockformations > 0.75 then
+							chunk.tiles[x][y] = tiles.MOSSY_STONE.id
+						end
 					end
 							
 				end

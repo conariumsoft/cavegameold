@@ -6,6 +6,7 @@ local config = require("config")
 local grid = require("src.grid")
 local jutils = require("src.jutils")
 
+local terrain = require("src.terrain")
 local items = require("src.items")
 local input = require("src.input")
 local rendering = require("src.rendering")
@@ -367,6 +368,8 @@ return function(args)
 
 			local graphicsStats = love.graphics.getStats()
 
+			local biome = terrain.getBiomeAt(plrGridX)
+
 			last_debug_info = "fps: "..love.timer.getFPS()..", lvm: ".. jutils.math.round(collectgarbage("count")/1024, 1).."mb"..
 						" dt: "..jutils.math.round(1000*love.timer.getAverageDelta(), 1).."ms"..
 						" txm: "..jutils.math.round(graphicsStats.texturememory/1024, 1).."kb, dc: "..graphicsStats.drawcalls..", i: "..graphicsStats.images..
@@ -376,7 +379,7 @@ return function(args)
 						" light: "..light[1]..", "..light[2]..", "..light[3]..
 						" dmg: "..gameworld:getTileDamage(tx, ty).."\n"..
 						"pos: "..plrGridX..", "..plrGridY.." vel: "..jutils.math.round(player.velocity.x, 1)..", "..jutils.math.round(player.velocity.y, 1)..
-						" entities: "..(#gameworld.entities)
+						" entities: "..(#gameworld.entities).." biome: "..biome
 
 		end
 	end

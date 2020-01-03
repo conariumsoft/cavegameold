@@ -470,6 +470,7 @@ local list = rootObj:subclass("List")
 function list:init(properties, children)
 
     self.padding = 0
+    self.sortFromBottom = false
 
     rootObj.init(self, properties, children)
 end

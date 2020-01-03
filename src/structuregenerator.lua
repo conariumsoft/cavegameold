@@ -42,6 +42,24 @@ local function generateFromFile(structure, world, tx, ty)
 	end
 end
 
+
+local function treeGenerate(structure, world, tx, ty)
+	for key, name in pairs(structure.tiles) do
+
+		
+		local x, y = grid.keyToCoordinates(key)
+		local current = world:getTile(tx+x, ty+y)
+
+		if current == tiles.AIR.id or current == tiles.LEAVES.id or current == tiles.PINE_LEAVES.id then
+			world:rawset(tx+x, ty+y, "tiles", tiles[name].id, true)
+		end
+	end
+end
+
+
+local pine_tree = require("data.structures.trees.pine_tree")
+local pine_tree_1 = require("data.structures.trees.pine_tree1")
+
 return function(world, tilex, tiley)
 
 	local surface_noise = terrainMath.getSurfaceNoise(tilex, tiley)
@@ -57,11 +75,26 @@ return function(world, tilex, tiley)
 			local watchtowerNoise = noise.noise(tilex, tiley, 64, 64)
 
 
-			if watchtowerNoise > 0 and watchtowerNoise < 0.02 and math.random() > 0.95 then
+			if watchtowerNoise > 0 and watchtowerNoise < 0.01 and math.random() > 0.98 then
 				generateFromFile(require("data.structures.hendrix"), world, tilex, tiley)
 			end
 		end
 
+
+		if chosen_biome == "alpine" then
+			local tree3Noise = noise.noise(tilex+128, tiley, 18, 18)
+			local doTree = math.random()
+			if treeGroveDensity > doTree then
+
+				if world:getTile(tilex, tiley) == tiles.DIRT.id then
+					if tree3Noise > 0.95 then
+						treeGenerate(pine_tree, world, tilex, tiley)
+					else
+						treeGenerate(pine_tree_1, world, tilex, tiley)
+					end
+				end
+			end
+		end
 
 		if chosen_biome == "desert" then
 			-- TODO: pyramid generation

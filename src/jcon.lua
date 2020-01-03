@@ -7,6 +7,9 @@ local jui = require("src.jui")
 
 local textinput = jui.textinput
 
+
+
+
 local styles = {
     window  = {
         scaleSize = jutils.vec2.new(1, 1),
@@ -64,15 +67,27 @@ local styles = {
     },
     
 }
-
 local titleTextObject = jui.text:new(styles.titleText)
-local infoTextObject = jui.text:new(styles.infoText)
-local windowObject = jui.rectangle:new(styles.window)
-local messageBoxObject = jui.rectangle:new(styles.messageBox)
-local inputBoxObject = jui.rectangle:new(styles.inputBox)
-local inputTextObject = textinput:new(styles.inputText)
-
 local messageBoxChildren = {}
+
+local inputTextObject = textinput:new(styles.inputText)
+local inputBoxObject = jui.rectangle:new(styles.inputBox, {
+    text = inputTextObject
+})
+
+local console = jui.scene:new({}, {
+    window = jui.rectangle:new(styles.window, {
+        topbar = jui.rectangle:new(styles.topbar, {
+            title = titleTextObject,
+        }),
+        content = jui.rectangle:new(styles.content, {
+            messages = jui.rectangle:new(styles.messageBox, {
+                list = jui.list:new({}, messageBoxChildren)
+            }),
+            inputbox = inputBoxObject
+        })
+    })
+})
 
 local function newMessage(text, textColor)
     local boxStyle = {
@@ -86,45 +101,15 @@ local function newMessage(text, textColor)
         textColor = textColor
     }
 
-    local box = jui.rectangle:new(boxStyle)
+    local box = jui.rectangle:new(boxStyle,
+    {
+        text = jui.text:new(textStyle)
+    })
 
-    local textobj = jui.text:new(textStyle)
-
-    table.insert(messageBoxChildren, {box, {t = {textobj}}})
+    table.insert(messageBoxChildren, box)
 
 end
 
-local console = jui.scene:new({}, {
-    window = {
-        windowObject, {
-            topbar = {
-                jui.rectangle:new(styles.topbar), {
-                    title = {titleTextObject},
-                    --info = {infoTextObject}
-                }
-            },
-            content = {
-                jui.rectangle:new(styles.content), {
-                    messages = {
-                        messageBoxObject,
-                        {
-                            list = {
-                                jui.list:new({}),
-                                messageBoxChildren
-                            }
-                        }
-                    },
-
-                    inputbox = {
-                        inputBoxObject, {
-                            text = {inputTextObject}
-                        }
-                    },
-                }
-            }
-        }
-    }
-})
 
 newMessage("Initialized", {0, 0, 0})
 
@@ -171,7 +156,7 @@ end
 
 function jcon:update(dt)
     if self.open then
-        infoTextObject.text = " fps: "..love.timer.getFPS()..", luavm: "..jutils.math.round(collectgarbage("count")/1000, 2).."kb"
+        titleTextObject.text = " fps: "..love.timer.getFPS()..", luavm: "..jutils.math.round(collectgarbage("count")/1000, 2).."kb"
         console:update(dt)
     end
 end

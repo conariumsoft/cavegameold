@@ -1,7 +1,7 @@
 --- Terrain generation utilities and math.
 -- @author Joshua O'Leary
 -- @copyright 2019 Conarium Software
-local BIOME_X_STRETCH = 1000
+local BIOME_X_STRETCH = 600
 
 local noise = require("src.noise")
 local jutils = require("src.jutils")
@@ -12,20 +12,18 @@ terrain_math.biomes = {
 	[1] = "plains", 
 	[2] = "forest",
 	[3] = "plains",
-	[4] = "desert",
-	[5] = "plains",
+	[4] = "alpine",
+	[5] = "desert",
 	[6] = "wetlands",
 	[7] = "forest",
-	[8] = "desert",
-	[9] = "wetlands",
+	[8] = "wetlands",
+	
 	
 }
 
-
 function terrain_math.getBiomeAt(x)
     local biome_noise = terrain_math.getBiomeNoise(x)
-    local scaled = math.max( math.floor(biome_noise * #terrain_math.biomes), 1)
-        
+    local scaled = math.floor(biome_noise * #terrain_math.biomes)+1
     return terrain_math.biomes[scaled]
 end
 
@@ -33,7 +31,7 @@ end
 function terrain_math.getBiomeNoise(x)
 
 	--! ghetto quick-added octaves
-	return love.math.noise(x / BIOME_X_STRETCH ) --+ (noise.noise1D(x /(BIOME_X_STRETCH/2)) /2) + (noise.noise1D(x /(BIOME_X_STRETCH/4)) /4)
+	return love.math.noise(x / BIOME_X_STRETCH )
 end
 
 ---

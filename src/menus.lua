@@ -313,7 +313,7 @@ Evan Walter
 
 current_screen = splash_ui
 
-local splashtime = 0
+local splashtime = 3
 
 local selected = 1
 
@@ -381,7 +381,6 @@ function menu_module.keypressed(key)
 	if current_screen == new_world_ui then
 		world_name_input:keypressed(key)
 	end
-
 end
 
 function menu_module.joystickhat(joystick, hat, direction)
