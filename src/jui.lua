@@ -96,7 +96,7 @@ local love2dDefaultFont = love.graphics.getFont()
 
 local rootObj = jutils.object:subclass("juiRoot")
 
-function rootObj:init(properties)
+function rootObj:init(properties, children)
     self.id = "GuiObject"
     self.onUpdate = function(self, dt) end
     for prop, value in pairs(properties) do
@@ -104,6 +104,23 @@ function rootObj:init(properties)
     end
     self.absoluteSize = jutils.vec2.new(0, 0)
     self.absolutePosition = jutils.vec2.new(0, 0)
+    self.children = children
+end
+
+local function recursiveSearch(object, childname)
+    for idx, child in pairs(object.children) do
+        if idx == childname then return child end
+        if child.children then
+            local res = recursiveSearch(child, childname)
+
+            if res then return res end
+        end
+    end
+    return nil
+end
+
+function rootObj:find(childname)
+    return recursiveSearch(self, childname)
 end
 
 function rootObj:update(dt, parent)
@@ -127,7 +144,7 @@ end
 
 local rectangle = rootObj:subclass("Rectangle")
 
-function rectangle:init(properties)
+function rectangle:init(properties, children)
     self.borderWidth = 1
     self.borderColor = {0,0,1}
     self.pixelSize = jutils.vec2.new(200, 100)
@@ -139,7 +156,7 @@ function rectangle:init(properties)
     self.enabled = true
     self.backgroundColor = {1,1,1}
 
-    rootObj.init(self, properties)
+    rootObj.init(self, properties, children)
 end
 
 function rectangle:update(dt, parent)
@@ -164,7 +181,7 @@ end
 
 local text = rootObj:subclass("Text")
 
-function text:init(props)
+function text:init(props, children)
 
     self.text = "Sample Text"
     self.font = nil
@@ -172,7 +189,7 @@ function text:init(props)
     self.textXAlign = "left"
     self.textYAlign = "top"
 
-    rootObj.init(self, props)
+    rootObj.init(self, props, children)
 end
 
 function text:update() end
@@ -205,7 +222,7 @@ end
 
 local textinput = text:subclass("TextInput")
 
-function textinput:init(properties)
+function textinput:init(properties, children)
     self.isFocused = true
     self.defaultText = ""
 
@@ -226,7 +243,7 @@ function textinput:init(properties)
     
     self.cursorText = "|"
 
-    text.init(self, properties)
+    text.init(self, properties, children)
     self._cursor = #self.defaultText
     self.internalText = self.defaultText
 end
@@ -336,7 +353,7 @@ end
 
 local image = rootObj:subclass("Image")
 
-function image:init(properties)
+function image:init(properties, children)
 
     self.pixelSize = jutils.vec2.new(0, 0)
     self.pixelPosition = jutils.vec2.new(0, 0)
@@ -349,7 +366,7 @@ function image:init(properties)
     self.rotation = 0
     self.offset = jutils.vec2.new(0, 0)
 
-    rootObj.init(self, properties)
+    rootObj.init(self, properties, children)
 end
 
 function image:update(dt, parent)
@@ -380,7 +397,7 @@ end
 
 local nineslice = rootObj:subclass("NineSlice")
 
-function nineslice:init(properties)
+function nineslice:init(properties, children)
 
     self.pixelSize = jutils.vec2.new(0, 0)
     self.pixelPosition = jutils.vec2.new(0, 0)
@@ -399,7 +416,7 @@ function nineslice:init(properties)
 
     
 
-    rootObj.init(self, properties)
+    rootObj.init(self, properties, children)
 
     self.quads = {
         topleft = love.graphics.newQuad(0, 0, self.cornerWidth, self.cornerHeight, self.sourceWidth, self.sourceHeight),
@@ -450,11 +467,11 @@ end
 
 local list = rootObj:subclass("List")
 
-function list:init(properties)
+function list:init(properties, children)
 
     self.padding = 0
 
-    rootObj.init(self, properties)
+    rootObj.init(self, properties, children)
 end
 
 function list:update(dt, parent)
@@ -465,8 +482,7 @@ end
 function list:updateChildren(dt, children)
 
     local posHSoFar = 0
-    for index, childTable in ipairs(children) do
-        local child = childTable[1]
+    for index, child in ipairs(children) do
         --print(child.bevel)
         child.pixelPosition.x = 0
         child.pixelPosition.y = posHSoFar
@@ -478,11 +494,11 @@ end
 
 local grid = rootObj:subclass("Grid")
 
-function grid:init(props)
+function grid:init(props, children)
     self.cellScaleSize = jutils.vec2.new(0, 0)
     self.cellPixelSize = jutils.vec2.new(100, 100)
     self.cellPadding = jutils.vec2.new(4, 4)
-    rootObj.init(self, props)
+    rootObj.init(self, props, children)
 end
 
 function grid:update(dt, parent)
@@ -500,9 +516,7 @@ function grid:updateChildren(dt, children)
 
     local row = 0
     local column = 0
-    for index, childTable in pairs(children) do
-
-        local child = childTable[1]
+    for index, child in pairs(children) do
 
         --print(child.bevel)
         child.pixelPosition.x = row*totalCellSizeX
@@ -523,7 +537,7 @@ end
 
 local mouseListener = rootObj:subclass("mouse")
 
-function mouseListener:init(properties)
+function mouseListener:init(properties, children)
 
     self.mouseButton = 1
     self.mouseInside = false
@@ -536,7 +550,7 @@ function mouseListener:init(properties)
 
     self._mouseEntranceDebounce = false
 
-    rootObj.init(self, properties)
+    rootObj.init(self, properties, children)
 end
 
 function mouseListener:update(dt, parent)
@@ -579,7 +593,7 @@ end
 
 local slider = rectangle:subclass("Slider")
 
-function slider:init(properties)
+function slider:init(properties, children)
 
     self.mouseListener = mouseListener:new({})
 
@@ -605,7 +619,7 @@ function slider:init(properties)
 
     self.valueDisplayModifier = function(prop) return prop end
 
-    rectangle.init(self, properties)
+    rectangle.init(self, properties, children)
 end
 
 function slider:update(dt, parent)
@@ -673,40 +687,35 @@ function guiscene:init(props, objectTree)
     self.visible = true
     self.listenInput = true
 
-    self.objects = objectTree
+    self.children = objectTree
 end
 
-local function recursiveUpdate(parent, childTable, delta)
-    for key, objtable in pairs(childTable) do
-        local object = objtable[1]
-        local children = objtable[2]
+function guiscene:find(childname)
+    return recursiveSearch(self, childname)
+
+end
+
+local function recursiveUpdate(parent, delta)
+    if not parent.children then return end
+    if parent.updateChildren then
+        parent:updateChildren(delta, parent.children)
+    end
+    for key, object in pairs(parent.children) do
         if object then
             object:update(delta, parent)
-        end
-                
-
-        if children then
-            if object.updateChildren then
-                object:updateChildren(delta, children)
-            end
-            recursiveUpdate(object, children, delta)
+            recursiveUpdate(object, delta)
         end
     end
 end
 
-local function recursiveDraw(parent, childTable)
-    for key, objtable in pairs(childTable) do
-        local object = objtable[1]
-        local children = objtable[2]
-        if object then
-            if object.draw then
-                object:draw(parent)
-            end
-            if children then
-                recursiveDraw(object, children)
-            end
+local function recursiveDraw(parent)
+    if not parent.children then return end
+    for key, object in pairs(parent.children) do
+        if object.draw then
+            object:draw(parent)
             
         end
+        recursiveDraw(object)
     end
 end
 
@@ -722,14 +731,18 @@ function guiscene:findObjectByID(id)
     return traverse(self, self.objects, id)
 end
 
+function guiscene:updateChildren(delta, children)
+
+end
+
 
 function guiscene:update(dt)
     self.absoluteSize = jutils.vec2.new(love.graphics.getDimensions())
-    recursiveUpdate(self, self.objects, dt)
+    recursiveUpdate(self, dt)
 end
 
 function guiscene:draw()
-    recursiveDraw(self, self.objects)
+    recursiveDraw(self)
 end
 
 local function tooltipTemplate(style, textStyle, listenerProperties)

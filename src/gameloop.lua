@@ -385,10 +385,12 @@ return function(args)
 		if in_menu then
 			menus.update(dt) 
 			
-			if menus.world_chosen == true then
-				print(menus.selected_world)
+			if menus.has_chosen_world == true then
+				print(menus.selected_world_name)
 				in_menu = false
-				gameworld = world.new(menus.selected_world, 0)
+				gameworld = world.new(menus.selected_world_name, 0)
+				menus.has_chosen_world = false
+				menus.selected_world_name = ""
 			end
 		elseif gameworld then
 

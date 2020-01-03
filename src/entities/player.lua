@@ -122,7 +122,7 @@ function player:damage(amount)
 	humanoidAudio:setPitch(self.hurt_yell_pitch)
 	humanoidAudio:play()
 
-	particlesystem.newBloodSplatter(self.position, 0.75)
+	particlesystem.newBloodSplatter(self.position, 1.1)
 	local e = self.world:addEntity("floatingtext", math.floor(amount), {1, 0.5, 0})
 	e:teleport(self.position)
 end

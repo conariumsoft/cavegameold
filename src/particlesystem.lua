@@ -73,7 +73,7 @@ function particle_module.newBloodSplatter(position, gore)
     system:setLinearAcceleration(-30, 5, 60, 30)
 	system:setSizes(2*gore, gore, 0.5)
 	system:setColors(
-		0.8, 0.0, 0.0, 0.5,
+		0.8, 0.0, 0.0, 0.75,
 		0.5, 0.0, 0.0, 0
     )
     system:emit(gore*10)

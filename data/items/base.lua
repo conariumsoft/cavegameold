@@ -168,6 +168,7 @@ baseitem:new("ELECTRON_SCROLL", {
 baseitem:new("JETPACK", {
 	displayname = "JETPACK",
 	speed = 1/30,
+	texture = "jetpack.png",
 	repeating = false,
 	use = function(self, player) return true end,
 	useend = function(self, player) end,
