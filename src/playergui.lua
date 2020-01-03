@@ -13,7 +13,6 @@ local items = require("src.items")
 local recipes = require("src.recipes")
 local rendering = require("src.rendering")
 local tiles = require("src.tiles")
-local guiutil = require("src.guiutil")
 local inventory = require("src.inventory")
 local guiutil = require("src.guiutil")
 
@@ -28,29 +27,20 @@ local system = jutils.object:subclass("PlayerGui")
 local the_player = nil
 
 local menu = jui.scene:new({}, {
-    bg = {
-        jui.rectangle:new({
-            scaleSize = jutils.vec2.new(1, 1),
-            pixelSize = jutils.vec2.new(0, 0),
-            scalePosition = jutils.vec2.new(0, 0),
-            pixelPosition = jutils.vec2.new(0, 0),
-            borderEnabled = false,
-            backgroundColor = {0, 0, 0, 0.5}
-        }),
-        {
-            btn = guiutil.make_button({
-                text = "Save and Exit",
+    bg = jui.rectangle:new({
+		scaleSize = jutils.vec2.new(1, 1),
+		pixelSize = jutils.vec2.new(0, 0),
+		scalePosition = jutils.vec2.new(0, 0),
+		pixelPosition = jutils.vec2.new(0, 0),
+		borderEnabled = false,
+		backgroundColor = {0, 0, 0, 0.5}
+	}, {
+		exitbutton = jui.rectangle:new({
 
-            }, {
-                scaleSize = jutils.vec2.new(0, 0),
-                pixelSize = jutils.vec2.new(200, 50),
-                scalePosition = jutils.vec2.new(1, 1),
-                pixelPosition = jutils.vec2.new(-220, -70),
-            }, function()
-				the_player.world.tryingToEnd = true
-            end)
-        }
-    }
+		}, {
+			
+		})
+	})
 })
 
 -- why the fuck is it instanced?

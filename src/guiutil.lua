@@ -41,36 +41,6 @@ local gui_utils = {
     core_text_style = core_text_style
 }
 
-function gui_utils.make_button(textstyle, style, clickCallback)
-
-    style = style or {}
-    local box = jui.nineslice:new(jutils.table.combine(style, core_button_style))
-    local text = jui.text:new(jutils.table.combine(textstyle, core_text_style))
-    return {
-        box,
-        {
-            text = {
-                text
-            },
-            click = {
-                jui.mouseListener:new({
-                    mouseEnter = function()
-                        text.textColor = {0.7, 0.7, 0.7}
-                        box.color = {0.5, 0.5, 0.5}
-                    end,
-                    mouseExit = function()
-                        
-                        text.textColor = {1, 1, 1}
-                        box.color = {1, 1, 1}
-                    end,
-
-                    mouseButtonUp = clickCallback
-                })
-            }
-        }
-    }
-
-end
 
 
 return gui_utils

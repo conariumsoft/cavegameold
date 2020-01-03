@@ -7,6 +7,47 @@ local settings_mod = require("src.settings")
 
 local guiutil = require("src.guiutil")
 
+
+----------------------------------------------
+-- der util functions
+local function recursive_enumerate(folder, filetree, fsize)
+
+	local lfs = love.filesystem
+
+	fsize = fsize or 0
+
+	local files_table = lfs.getDirectoryItems(folder)
+
+	for _, v in ipairs(files_table) do
+		local file = folder.."/"..v
+
+		local info = love.filesystem.getInfo(file)
+
+		if info.type == "file" then
+			fsize = fsize + info.size
+			filetree = filetree .. "\n"..file
+		elseif info.type == "directory" then
+			filetree = filetree .. "\n" ..file.. " (DIR"
+			filetree, fsize = recursive_enumerate(file, filetree, fsize)
+		end
+	end
+	return filetree, fsize
+end
+
+local function recursive_delete(item)
+	if love.filesystem.getInfo(item, "directory") then
+		for _, child in pairs(love.filesystem.getDirectoryItems(item)) do
+			recursive_delete(item .. "/" .. child)
+			love.filesystem.remove(item .. "/" .. child)
+		end
+	elseif love.filesystem.getInfo(item) then
+		love.filesystem.remove(item)
+	end
+	love.filesystem.remove(item)
+end
+
+----
+
 --[[
 	outline:
 	up & down - move selection
@@ -126,8 +167,7 @@ local world_name_input = jui.textinput:new({
 	textXAlign = "center",
 	textYAlign = "bottom",
 	onInput = function(self, text)
-		menu_module.has_chosen_world = true
-        menu_module.selected_world_name = text
+		
 	end
 })
 
@@ -164,20 +204,14 @@ local function world_load_box(worldname, data)
 	local box = jui.rectangle:new({
 		backgroundColor = {1, 1, 1, 0},
 		scaleSize = jutils.vec2.new(1, 0),
-		pixelSize = jutils.vec2.new(0, 20)
+		pixelSize = jutils.vec2.new(0, 20),
+		worldname = worldname,
 	}, {
-		title_text = jui.text:new({
-			text = worldname,
+		text = jui.text:new({
+			text = worldname..data,
 			textYAlign = "center",
 			textXAlign = "left",
 			textColor = {0.8, 0.8, 0.8},
-			font = guiutil.fonts.font_16,
-		}),
-		data_text = jui.text:new({
-			text = data,
-			textYAlign = "center",
-			textXAlign = "right",
-			textColor = {0.75, 0.75, 0.75},
 			font = guiutil.fonts.font_16,
 		}),
 	})
@@ -186,30 +220,6 @@ local function world_load_box(worldname, data)
 end
 
 local world_menu_list = {}
-
-local function recursive_enumerate(folder, filetree, fsize)
-
-	local lfs = love.filesystem
-
-	fsize = fsize or 0
-
-	local files_table = lfs.getDirectoryItems(folder)
-
-	for _, v in ipairs(files_table) do
-		local file = folder.."/"..v
-
-		local info = love.filesystem.getInfo(file)
-
-		if info.type == "file" then
-			fsize = fsize + info.size
-			filetree = filetree .. "\n"..file
-		elseif info.type == "directory" then
-			filetree = filetree .. "\n" ..file.. " (DIR"
-			filetree, fsize = recursive_enumerate(file, filetree, fsize)
-		end
-	end
-	return filetree, fsize
-end
 
 local function get_world_saves()
 
@@ -234,8 +244,6 @@ local function reset_load_menu_states()
 	get_world_saves()
 end
 
-
-
 load_world_ui = jui.scene:new({}, {
 
 	list = jui.rectangle:new({
@@ -243,7 +251,7 @@ load_world_ui = jui.scene:new({}, {
 		pixelSize = jutils.vec2.new(800, 500),
 		pixelPosition = jutils.vec2.new(50, 50),
 	}, {
-		world_list = jui.list:new({}, world_menu_list)
+		button_list = jui.list:new({}, world_menu_list)
 
 	}),
 	infotext = jui.text:new({
@@ -268,8 +276,7 @@ credits_ui = jui.scene:new({}, {
 		font = guiutil.fonts.font_14,
 		textColor = jutils.color.fromHex("#FFFFFF"),
 		textXAlign = "center",
-		textYAlign = "bottom",
-		
+		textYAlign = "bottom",	
 	}),
 	credits_text = jui.text:new({
 		pixelSize = jutils.vec2.new(1000, 20),
@@ -301,7 +308,6 @@ Evan Walter
 		textColor = jutils.color.fromHex("#FFFFFF"),
 		textXAlign = "center",
 		textYAlign = "top",
-		
 	})
 })
 
@@ -312,8 +318,6 @@ local splashtime = 0
 local selected = 1
 
 local max_selected = 1
-
-
 
 local function selection_wrap_sanity_check()
 	if selected < 1 then selected = max_selected end
@@ -339,17 +343,38 @@ function menu_module.keypressed(key)
 		selected = selected + 1
 	end
 
-
-
 	selection_wrap_sanity_check()
 
-	if key == "return" or key == "space" then
-		activate_button()
+	if key == "return" then
+		if current_screen == new_world_ui then
+			menu_module.has_chosen_world = true
+			menu_module.selected_world_name = world_name_input.internalText
+		elseif current_screen == load_world_ui then
+			local buttonlist = current_screen:find("button_list")
+		
+			local btn = buttonlist.children[selected]
+		
+			menu_module.selected_world_name = btn.worldname
+			menu_module.has_chosen_world = true
+		else
+			activate_button()
+		end
+		selected = 1
+	end
+
+	if key == "f8" and current_screen == load_world_ui then
+		local buttonlist = current_screen:find("button_list")
+		
+		local btn = buttonlist.children[selected]
+		
+		recursive_delete("worlds/"..btn.worldname)
+		reset_load_menu_states()
 	end
 
 	if key == "escape" then
 		if current_screen == credits_ui or current_screen == load_world_ui or current_screen == new_world_ui or current_screen == settings_ui then
 			current_screen = main_ui
+			selected = 1
 		end
 	end
 
