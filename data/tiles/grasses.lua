@@ -34,6 +34,21 @@ local function grassCheck(world, x, y)
 	end
 end
 
+local function skygrassCheck(world, x, y)
+	local stayalive = adjacentToNonSolidTile(world, x, y)
+
+	if not stayalive then world:setTile(x, y, tilelist.DIRT.id) return end
+
+
+	for dx = -1, 1 do
+		for dy = -1, 1 do
+			if world:getTile(x+dx, y+dy) == tilelist.DIRT.id and adjacentToNonSolidTile(world, x+dx, y+dy) then
+				world:setTile(x+dx, y+dy, tilelist.SKY_GRASS.id)
+			end
+		end
+	end
+end
+
 local function bluegrassCheck(world, x, y)
 	local stayalive = adjacentToNonSolidTile(world, x, y)
 
@@ -202,6 +217,22 @@ newtile("BLUE_GRASS", {
 	end,
 	layeredRender = function(x, y, state, dmg)
 		return tile_layered_render(tilelist.BLUE_GRASS.id, "soil", {0.45, 0.25, 0.1}, {0, 0, 1}, x, y, state, dmg)
+	end,
+	tags = {"plantable-on"},
+	drop = "DIRT_TILE",
+})
+
+newtile("SKY_GRASS", {
+	color = {0.5, 0.5, 1},
+	texture = "soil",
+	light = {0.25, 0.25, 0.5},
+	absorb = 0.1,
+	randomupdate = skygrassCheck,
+	tileupdate = function(world, x, y)
+		bitmask_tile_update(tilelist.SKY_GRASS.id, world, x, y)
+	end,
+	layeredRender = function(x, y, state, dmg)
+		return tile_layered_render(tilelist.SKY_GRASS.id, "soil", {0.45, 0.25, 0.1}, {0, 1, 1}, x, y, state, dmg)
 	end,
 	tags = {"plantable-on"},
 	drop = "DIRT_TILE",

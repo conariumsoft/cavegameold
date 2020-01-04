@@ -35,6 +35,18 @@ local function logValidCheck(world, x, y)
 	end
 end
 
+local function supports_pinelog(tileid)
+	if tileid == tilelist.PINE_LOG.id then return true end
+	if tileid == tilelist.PINE_ROOT.id then return true end
+end
+
+local function pineLogValidCheck(world, x, y)
+	local below = supports_pinelog(world:getTile(x, y+1))
+
+
+	if not below then world:setTile(x, y, tilelist.AIR.id, true) end
+end
+
 local function leavesRandomUpdate(world, x, y)
 	local die = true
 
@@ -56,7 +68,7 @@ local function pine_leavesRandomUpdate(world, x, y)
 
 	for dx = -6, 6 do
 		for dy = -6, 6 do
-			if world:getTile(x+dx, y+dy) == tilelist.LOG.id then
+			if world:getTile(x+dx, y+dy) == tilelist.PINE_LOG.id then
 				die = false
 			end
 		end
@@ -148,10 +160,10 @@ newtile("PINE_LOG", {
 	collide = false,
 	texture = "log",
 	absorb = 0,
-	tileupdate = logValidCheck,
-	drop = "PLANK_TILE",
+	tileupdate = pineLogValidCheck,
+	drop = "PINE_PLANK_TILE",
 	hardness = 8,
-	tags = {"PINE_LOG"}
+	tags = {"LOG"}
 })
 
 newtile("LEAVES", {

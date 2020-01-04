@@ -2,9 +2,7 @@
 -- @author Joshua O'Leary
 -- @copyright 2019 Conarium Software
 
-
 local generator = {}
-
 
 local config = require("config")
 local tiles = require("src.tiles")
@@ -15,7 +13,6 @@ local sys = 30
 
 local DEEPWORLD_DEPTH = 300
 
-
 local jutils = require("src.jutils")
 local noise = require("src.noise")
 
@@ -25,8 +22,6 @@ local getSurfaceNoise = terrainMath.getSurfaceNoise
 local getBiomeNoise = terrainMath.getBiomeNoise -- these are just surface biomes
 
 local surface_biome_depth = 250
-
-
 
 local function chunkSurfacePass(chunk)
 	local worldx = chunk.position.x*config.CHUNK_SIZE
@@ -106,7 +101,6 @@ local function chunkSurfacePass(chunk)
 					elseif chosen_biome == "alpine" then
 
 							
-
 						if getSurfaceNoise(worldx+x, worldy+y-1) <= 0 then
 							chunk.tiles[x][y] = tiles.DIRT.id
 
@@ -133,6 +127,22 @@ local function chunkSurfacePass(chunk)
 						end
 					end
 							
+				end
+			-- floating islands
+			elseif level < -200 then
+				local yes = level % 64
+				local floatingislandnoise = noise.noise(worldx+x, worldy+y, 70, 70)
+				local nos = floatingislandnoise - (yes/64)
+				local nos2 = floatingislandnoise - (yes/80)
+
+				if nos2 > 0.45 then
+					chunk.tiles[x][y] = tiles.CLOUD.id
+				end
+				if nos > 0.55 then
+					chunk.tiles[x][y] = tiles.DIRT.id
+					if jutils.math.round(nos, 1) == 0.6 then
+						chunk.tiles[x][y] = tiles.SKY_GRASS.id
+					end
 				end
 			end
 
@@ -338,14 +348,24 @@ local function chunkOrePass(chunk, seed)
 
 			end
 
+			if worldy+y < -100 and chunk.tiles[x][y] == tiles.AIR.id then
+				oretest(tiles.CLOUD.id, x, y, 66, 48, 0.45)
+			end
+
 			if chunk.tiles[x][y] ~= tiles.AIR.id then
 				
-				-- iron, copper, and tin generation
-				oretest(tiles.IRON_ORE.id, x, y, 420, 16, 0.47)
 
-				oretest(tiles.COPPER_ORE.id, x, y, 69, 20, 0.45)
+				
 
-				oretest(tiles.TIN_ORE.id, x, y, -666, 24, 0.46)
+
+				if worldy+y > 0 then
+					-- iron, copper, and tin generation
+					oretest(tiles.IRON_ORE.id, x, y, 420, 16, 0.47)
+
+					oretest(tiles.COPPER_ORE.id, x, y, 69, 20, 0.45)
+
+					oretest(tiles.TIN_ORE.id, x, y, -666, 24, 0.46)
+				end
 
 				-- gold, lead, aluminium
 

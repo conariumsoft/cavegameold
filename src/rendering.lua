@@ -103,9 +103,15 @@ local tile_cache = {
 }
 
 
+local function stencilFunc()
+	love.graphics.circle("fill", 0, 0, 8)
+end
+
 ---
 function renderer.queuetile(tileid, state, dmg, r, g, b, tx, ty)
 	
+	
+
 	if properties.draw_air == false then
 		if tileid == 0 then return true end
 	elseif tileid == 0 then
@@ -215,12 +221,13 @@ function renderer.queuetile(tileid, state, dmg, r, g, b, tx, ty)
 	local realQuad = textureReference.tiles[quad]
 	if not realQuad then error(quad.." doesn't exist in textureReferences!") end
 	spriteBatch:add(realQuad, tx*config.TILE_SIZE, ty*config.TILE_SIZE)
-	
 	if dmg > 0 then
 		damagebatch:setColor(1,1,1, dmg/maxdamage)
 		local damageid = damagebatch:add(tx*config.TILE_SIZE, ty*config.TILE_SIZE)
 	end
+	
 	return true
+	
 end
 
 ---

@@ -21,6 +21,64 @@ local houses = {
 	"data.structures.underhouse.house2",
 }
 
+local oak_tree_max_height = 15
+local oak_tree_min_height = 5
+
+local function check_trunk_is_valid(world, x, y, goal_height)
+	for inc = 1, goal_height + 1 do
+		if not world:getTile(x, y - inc) == tiles.AIR.id then
+			return false
+		end
+
+	end
+	return true
+end
+
+local function gen_oak_tree(world, x, y)
+	local goal_height = math.random(oak_tree_min_height, oak_tree_max_height)
+
+
+	if check_trunk_is_valid(world, x, y, goal_height) == false then return end
+
+	if world:getTile(x-1, y-1) == tiles.AIR.id and world:getTile(x-1, y) ~= tiles.AIR.id then
+		world:setTile(x-1, y-1, tiles.ROOT_LEFT.id)
+	end
+	if world:getTile(x+1, y-1) == tiles.AIR.id and world:getTile(x+1, y) ~= tiles.AIR.id then
+		world:setTile(x+1, y-1, tiles.ROOT_RIGHT.id)
+	end
+
+	world:setTile(x, y-1, tiles.ROOT.id)
+
+	for inc = 2, goal_height do
+		world:setTile(x, y - inc, tiles.LOG.id)
+	end
+	local canopysize = 2
+	for deltax = -canopysize, canopysize do
+		for deltay = -canopysize, canopysize do
+			if world:getTile(x + deltax, (y - goal_height) + deltay) == tiles.AIR.id then
+				world:setTile(x + deltax, (y - goal_height) + deltay, tiles.LEAVES.id)
+			end
+		end
+	end
+end
+
+local spruce_tree_max_height = 25
+local spruce_tree_min_height = 15
+
+local function gen_spruce_tree(world, x, y)
+	local goal_height = math.random(spruce_tree_max_height, spruce_tree_max_height)
+
+
+	if check_trunk_is_valid(world, x, y, goal_height) == false then return end
+
+
+	world:setTile(x, y-1, tiles.PINE_ROOT.id)
+
+	for inc = 2, goal_height do
+		world:setTile(x, y - inc, tiles.PINE_LOG.id)
+	end
+end
+
 local function generateFromFile(structure, world, tx, ty)
 	for key, name in pairs(structure.tiles) do
 		local x, y = grid.keyToCoordinates(key)
@@ -64,8 +122,19 @@ return function(world, tilex, tiley)
 
 	local surface_noise = terrainMath.getSurfaceNoise(tilex, tiley)
 
-	if surface_noise > -200 then
-		-- TODO: sky structures
+	if surface_noise < -200 then
+		local tree3Noise = noise.noise(tilex+128, tiley, 18, 18)
+		local doTree = math.random()
+		if treeGroveDensity > doTree then
+
+			if world:getTile(tilex, tiley) == tiles.DIRT.id and world:getTile(tilex, tiley-1) == tiles.AIR.id then
+				if tree3Noise > 0.95 then
+					treeGenerate(pine_tree, world, tilex, tiley)
+				else
+					treeGenerate(pine_tree_1, world, tilex, tiley)
+				end
+			end
+		end
 	end
 
 	if surface_noise > -10 and surface_noise < 10 then
@@ -84,14 +153,11 @@ return function(world, tilex, tiley)
 		if chosen_biome == "alpine" then
 			local tree3Noise = noise.noise(tilex+128, tiley, 18, 18)
 			local doTree = math.random()
-			if treeGroveDensity > doTree then
+			if treeGroveDensity > doTree and tilex%4 == 0 then
 
 				if world:getTile(tilex, tiley) == tiles.DIRT.id then
-					if tree3Noise > 0.95 then
-						treeGenerate(pine_tree, world, tilex, tiley)
-					else
-						treeGenerate(pine_tree_1, world, tilex, tiley)
-					end
+					--treeGenerate(pine_tree_1, world, tilex, tiley)
+					gen_spruce_tree(world, tilex, tiley)
 				end
 			end
 		end
@@ -131,7 +197,7 @@ return function(world, tilex, tiley)
 					if tree3Noise > 0.95 then
 						bigtree(world, tilex, tiley-1)
 					else
-						maketree(world, tilex, tiley)
+						gen_oak_tree(world, tilex, tiley)
 					end
 				end
 			end

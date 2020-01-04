@@ -68,7 +68,7 @@ newtile("TOXIC_GAS", {
 })
 
 newtile("COBWEB", {
-    texture = "cobweb",
+    texture = "stibe",
     color = {1, 1, 1, 0.75},
     solid = false,
     hardness = 0.5,
@@ -78,6 +78,31 @@ newtile("COBWEB", {
             if separation.x and separation.y and normal.x and normal.y then
                 entity.velocity.x = jutils.math.clamp(-10, entity.velocity.x, 10)
                 entity.velocity.y = jutils.math.clamp(-100, entity.velocity.y, 5)
+                local tx, ty = grid.pixelToTileXY(entity.position.x, entity.position.y)
+                local tile = entity.world:getTile(tx, ty)
+                if tile == tilelist.COBWEB.id then
+                    local randydandy = math.random()
+                    if randydandy > 0.95 then 
+                        entity.world:setTile(tx, ty, tilelist.AIR.id)
+                    end 
+                end
+            end
+        end
+    end,
+})
+
+newtile("CLOUD", {
+    texture = "blank",
+    color = {1, 1, 1},
+    solid = false,
+    hardness = 1,
+    absorb = 0.1,
+    customCollision = function(entity, separation, normal)
+        if separation and normal then
+            
+            if separation.x and separation.y and normal.x and normal.y then
+                entity.velocity.x = jutils.math.clamp(-20, entity.velocity.x, 20)
+                entity.velocity.y = jutils.math.clamp(-100, entity.velocity.y, 20)
                 local tx, ty = grid.pixelToTileXY(entity.position.x, entity.position.y)
                 local tile = entity.world:getTile(tx, ty)
                 if tile == tilelist.COBWEB.id then
