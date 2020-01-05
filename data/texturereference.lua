@@ -125,7 +125,28 @@ local references = {
 		mechanarium_3_2 = tileQuad(14, 7),
 
 		--
-		blank = tileQuad(15, 7)
+		blank = tileQuad(15, 7),
+
+		chair_1_1 = tileQuad(10, 8),
+		chair_1_2 = tileQuad(10, 9),
+
+		bookshelf_1_1 = tileQuad(11, 8),
+		bookshelf_2_1 = tileQuad(12, 8),
+		bookshelf_1_2 = tileQuad(11, 9),
+		bookshelf_2_2 = tileQuad(12, 9),
+		bookshelf_1_3 = tileQuad(11, 10),
+		bookshelf_2_3 = tileQuad(12, 10),
+
+		bed_1_1 = tileQuad(13, 8),
+		bed_2_1 = tileQuad(14, 8),
+		bed_3_1 = tileQuad(15, 8),
+
+
+
+		art_forest_1_1 = tileQuad(14, 14),
+		art_forest_2_1 = tileQuad(15, 14),
+		art_forest_1_2 = tileQuad(14, 15),
+		art_forest_2_2 = tileQuad(15, 15)
 	},
 	liquids = {
 		[1] = tileQuad(15, 0),

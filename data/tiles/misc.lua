@@ -68,7 +68,7 @@ newtile("TOXIC_GAS", {
 })
 
 newtile("COBWEB", {
-    texture = "stibe",
+    texture = "cobweb",
     color = {1, 1, 1, 0.75},
     solid = false,
     hardness = 0.5,

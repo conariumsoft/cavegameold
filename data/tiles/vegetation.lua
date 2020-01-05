@@ -16,7 +16,6 @@ end
 local function plantValidityCheck(world, x, y)
 	if tilemanager:tileHasTag(world:getTile(x, y+1), "plantable-on") then
 		return true
-		
 	end
 	return false
 end

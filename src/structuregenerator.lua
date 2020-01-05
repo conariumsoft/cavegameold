@@ -9,8 +9,6 @@ local jutils = require("src.jutils")
 local tiles = require("src.tiles")
 local backgrounds = require("src.backgrounds")
 local grid = require("src.grid")
-local maketree = require("data.structures.trees.maketree")
-local bigtree = require("data.structures.trees.bigtree")
 local terrainMath = require("src.terrain")
 
 local treeGroveDensity = 0.3 -- 0 - 1, how dense groves of trees are populated
@@ -23,6 +21,12 @@ local houses = {
 
 local oak_tree_max_height = 15
 local oak_tree_min_height = 5
+
+local large_oak_max_height = 35
+local large_oak_min_height = 15
+
+local spruce_tree_max_height = 25
+local spruce_tree_min_height = 15
 
 local function check_trunk_is_valid(world, x, y, goal_height)
 	for inc = 1, goal_height + 1 do
@@ -62,15 +66,49 @@ local function gen_oak_tree(world, x, y)
 	end
 end
 
-local spruce_tree_max_height = 25
-local spruce_tree_min_height = 15
-
-local function gen_spruce_tree(world, x, y)
-	local goal_height = math.random(spruce_tree_max_height, spruce_tree_max_height)
-
+local function gen_large_oak_tree(world, x, y)
+	local goal_height = math.random(large_oak_min_height, large_oak_max_height)
 
 	if check_trunk_is_valid(world, x, y, goal_height) == false then return end
 
+	for dx = -1, 1, 1 do
+		local stop = false
+		for dy = 0, 10 do
+			if stop == false then
+				if world:getTile(x+dx, y+dy) == tiles.AIR.id then
+					if world:getTile(x+dx, y+dy+1) ~= tiles.AIR.id then
+
+						stop = true
+						world:setTile(x+dx, y+dy, tiles.ROOT.id)
+					else
+						world:setTile(x+dx, y+dy, tiles.LOG.id)
+					end
+				end
+			end
+		end
+	end
+
+	for inc = 1, goal_height do
+		world:setTile(x, y-inc, tiles.LOG.id)
+		world:setTile(x-1, y-inc, tiles.LOG.id)
+		world:setTile(x+1, y-inc, tiles.LOG.id)
+	end
+
+	local canopysize = 5
+
+	for deltax = -canopysize, canopysize do
+		for deltay = -canopysize, canopysize do
+			if world:getTile(x + deltax, (y - goal_height) + deltay) == tiles.AIR.id then
+				world:setTile(x + deltax, (y - goal_height) + deltay, tiles.LEAVES.id)
+			end
+		end
+	end
+end
+
+local function gen_spruce_tree(world, x, y)
+	local goal_height = math.random(spruce_tree_min_height, spruce_tree_max_height)
+
+	if check_trunk_is_valid(world, x, y, goal_height) == false then return end
 
 	world:setTile(x, y-1, tiles.PINE_ROOT.id)
 
@@ -100,7 +138,6 @@ local function generateFromFile(structure, world, tx, ty)
 	end
 end
 
-
 local function treeGenerate(structure, world, tx, ty)
 	for key, name in pairs(structure.tiles) do
 
@@ -123,15 +160,23 @@ return function(world, tilex, tiley)
 	local surface_noise = terrainMath.getSurfaceNoise(tilex, tiley)
 
 	if surface_noise < -200 then
+
+		if tilex % 32 == 0 and tiley % 32 == 0 and math.random() > 0.9 then
+			if noise.noise(tilex, tiley, 69, 69) > 0.95 then
+				generateFromFile(require("data.structures.airship"), world, tilex, tiley)
+			end
+		end
+
+
 		local tree3Noise = noise.noise(tilex+128, tiley, 18, 18)
 		local doTree = math.random()
 		if treeGroveDensity > doTree then
 
 			if world:getTile(tilex, tiley) == tiles.DIRT.id and world:getTile(tilex, tiley-1) == tiles.AIR.id then
-				if tree3Noise > 0.95 then
+				if tree3Noise > 0.5 then
 					treeGenerate(pine_tree, world, tilex, tiley)
 				else
-					treeGenerate(pine_tree_1, world, tilex, tiley)
+					gen_spruce_tree(world, tilex, tiley)
 				end
 			end
 		end
@@ -149,7 +194,6 @@ return function(world, tilex, tiley)
 			end
 		end
 
-
 		if chosen_biome == "alpine" then
 			local tree3Noise = noise.noise(tilex+128, tiley, 18, 18)
 			local doTree = math.random()
@@ -157,7 +201,7 @@ return function(world, tilex, tiley)
 
 				if world:getTile(tilex, tiley) == tiles.DIRT.id then
 					--treeGenerate(pine_tree_1, world, tilex, tiley)
-					gen_spruce_tree(world, tilex, tiley)
+					treeGenerate(pine_tree_1, world, tilex, tiley)
 				end
 			end
 		end
@@ -195,7 +239,7 @@ return function(world, tilex, tiley)
 
 				if world:getTile(tilex, tiley) == tiles.GRASS.id then
 					if tree3Noise > 0.95 then
-						bigtree(world, tilex, tiley-1)
+						gen_large_oak_tree(world, tilex, tiley-1)
 					else
 						gen_oak_tree(world, tilex, tiley)
 					end

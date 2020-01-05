@@ -118,6 +118,11 @@ background("PLANK", {
 	color = {0.7, 0.5, 0.2},
 })
 
+background("PINE", {
+	texture = "plank",
+	color = {0.7, 0.4, 0.1},
+})
+
 background("WOODEN_POLE", {
 	texture = "pole",
 	color = {0.7, 0.5, 0.2},

@@ -280,6 +280,19 @@ multitile("OPEN_DOOR", 2, 3, {
 	end
 })
 
---[[multitile("BOOKSHELF", 2, 3, {
+multitile("BOOKSHELF", 2, 3, {
+	texture = "bookshelf",
+})
 
-})]]
+multitile("BED", 3, 1, {
+	texture = "bed",
+})
+
+multitile("CHAIR", 1, 2, {
+	texture = "chair"
+})
+
+
+multitile("FOREST_PAINTING", 2, 2, {
+	texture = "art_forest",
+})
