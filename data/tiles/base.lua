@@ -246,6 +246,19 @@ newtile("TIMELESS_BRICK", {
 
 local grid = require("src.grid")
 
+
+--[[local pot_drops = {
+	itemlist.TORCH.id,
+	itemlist.GLOWSTICK.id,
+	itemlist.BULLET.id,
+	itemlist.ROPE_TILE.id,
+	itemlist.IRON_ORE_TILE.id,
+	itemlist.COPPER_ORE_TILE.id,
+
+}]]
+
+-- TODO: make pot drop various items from a set
+
 newtile("POT", {
 	texture = "pot",
 	color = {1,1,1},
@@ -261,15 +274,13 @@ newtile("POT", {
 		if separation.x and separation.y and normal.x and normal.y then
 			local tx, ty = grid.pixelToTileXY(entity.position.x, entity.position.y)
 
-				
 			for dx = -1, 1 do
 				for dy = -1, 1 do
-				
 					if entity.world:getTile(tx+dx, ty+dy) == tilelist.POT.id then
 						entity.world:setTile(tx+dx, ty+dy, tilelist.AIR.id, false)
 						local fag = entity.world:addEntity("itemstack")
 						fag:teleport(entity.position)
-						fag.id = 4
+						--fag.id = pot_drops[math.random(#pot_drops)]
 						fag.amount = math.random(1, 10)
 					end
 				end
