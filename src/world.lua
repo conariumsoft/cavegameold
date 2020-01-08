@@ -1039,6 +1039,10 @@ local redrawTick = 0
 
 ---
 
+local biometransition = 0
+
+local lastbiome = nil
+local currentbiome = nil
 
 ---
 function world:update(dt)
@@ -1108,6 +1112,20 @@ function world:update(dt)
 	local fp = jutils.vec2.new(camx, camy)
 
 	self.focuspoint = fp
+
+	local biome = terrainMath.getBiomeAt(math.floor(self:getPlayer().position.x/8))
+	currentbiome = biome
+
+	if currentbiome ~= lastbiome then
+		biometransition = biometransition + (dt/2)
+
+
+		if biometransition >= 1 then
+			lastbiome = currentbiome
+		end
+	else
+		biometransition = 0
+	end
 end
 
 function world:drawEntities()
@@ -1128,6 +1146,9 @@ local cave_bg_texture = love.graphics.newImage("assets/cavebg.png")
 
 local forest_bg_texture = love.graphics.newImage("assets/backgrounds/forest.png")
 local desert_bg_texture = love.graphics.newImage("assets/backgrounds/desert.png")
+
+
+
 
 function world:draw()
 
@@ -1222,7 +1243,7 @@ function world:draw()
 
 
 	-- draw cloud background
-	local bgscroll = 1.8
+	local bgscroll = 1.25
 	local texsize = 512
 	
 	local x = (camera_pos.x) / bgscroll
@@ -1270,17 +1291,35 @@ function world:draw()
 
 	-- TODO: make background transition when moving biomes
 	-- biome background
-	for dx = -5, 5 do
 
-		local shiftx = x + ( (posx+dx)*256)
-		local shifty = y + ( (posy)*512)
-		love.graphics.setColor(self.ambientlight-0.1, self.ambientlight-0.1, self.ambientlight-0.1)
+	
+	if currentbiome then
+		for dx = -5, 5 do
 
-		local biome = terrainMath.getBiomeAt(math.floor(self:getPlayer().position.x/8))
-		if biome == "forest" then
-			love.graphics.draw(forest_bg_texture, shiftx, shifty, 0, 2, 2)
-		elseif biome == "desert" then
-			love.graphics.draw(desert_bg_texture, shiftx, shifty, 0, 2, 2)
+			local shiftx = x + ( (posx+dx)*256)
+			local shifty = y + ( (posy)*512)
+			love.graphics.setColor(self.ambientlight-0.1, self.ambientlight-0.1, self.ambientlight-0.1, (biometransition~=0) and biometransition or 1)
+
+			if currentbiome == "forest" or currentbiome == "plains" then
+				love.graphics.draw(forest_bg_texture, shiftx, shifty, 0, 2, 2)
+			elseif currentbiome == "desert" then
+				love.graphics.draw(desert_bg_texture, shiftx, shifty, 0, 2, 2)
+			end
+		end
+	end
+
+	if lastbiome ~= currentbiome then
+		for dx = -5, 5 do
+
+			local shiftx = x + ( (posx+dx)*256)
+			local shifty = y + ( (posy)*512)
+			love.graphics.setColor(self.ambientlight-0.1, self.ambientlight-0.1, self.ambientlight-0.1, 1-biometransition)
+
+			if lastbiome == "forest" or lastbiome == "plains" then
+				love.graphics.draw(forest_bg_texture, shiftx, shifty, 0, 2, 2)
+			elseif lastbiome == "desert" then
+				love.graphics.draw(desert_bg_texture, shiftx, shifty, 0, 2, 2)
+			end
 		end
 	end
 

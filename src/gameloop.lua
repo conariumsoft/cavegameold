@@ -440,6 +440,12 @@ return function(args)
 	end
 	
 	function love.keypressed(key)
+
+		if key == "f2" then
+			local s = love.graphics.captureScreenshot("screenshots/"..os.time() .. '.png')
+
+		end
+
 		if gameworld then
 			jcon.keypressed(key)
 
@@ -482,15 +488,17 @@ return function(args)
 		elseif gameworld then
 			gameworld:draw()
 
-			if show_debug_info then
-				love.graphics.setColor(0,0,0, 0.5)
-				love.graphics.rectangle("fill", 2, 2, 500, 48)
-				love.graphics.setColor(1,1,1)
-				love.graphics.print(last_debug_info, 2, 2)
+			if gameworld:getPlayer().show_ui then
+				if show_debug_info then
+					love.graphics.setColor(0,0,0, 0.5)
+					love.graphics.rectangle("fill", 2, 2, 500, 48)
+					love.graphics.setColor(1,1,1)
+					love.graphics.print(last_debug_info, 2, 2)
 
-			else
-				love.graphics.setColor(1,1,1)
-				love.graphics.print("fps: "..love.timer.getFPS(), 2, 2)
+				else
+					love.graphics.setColor(1,1,1)
+					love.graphics.print("fps: "..love.timer.getFPS(), 2, 2)
+				end
 			end
 
 			jcon:draw()

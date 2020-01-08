@@ -278,10 +278,11 @@ newtile("POT", {
 				for dy = -1, 1 do
 					if entity.world:getTile(tx+dx, ty+dy) == tilelist.POT.id then
 						entity.world:setTile(tx+dx, ty+dy, tilelist.AIR.id, false)
-						local fag = entity.world:addEntity("itemstack")
-						fag:teleport(entity.position)
+						-- TODO: this
+						--local fag = entity.world:addEntity("itemstack")
+						--fag:teleport(entity.position)
 						--fag.id = pot_drops[math.random(#pot_drops)]
-						fag.amount = math.random(1, 10)
+						--fag.amount = math.random(1, 10)
 					end
 				end
 			end

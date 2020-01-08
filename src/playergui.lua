@@ -491,7 +491,6 @@ end
 love.graphics.setFont(guiutil.fonts.font_16)
 local text = love.graphics.newText(love.graphics.getFont())
 
-
 local ITEM_DEBUG_INFO = true
 
 function system:drawFullInventory()
@@ -626,6 +625,8 @@ function system:drawStatusEffects()
 end
 
 function system:draw()
+
+	if self.player.show_ui == false then return end
 	love.graphics.push()
 	love.graphics.origin()
 	love.graphics.scale(uiscale, uiscale)

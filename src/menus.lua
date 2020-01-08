@@ -94,6 +94,13 @@ local settings_ui
 local img = love.graphics.newImage("assets/csoft.png")
 
 
+local scene = jui.scene:new({}, {
+	ttt = jui.text:new({
+		text = "cum",
+		
+	})
+})
+
 local splash_ui = jui.scene:new({}, {
 	rect = jui.layoutbox:new({
 		scaleSize = jutils.vec2.new(0.75, 0.75),
@@ -113,7 +120,6 @@ local splash_ui = jui.scene:new({}, {
 			pixelPosition = jutils.vec2.new(-128, -128)
 		})
 	})
-	
 })
 
 

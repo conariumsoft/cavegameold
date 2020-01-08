@@ -18,7 +18,7 @@ do
 				return data
 			end
 		end
-		error("No item with ID ".. itemid.. " exists!")
+		error("No item with ID ".. itemid.. " exists!", 2)
 	end
 
 	function itemcollector:getNumberOfItems()

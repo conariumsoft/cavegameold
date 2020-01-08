@@ -65,6 +65,8 @@ function player:init()
 		falling = false,
 	}
 
+	self.show_ui = true
+
 	self.waiting_for_chunks = true
 
 	-- ghetto retard workaround for emptying input callbacks when player is destroyed
@@ -188,6 +190,10 @@ function player:onKeyPressed(key)
 			stack[1] = 0
 			stack[2] = 0
 		end
+	end
+
+	if key == "f9" then
+		self.show_ui = not self.show_ui
 	end
 
 	if key == "p" then
