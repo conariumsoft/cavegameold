@@ -119,19 +119,16 @@ local splash_ui = jui.scene:new({}, {
 
 local main_ui = jui.scene:new({}, {
 	title_box = jui.layoutbox:new({
-		pixelSize = vec2.new(1000, 30),
-		scaleSize = vec2.new(0, 0),
+		pixelSize = vec2.new(0, 30),
+		scaleSize = vec2.new(1, 0),
 		pixelPosition = vec2.new(0, 30),
-		scalePosition = vec2.new(0, 0),
 	}, {
 		title = jui.text:new({
-			pixelSize = vec2.new(1000, 20),
-			scaleSize = vec2.new(0, 0),
 			text = "CAVE GAME",
 			font = guiutil.fonts.font_40,
 			textColor = jutils.color.fromHex("#FFFFFF"),
 			textXAlign = "center",
-			textYAlign = "top",
+			textYAlign = "center",
 			
 		})
 	}),
@@ -146,7 +143,8 @@ local main_ui = jui.scene:new({}, {
 	buttonbox = jui.layoutbox:new({
 		
 		pixelSize = vec2.new(500, 200),
-		pixelPosition = vec2.new(250, 300),
+		scalePosition = vec2.new(0.5, 0.5),
+		pixelPosition = vec2.new(-250, -100)
 	}, {
 		button_list = jui.list:new({}, {
 			[1] = create_button("New World",  function()
@@ -185,9 +183,24 @@ local world_name_input = jui.textinput:new({
 })
 
 new_world_ui = jui.scene:new({}, {
+	title_box = jui.layoutbox:new({
+		pixelSize = vec2.new(0, 30),
+		scaleSize = vec2.new(1, 0),
+		pixelPosition = vec2.new(0, 30),
+	}, {
+		title = jui.text:new({
+			text = "New World",
+			font = guiutil.fonts.font_30,
+			textColor = jutils.color.fromHex("#FFFFFF"),
+			textXAlign = "center",
+			textYAlign = "center",
+			
+		})
+	}),
 	box = jui.layoutbox:new({
 		pixelSize = vec2.new(500, 40),
-		pixelPosition = vec2.new(256, 100),
+		scalePosition = vec2.new(0.5, 0.5),
+		pixelPosition = vec2.new(-250, -20),
 	
 	}, {
 		txt = jui.text:new({
@@ -197,14 +210,22 @@ new_world_ui = jui.scene:new({}, {
 			textColor = {0.8, 0.8, 0.8},
 			font = guiutil.fonts.font_16,
 		}),
-		input = world_name_input,
+		lilbox = jui.rectangle:new({
+			scaleSize = vec2.new(0.5, 0.5),
+			scalePosition = vec2.new(0.25, 0.5),
+			backgroundColor = {0.15, 0.15, 0.15},
+			borderColor = {0.25, 0.25, 0.25}
+		}, {
+			input = world_name_input,
+		})
+		
 	}),
 	
 
 	infotext = jui.text:new({
-		text = "Press Enter to confirm, or Escape to go back.",
+		text = "ENTER: Confirm\tESCAPE: Back",
 		textYAlign = "bottom",
-		textXAlign = "center",
+		textXAlign = "left",
 		textColor = {0.8, 0.8, 0.8},
 		font = guiutil.fonts.font_16,
 	}),
@@ -232,6 +253,8 @@ end
 
 local world_menu_list = {}
 
+local longest = 0
+
 local function get_world_saves()
 
 	for idx, obj in pairs(world_menu_list) do
@@ -244,6 +267,9 @@ local function get_world_saves()
 
 
 		if data then
+			if #name > longest then
+				longest = #name
+			end
 			local box = world_load_box(name, os.date("%x %X", data.modtime)..", "..math.floor(size/(1000^2)).."mb")
 			
 			world_menu_list[#world_menu_list+1] = box
@@ -256,16 +282,31 @@ local function reset_load_menu_states()
 end
 
 load_world_ui = jui.scene:new({}, {
-
+	title_box = jui.layoutbox:new({
+		pixelSize = vec2.new(0, 30),
+		scaleSize = vec2.new(1, 0),
+		pixelPosition = vec2.new(0, 30),
+	}, {
+		title = jui.text:new({
+			text = "Load World",
+			font = guiutil.fonts.font_30,
+			textColor = jutils.color.fromHex("#FFFFFF"),
+			textXAlign = "center",
+			textYAlign = "center",
+			
+		})
+	}),
 	list = jui.layoutbox:new({
-		pixelSize = jutils.vec2.new(800, 500),
-		pixelPosition = jutils.vec2.new(50, 50),
+		scaleSize = vec2.new(0.75, 0.8),
+		pixelSize = vec2.new(0, -90),
+		pixelPosition = vec2.new(0, 90),
+		scalePosition = vec2.new(0.125, 0),
 	}, {
 		button_list = jui.list:new({}, world_menu_list)
 
 	}),
 	infotext = jui.text:new({
-		text = "Return - load, F8 - delete, F5 - open folder, ESC - back, ARROW - navigate",
+		text = "RETURN: Load\tF8: Delete\tESC: Back\tUP/DOWN: Navigate",
 		textYAlign = "bottom",
 		textXAlign = "left",
 		textColor = {0.8, 0.8, 0.8},
@@ -371,24 +412,26 @@ s_volume_slider = create_arrow_button(
 )
 
 settings_ui = jui.scene:new({}, {
-	titlebox = jui.layoutbox:new({
-		scaleSize = vec2.new(1, 0),
+	title_box = jui.layoutbox:new({
 		pixelSize = vec2.new(0, 30),
+		scaleSize = vec2.new(1, 0),
+		pixelPosition = vec2.new(0, 30),
 	}, {
-		text = jui.text:new({
+		title = jui.text:new({
 			text = "Settings",
-			textYAlign = "center",
+			font = guiutil.fonts.font_30,
+			textColor = jutils.color.fromHex("#FFFFFF"),
 			textXAlign = "center",
-			textColor = {0.8, 0.8, 0.8},
-			font = guiutil.fonts.font_20,
+			textYAlign = "center",
+			
 		})
 	}),
 
 	options = jui.layoutbox:new({
 		scaleSize = vec2.new(1, 1),
-		pixelSize = vec2.new(0, -30),
+		pixelSize = vec2.new(0, -90),
 		scalePosition = vec2.new(0, 0),
-		pixelPosition = vec2.new(0, 30),
+		pixelPosition = vec2.new(0, 90),
 	}, {
 		button_list = jui.list:new({}, {
 			[1] = s_fullscreen_btn,
@@ -402,16 +445,13 @@ settings_ui = jui.scene:new({}, {
 credits_ui = jui.scene:new({}, {
 
 	bottom = jui.text:new({
-		scaleSize = jutils.vec2.new(0, 0),
-		text = "Press Escape to go back.",
+		text = "ESCAPE: Back",
 		font = guiutil.fonts.font_14,
 		textColor = jutils.color.fromHex("#FFFFFF"),
-		textXAlign = "center",
+		textXAlign = "left",
 		textYAlign = "bottom",
 	}),
 	credits_text = jui.text:new({
-		pixelSize = jutils.vec2.new(1000, 20),
-		scaleSize = jutils.vec2.new(0, 0),
 		text =
 [[CAVE GAME
 Developed by conarium software. Copyright 2019-2020.
@@ -428,7 +468,7 @@ William Tomasine - testing & design
 Tyler Stewart - business
 _
 Special Thanks To our Alpha Testers
-"bumpylegoman02"
+"Bumpy"
 "squidthonkv2"
 Evan Walter
 "bosswalrus"
@@ -444,7 +484,7 @@ Evan Walter
 
 current_screen = splash_ui
 
-local splashtime = 3
+local splashtime = 4
 
 local selected = 1
 
@@ -480,6 +520,8 @@ local function arrow_activate(dir)
 
 end
 
+
+
 function menu_module.keypressed(key)
 	if key == "up" then
 		selected = selected - 1
@@ -502,14 +544,15 @@ function menu_module.keypressed(key)
 	if key == "return" then
 		if current_screen == new_world_ui then
 			menu_module.has_chosen_world = true
-			menu_module.selected_world_name = world_name_input.internalText
+			menu_module.selected_world_name = jutils.string.sanitize(world_name_input.internalText, "_")
 		elseif current_screen == load_world_ui then
 			local buttonlist = current_screen:find("button_list")
 		
 			local btn = buttonlist.children[selected]
-		
-			menu_module.selected_world_name = btn.worldname
-			menu_module.has_chosen_world = true
+			if btn then
+				menu_module.selected_world_name = btn.worldname
+				menu_module.has_chosen_world = true
+			end
 		else
 			activate_button()
 		end
@@ -518,11 +561,12 @@ function menu_module.keypressed(key)
 
 	if key == "f8" and current_screen == load_world_ui then
 		local buttonlist = current_screen:find("button_list")
-		
+	
 		local btn = buttonlist.children[selected]
-		
-		recursive_delete("worlds/"..btn.worldname)
-		reset_load_menu_states()
+		if btn then
+			recursive_delete("worlds/"..btn.worldname)
+			reset_load_menu_states()
+		end
 	end
 
 	if key == "escape" then
@@ -599,6 +643,10 @@ function menu_module.update(dt)
 		local splash_img = splash_ui:find("logo")
 
 		splash_img.color = jutils.color.lerp(colors[lastcolor], colors[currentcolor], warp%1)
+
+		local splash_text = splash_ui:find("text")
+
+		splash_text.textColor = jutils.color.lerp(colors[lastcolor], colors[currentcolor], warp%1)
 	end
 
 	local buttonlist = current_screen:find("button_list")
@@ -619,22 +667,9 @@ function menu_module.update(dt)
 	end
 end
 
-local img = love.graphics.newImage("assets/csoft.png")
 
 function menu_module.draw()
-
-	love.graphics.push()
-	--love.graphics.scale(screen_ratio, screen_ratio)
-
-	if current_screen == splash_ui then
-		love.graphics.push()
-		love.graphics.translate(love.graphics.getWidth()/4, love.graphics.getHeight()/2)
-		love.graphics.setColor(1, 1, 1)
-
-		love.graphics.pop()
-	end
 	current_screen:draw()
-	love.graphics.pop()
 end
 
 

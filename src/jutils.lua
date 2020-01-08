@@ -2,6 +2,12 @@
 -- @author Joshua O'Leary
 -- @copyright 2019 Conarium Software
 
+-- characters that will be removed by jutils.string.sanitize
+local illegal_characters = {
+    "\"", "%<", "%>", "%+", "%-", "%*",  "%%", "%$", "#", "@", "!", "{", "}", "|", "\\",
+    "/", ";", ":", "'", "`", "~", "%(", "%)", "%&", "%^"
+}
+
 local jutils = {}
 
 
@@ -273,6 +279,14 @@ jutils.string = {} do
 			o[#o+1], str = str:sub(1, pos1-1), str:sub(pos2+1)
 		end
 		return o
+    end
+
+    function jutils.string.sanitize(str, replacement)
+        for _, char in pairs(illegal_characters) do
+            str = str:gsub(char, replacement)
+        end
+    
+        return str
     end
 
 end

@@ -843,8 +843,11 @@ local function try_flower_spawn(gameworld, tx, ty)
 end
 
 local function try_tortured_spawn(gameworld, tx, ty)
+
+	if ty < 300 then return end
 	local light = gameworld:getLight(tx, ty)
 	if (light[2]+light[3]) > 0.15 then return end
+
 
 	-- needs a 2x2 of free space
 	if is_solid(gameworld, tx, ty) then return end
@@ -860,7 +863,7 @@ end
 
 local mob_weights = {
 	[1] = {
-		weight = 0.25,
+		weight = 0.27,
 		func = try_zombie_spawn,
 	},
 	[2] = {
@@ -868,7 +871,7 @@ local mob_weights = {
 		func = try_flower_spawn,
 	},
 	[3] = {
-		weight = 0.05,
+		weight = 0.005,
 		func = try_tortured_spawn,
 	}
 }
