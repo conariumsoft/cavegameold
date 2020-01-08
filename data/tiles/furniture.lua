@@ -282,17 +282,30 @@ multitile("OPEN_DOOR", 2, 3, {
 
 multitile("BOOKSHELF", 2, 3, {
 	texture = "bookshelf",
+	solid = false,
+	collide = false,
 })
+
+
+tilelist.BOOKSHELF_1_1.collide = true
+tilelist.BOOKSHELF_1_1.tags = {"platformtile"}
+tilelist.BOOKSHELF_2_1.collide = true
+tilelist.BOOKSHELF_2_1.tags = {"platformtile"}
 
 multitile("BED", 3, 1, {
 	texture = "bed",
+	solid = false,
+	collide = false,
 })
 
 multitile("CHAIR", 1, 2, {
-	texture = "chair"
+	texture = "chair",
+	solid = false,
+	collide = false,
 })
-
 
 multitile("FOREST_PAINTING", 2, 2, {
 	texture = "art_forest",
+	solid = false,
+	collide = false,
 })

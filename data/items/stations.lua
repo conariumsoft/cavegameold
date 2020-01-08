@@ -193,3 +193,66 @@ baseitem:new("WORKBENCH", {
     },
     use = multiTilePlace,
 })
+
+baseitem:new("BOOKSHELF", {
+    texture = "bookshelf.png",
+    color = {1, 1, 1},
+    stack = 99,
+    usedistance = 8,
+    speed = 1/10,
+    tilesize = {2, 3},
+    tileset = {
+        BOOKSHELF_1_1 = {1,1},
+        BOOKSHELF_2_1 = {2,1},
+        BOOKSHELF_1_2 = {1,2},
+        BOOKSHELF_2_2 = {2,2},
+        BOOKSHELF_1_3 = {1,3},
+        BOOKSHELF_2_3 = {2,3},
+    },
+    use = multiTilePlace,
+})
+
+baseitem:new("BED", {
+    texture = "bed.png",
+    color = {1, 1, 1},
+    stack = 99,
+    usedistance = 8,
+    speed = 1/10,
+    tilesize = {3, 1},
+    tileset = {
+        BED_1_1 = {1,1},
+        BED_2_1 = {2,1},
+        BED_3_1 = {3,1},
+    },
+    use = multiTilePlace,
+})
+
+baseitem:new("CHAIR", {
+    texture = "chair.png",
+    color = {1, 1, 1},
+    stack = 99,
+    usedistance = 8,
+    speed = 1/10,
+    tilesize = {1, 2},
+    tileset = {
+        CHAIR_1_1 = {1,1},
+        CHAIR_1_2 = {1,2},
+    },
+    use = multiTilePlace,
+})
+
+baseitem:new("FOREST_PAINTING", {
+    texture = "forest_painting.png",
+    color = {1,1,1},
+    stack = 1,
+    usedistance = 8,
+    speed = 1/10,
+    tilesize = {1,2},
+    tileset = {
+        FOREST_PAINTING_1_1 = {1,1},
+        FOREST_PAINTING_2_1 = {2,1},
+        FOREST_PAINTING_1_2 = {1,2},
+        FOREST_PAINTING_2_2 = {2,2}
+    },
+    use = multiTilePlace,
+})
