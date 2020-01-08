@@ -147,7 +147,7 @@ local rectangle = rootObj:subclass("Rectangle")
 function rectangle:init(properties, children)
     self.borderWidth = 1
     self.borderColor = {0,0,1}
-    self.pixelSize = jutils.vec2.new(200, 100)
+    self.pixelSize = jutils.vec2.new(0, 0)
     self.pixelPosition = jutils.vec2.new(0, 0)
     self.scaleSize = jutils.vec2.new(0, 0)
     self.scalePosition = jutils.vec2.new(0, 0)
@@ -163,7 +163,7 @@ function rectangle:update(dt, parent)
     rootObj.update(self, dt, parent)
 end
 
-function rectangle:draw(parent)
+function rectangle:draw()
     if self.enabled then
         local absSize = self.absoluteSize
         local absPos = self.absolutePosition
@@ -177,6 +177,16 @@ function rectangle:draw(parent)
         love.graphics.setColor(self.backgroundColor)
         love.graphics.rectangle("fill", absPos.x, absPos.y, absSize.x, absSize.y, self.bevel)
     end
+end
+
+local layout = rectangle:subclass("layout")
+
+function layout:init(props, children)
+    rectangle.init(self, props, children)
+end
+
+function layout:draw()
+    -- do nothing
 end
 
 local text = rootObj:subclass("Text")
@@ -357,7 +367,7 @@ function image:init(properties, children)
 
     self.pixelSize = jutils.vec2.new(0, 0)
     self.pixelPosition = jutils.vec2.new(0, 0)
-    self.scaleSize = jutils.vec2.new(1, 1)
+    self.scaleSize = jutils.vec2.new(0, 0)
     self.scalePosition = jutils.vec2.new(0, 0)
     self.image = nil
     self.quad = nil
@@ -764,6 +774,7 @@ end
 
 return {
     scene = guiscene,
+    layoutbox = layout,
     rectangle = rectangle,
     text = text,
     textinput = textinput,

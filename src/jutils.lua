@@ -420,8 +420,8 @@ jutils.vec2 = {} do
     -- @param y
     function jutils.vec2.new(x, y)
         local self = setmetatable({}, jutils.vec2)
-        self.x = x
-        self.y = y
+        self.x = (x and x or 0)
+        self.y = (y and y or 0)
         return self
     end
 

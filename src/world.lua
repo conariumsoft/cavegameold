@@ -34,6 +34,7 @@ local entitylist = {
 	flower 	 		= require("src.entities.hostile.flower"),
 	skull 			= require("src.entities.hostile.skull"),
 	caster			= require("src.entities.hostile.caster"),
+	tortured 		= require("src.entities.hostile.tortured"),
 	-- misc game objects
 	itemstack		= require("src.entities.itemstack"),
 	explosion 		= require("src.entities.explosion"),
@@ -81,6 +82,11 @@ local sky_color_table = {
 
 local function get_sky_color(time)
 	time = time % 24
+
+	-- daytime
+	if time > 7 and time < 15 then
+
+	end
 
 	return sky_color_table[time]
 end
@@ -345,7 +351,7 @@ function world:castRay(origin, direction, raydistance, rayaccuracy)
 				if (sx and sy) then	
 					local normalx, normaly = collision.solve(sx, sy, direction.x, direction.y)
 					--print("YES", tiledata.name)
-					return true, current_point.x, current_point.y, sx, sy, normalx, normaly
+					return true, current_point.x, current_point.y, sx, sy, normalx, normaly, tileat
 				end
 			end
 		end
@@ -791,12 +797,12 @@ local function try_zombie_spawn(gameworld, tx, ty)
 
 	-- NOTE: zombie spawn mechanics only check if there is a 1x3 region availible for spawning
 	-- must be night time
-	if not (gameworld.worldtime > (60*18) or gameworld.worldtime < (60*6)) then return end
+	--if not (gameworld.worldtime > (60*18) or gameworld.worldtime < (60*6)) then return end
 
 	local light = gameworld:getLight(tx, ty)
 
 	-- must be fairly dark in this spot
-	if (light[1]+light[2]+light[3]) > 0.5 then return end
+	if (light[1]+light[2]+light[3]) > 0.2 then return end
 
 	-- selected tile must be solid, and there must be 3 pockets of air above
 	if is_solid(gameworld, tx, ty) == false then return end
@@ -832,8 +838,24 @@ local function try_flower_spawn(gameworld, tx, ty)
 	if is_solid(gameworld, tx+1, ty-2) then return end
 
 	local mob = gameworld:addEntity("flower")
-	local rx, ry = tx*config.TILE_SIZE, ty*config.TILE_SIZE	
-	mob:teleport(jutils.vec2.new(rx, ry))
+
+	mob:teleport(jutils.vec2.new(tx*config.TILE_SIZE, ty*config.TILE_SIZE))
+end
+
+local function try_tortured_spawn(gameworld, tx, ty)
+	local light = gameworld:getLight(tx, ty)
+	if (light[2]+light[3]) > 0.15 then return end
+
+	-- needs a 2x2 of free space
+	if is_solid(gameworld, tx, ty) then return end
+	if is_solid(gameworld, tx, ty-1) then return end
+	if is_solid(gameworld, tx+1, ty) then return end
+	if is_solid(gameworld, tx+1, ty+1) then return end
+
+
+	local mob = gameworld:addEntity("tortured")
+
+	mob:teleport(jutils.vec2.new(tx*config.TILE_SIZE, ty*config.TILE_SIZE))
 end
 
 local mob_weights = {
@@ -844,6 +866,10 @@ local mob_weights = {
 	[2] = {
 		weight = 0.15,
 		func = try_flower_spawn,
+	},
+	[3] = {
+		weight = 0.05,
+		func = try_tortured_spawn,
 	}
 }
 
@@ -1090,9 +1116,6 @@ end
 -- a color is assigned for each 3-hour segment of the day
 -- and the colors are lerped between
 
-
-
-
 local SHOW_ENTITY_LIST = false
 
 
@@ -1100,25 +1123,80 @@ local cloud_bg_texture = love.graphics.newImage("assets/clouds.png")
 local star_bg_texture = love.graphics.newImage("assets/stars.png")
 local cave_bg_texture = love.graphics.newImage("assets/cavebg.png")
 
+local forest_bg_texture = love.graphics.newImage("assets/backgrounds/forest.png")
+local desert_bg_texture = love.graphics.newImage("assets/backgrounds/desert.png")
+
 function world:draw()
 
 	-- store graphics coordinate info to reset later
 	love.graphics.push()
 
-	-- override any background crap
+	local sky_color = {0, 0, 0}
 
-	-- holy shit
-	local world_time_hour = math.floor(self.worldtime/60)
-	local world_time_mult = math.floor(world_time_hour/3)*3
-	local start_sky_color = get_sky_color(world_time_mult)
-	local finish_sky_color = get_sky_color(world_time_mult+3)
-	local current_3hour_step = (self.worldtime % 180)
+	local world_time_hour = self.worldtime/60
 
-	local alpha = current_3hour_step / 180
-	local sky_color = jutils.color.lerp(start_sky_color, finish_sky_color, alpha)
+	local daytime_color = {0.05, 0.3, 0.85}
 
-	love.graphics.setColor(sky_color)
-	love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+	-- daytime
+	if world_time_hour >= 7 and world_time_hour <= 19 then
+		sky_color = daytime_color
+		love.graphics.setColor(daytime_color)
+		love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+	end
+
+	-- night time
+	if world_time_hour >= 20 or world_time_hour <= 6 then
+
+		sky_color = {0, 0, 0.01}
+		love.graphics.setColor(sky_color)
+		love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+	end
+
+	-- sunrise
+	if world_time_hour >= 6 and world_time_hour <= 7 then
+
+		local diff_time = ((self.worldtime/60)-6)
+		local top_color = jutils.color.multiply({diff_time, diff_time, diff_time}, daytime_color)
+		local bottom_color = jutils.color.multiply({diff_time, diff_time, diff_time}, {0.85, 0.85, 0.15})
+
+		local cucr = 0
+
+		if world_time_hour > 6.75 then
+			cucr = (world_time_hour-6.75)*2
+		end
+
+		for slice = 0, 20 do
+
+			love.graphics.setColor(jutils.color.lerp(top_color, bottom_color, (slice/20)-cucr))
+			love.graphics.rectangle("fill", 0, (love.graphics.getHeight()/20)*slice, love.graphics.getWidth(), love.graphics.getHeight()/20)
+		end
+	end
+
+	-- sunset
+	if world_time_hour >= 19 and world_time_hour <= 20 then
+		local diff_time = 1-((self.worldtime/60)-19)
+		local top_color = jutils.color.multiply({diff_time, diff_time, diff_time}, daytime_color)
+		local bottom_color = jutils.color.multiply({diff_time, diff_time, diff_time}, {0.75, 0.35, 0.15})
+
+		local cucr = 0
+
+		if world_time_hour < 19.25 then
+			cucr = -((world_time_hour-19.25)*2)
+		end
+
+		if world_time_hour > 19.75 then
+			cucr = (world_time_hour-19.75)*2
+		end
+
+		for slice = 0, 20 do
+
+			love.graphics.setColor(jutils.color.lerp(top_color, bottom_color, (slice/20)-cucr))
+			love.graphics.rectangle("fill", 0, (love.graphics.getHeight()/20)*slice, love.graphics.getWidth(), love.graphics.getHeight()/20)
+		end
+	end
+
+	--love.graphics.setColor(sky_color)
+	--love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
 
 	-- make screen center the origin of screen coordinates
 	love.graphics.translate(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
@@ -1141,16 +1219,16 @@ function world:draw()
 
 
 	-- draw cloud background
-	local bgscroll = 2
+	local bgscroll = 1.8
 	local texsize = 512
 	
-	local x = (camera_pos.x) / bgscroll 
+	local x = (camera_pos.x) / bgscroll
 	local y = camera_pos.y / bgscroll
 
 	local posx = math.floor(x/texsize) 
 	local posy = math.floor(y/texsize)
 	
-	for dx = -3, 3 do
+	for dx = -4, 4 do
 		for dy = -3, 3 do
 				
 			local shiftx = x + ( (posx+dx)*texsize)
@@ -1172,14 +1250,38 @@ function world:draw()
 				love.graphics.draw(cloud_bg_texture, shiftx, shifty, 0, 2, 2)
 				love.graphics.setColor(1-self.ambientlight, 1-self.ambientlight, 1-self.ambientlight, 1-self.ambientlight)
 				love.graphics.draw(star_bg_texture, shiftx, shifty, 0, 2, 2)
-			end
 
-			--love.graphics.setColor(self.ambientlight, self.ambientlight, self.ambientlight, self.ambientlight)
-			--love.graphics.draw(bgtexture, dayquad, shiftx, shifty, 0, 2, 2)
-			--love.graphics.setColor(1-self.ambientlight, 1-self.ambientlight, 1-self.ambientlight, 1-self.ambientlight)
-			--love.graphics.draw(bgtexture, nightquad, shiftx, shifty, 0, 2, 2)
+				
+			end
 		end
 	end
+
+	local bgscroll = 2
+	local texsize = 512
+	
+	local x = (camera_pos.x) / bgscroll 
+	local y = camera_pos.y / bgscroll
+
+	local posx = math.floor(x/256) 
+	local posy = math.floor(0)
+
+	-- TODO: make background transition when moving biomes
+	-- biome background
+	for dx = -5, 5 do
+
+		local shiftx = x + ( (posx+dx)*256)
+		local shifty = y + ( (posy)*512)
+		love.graphics.setColor(self.ambientlight-0.1, self.ambientlight-0.1, self.ambientlight-0.1)
+
+		local biome = terrainMath.getBiomeAt(math.floor(self:getPlayer().position.x/8))
+		if biome == "forest" then
+			love.graphics.draw(forest_bg_texture, shiftx, shifty, 0, 2, 2)
+		elseif biome == "desert" then
+			love.graphics.draw(desert_bg_texture, shiftx, shifty, 0, 2, 2)
+		end
+	end
+
+
 
 	love.graphics.setColor(1,1,1)
 	-- draw foreground and background tiles

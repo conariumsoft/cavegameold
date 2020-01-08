@@ -15,6 +15,39 @@ function laser:init(p1, p2, timer)
     self.timer = timer
 end
 
+
+local function sign(n)
+    return n > 0 and 1 or n < 0 and -1 or 0
+end
+
+local function check_intersect(l1p1, l1p2, l2p1, l2p2)
+    local function check_dir(pt1, pt2, pt3) return sign(((pt2.x-pt1.x)*(pt3.y-pt1.y)) - ((pt3.x-pt1.x)*(pt2.y-pt1.y))) end
+
+    return (check_dir(l1p1, l1p2, l2p1) ~= check_dir(l1p1, l1p2, l2p2)) and (check_dir(l2p1, l2p2, l1p1) ~= check_dir(l2p1, l2p2, l1p2))
+end
+
+
+local function find_intersect(l1p1, l1p2, l2p1, l2p2, seg1, seg2)
+    local a1, b1, a2, b2 = l1p2.y-l1p1.y, l1p1.x - l1p2.x, l2p2.y - l2p1.y, l2p1.x - l2p2.x
+
+    local c1, c2 = a1*l1p1.x+b1*l1p1.y, a2*l2p1.x+b2*l2p1.y
+    local det, x, y = a1*b2 - a2*b1
+
+    if det == 0 then return false end
+
+    x, y = (b2*c1-b1*c2)/det, (a1*c2-a2*c1)/det
+    if seg1 or seg2 then
+        local min, max = math.min, math.max
+
+        if seg1 and not (min(l1p1.x, l1p2.x) <= x and x <= max(l1p1.x, l1p2.x) and min(l1p1.y, l1p2.y) <= y and y <= max(l1p1.y, l1p2.y)) or
+           seg2 and not (min(l2p1.x, l2p2.x) <= x and x <= max(l2p1.x, l2p2.x) and min(l2p1.y, l2p2.y) <= y and y <= max(l2p1.y, l2p2.y)) then
+            return false    
+        end
+    end
+    return x, y
+
+end
+
 function laser:update(dt)
     entity.update(self, dt)
 
@@ -37,8 +70,19 @@ function laser:update(dt)
         for _, entity in pairs(self.world.entities) do
             if entity ~= self then
                 if entity:isA("Zombie") or entity:isA("Flower") then
-                    if pos.x - entity.position.x < entity.boundingbox.x and pos.y - entity.position.y < entity.boundingbox.y then
-                        entity:damage(50)
+
+                    local ep1 = entity.position + jutils.vec2.new(-entity.boundingbox.x, -entity.boundingbox.y)
+                    local ep2 = entity.position + jutils.vec2.new(-entity.boundingbox.x, entity.boundingbox.y)
+                    local ep3 = entity.position + jutils.vec2.new(entity.boundingbox.x, -entity.boundingbox.y)
+                    local ep4 = entity.position + jutils.vec2.new(entity.boundingbox.x, entity.boundingbox.y)
+
+                    local topl    = check_intersect(self.p1, self.p2, ep1, ep3)
+                    local bottoml = check_intersect(self.p1, self.p2, ep2, ep4)
+                    local leftl   = check_intersect(self.p1, self.p2, ep1, ep2)
+                    local rightl  = check_intersect(self.p1, self.p2, ep3, ep4)
+
+                    if topl or bottoml or leftl or rightl then
+                        entity:damage(10)
                     end
                 end
             end

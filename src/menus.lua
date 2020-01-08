@@ -55,6 +55,8 @@ end
 	enter & space - button actuation
 ]]
 
+local vec2 = jutils.vec2
+
 
 local menu_module = {
 	has_chosen_world = false,
@@ -65,10 +67,10 @@ local function create_button(btn_text, actuationCallback)
 	local button = jui.rectangle:new({
 		backgroundColor = {1, 1, 1, 0},
 		borderColor = {1, 1, 0},
-		pixelSize = jutils.vec2.new(0, 24),
-		pixelPosition = jutils.vec2.new(0, 0),
-		scaleSize = jutils.vec2.new(1, 0),
-		scalePosition = jutils.vec2.new(0, 0),
+		pixelSize = vec2.new(0, 24),
+		pixelPosition = vec2.new(0, 0),
+		scaleSize = vec2.new(1, 0),
+		scalePosition = vec2.new(0, 0),
 		borderEnabled = false,
 		actuation = actuationCallback
 	}, {
@@ -89,30 +91,42 @@ local new_world_ui
 local load_world_ui
 local settings_ui
 
+local img = love.graphics.newImage("assets/csoft.png")
+
 
 local splash_ui = jui.scene:new({}, {
-	text = jui.text:new({
-		text = "conarium software",
-		font = guiutil.fonts.font_30,
-		textColor = jutils.color.fromHex("#FFFFFF"),
-		textXAlign = "right",
-		textYAlign = "center"
+	rect = jui.layoutbox:new({
+		scaleSize = jutils.vec2.new(0.75, 0.75),
+		scalePosition = jutils.vec2.new(0.125, 0.125),
+	}, {
+		text = jui.text:new({
+			text = "conarium software",
+			font = guiutil.fonts.font_30,
+			textColor = jutils.color.fromHex("#FFFFFF"),
+			textXAlign = "right",
+			textYAlign = "center"
+		}),
+		logo = jui.image:new({
+			image = img,
+			pixelSize = jutils.vec2.new(256, 256),
+			scalePosition = jutils.vec2.new(0.25, 0.5),
+			pixelPosition = jutils.vec2.new(-128, -128)
+		})
 	})
+	
 })
 
 
 local main_ui = jui.scene:new({}, {
-	title_box = jui.rectangle:new({
-		pixelSize = jutils.vec2.new(1000, 30),
-		scaleSize = jutils.vec2.new(0, 0),
-		pixelPosition = jutils.vec2.new(0, 30),
-		scalePosition = jutils.vec2.new(0, 0),
-		borderEnabled = false,
-		backgroundColor = {0, 0, 0, 0}
+	title_box = jui.layoutbox:new({
+		pixelSize = vec2.new(1000, 30),
+		scaleSize = vec2.new(0, 0),
+		pixelPosition = vec2.new(0, 30),
+		scalePosition = vec2.new(0, 0),
 	}, {
 		title = jui.text:new({
-			pixelSize = jutils.vec2.new(1000, 20),
-			scaleSize = jutils.vec2.new(0, 0),
+			pixelSize = vec2.new(1000, 20),
+			scaleSize = vec2.new(0, 0),
 			text = "CAVE GAME",
 			font = guiutil.fonts.font_40,
 			textColor = jutils.color.fromHex("#FFFFFF"),
@@ -129,11 +143,10 @@ local main_ui = jui.scene:new({}, {
 		textYAlign = "bottom",
 
 	}),
-	buttonbox = jui.rectangle:new({
-		backgroundColor = {1, 1, 1, 0},
-		borderEnabled = false,
-		pixelSize = jutils.vec2.new(500, 200),
-		pixelPosition = jutils.vec2.new(250, 300),
+	buttonbox = jui.layoutbox:new({
+		
+		pixelSize = vec2.new(500, 200),
+		pixelPosition = vec2.new(250, 300),
 	}, {
 		button_list = jui.list:new({}, {
 			[1] = create_button("New World",  function()
@@ -172,12 +185,10 @@ local world_name_input = jui.textinput:new({
 })
 
 new_world_ui = jui.scene:new({}, {
-	box = jui.rectangle:new({
-		pixelSize = jutils.vec2.new(500, 40),
-		pixelPosition = jutils.vec2.new(256, 100),
-		backgroundColor = {1, 1, 1, 0},
-		borderEnabled = false,
-
+	box = jui.layoutbox:new({
+		pixelSize = vec2.new(500, 40),
+		pixelPosition = vec2.new(256, 100),
+	
 	}, {
 		txt = jui.text:new({
 			text = "World Name:",
@@ -246,8 +257,7 @@ end
 
 load_world_ui = jui.scene:new({}, {
 
-	list = jui.rectangle:new({
-		backgroundColor = {1, 1, 1, 0},
+	list = jui.layoutbox:new({
 		pixelSize = jutils.vec2.new(800, 500),
 		pixelPosition = jutils.vec2.new(50, 50),
 	}, {
@@ -264,8 +274,129 @@ load_world_ui = jui.scene:new({}, {
 })
 reset_load_menu_states()
 
-settings_ui = jui.scene:new({}, {
 
+local function create_button(btn_text, actuationCallback)
+	local button = jui.rectangle:new({
+		backgroundColor = {1, 1, 1, 0},
+		borderColor = {1, 1, 0},
+		pixelSize = vec2.new(0, 24),
+		pixelPosition = vec2.new(0, 0),
+		scaleSize = vec2.new(1, 0),
+		scalePosition = vec2.new(0, 0),
+		borderEnabled = false,
+		actuation = actuationCallback
+	}, {
+		text = jui.text:new({
+			text = btn_text,
+			font = guiutil.fonts.font_16,
+			textColor = jutils.color.fromHex("#FFFFFF"),
+			textXAlign = "center",
+		}),
+	})
+	return button
+end
+
+local function create_arrow_button(btn_text, activation)
+	local button = jui.rectangle:new({
+		backgroundColor = {1, 1, 1, 0},
+		borderColor = {1, 1, 0},
+		pixelSize = vec2.new(0, 24),
+		pixelPosition = vec2.new(0, 0),
+		scaleSize = vec2.new(1, 0),
+		scalePosition = vec2.new(0, 0),
+		borderEnabled = false,
+		arrow_activate = activation
+	}, {
+		text = jui.text:new({
+			text = btn_text,
+			font = guiutil.fonts.font_16,
+			textColor = jutils.color.fromHex("#FFFFFF"),
+			textXAlign = "center",
+
+		}),
+	})
+	return button
+end
+
+local function bool_to_english(val)
+	if val == true then return "on" end
+	if val == false then return "off" end
+end
+
+local s_fullscreen_btn
+s_fullscreen_btn = create_button(
+	"Fullscreen: ".. bool_to_english(settings_mod.get("fullscreen")),
+	function()
+		settings_mod.set("fullscreen", not settings_mod.get("fullscreen"))
+		s_fullscreen_btn.children.text.text = "Fullscreen: ".. bool_to_english(settings_mod.get("fullscreen"))
+	end
+)
+
+local s_vsync_btn
+
+s_vsync_btn = create_button(
+	"V-Sync: ".. bool_to_english(settings_mod.get("vsync")),
+	function()
+		settings_mod.set("vsync", not settings_mod.get("vsync"))
+		s_vsync_btn.children.text.text = "V-Sync: ".. bool_to_english(settings_mod.get("vsync"))
+	end
+)
+
+local s_particles_btn
+
+s_particles_btn = create_button(
+	"Particles: ".. bool_to_english(settings_mod.get("particles")),
+	function()
+		settings_mod.set("particles", not settings_mod.get("particles"))
+		s_particles_btn.children.text.text = "Particles: ".. bool_to_english(settings_mod.get("particles"))
+	end
+)
+
+local s_volume_slider
+s_volume_slider = create_arrow_button(
+	"Volume: ".. tostring(settings_mod.get("volume")),
+	function(dir)
+		local vol = settings_mod.get("volume")
+
+		vol = vol + (dir*5)
+
+		vol = math.max(vol, 0)
+		vol = math.min(vol, 100)
+
+		settings_mod.set("volume", vol)
+
+		s_volume_slider.children.text.text = "Volume: ".. tostring(settings_mod.get("volume"))
+	end
+
+)
+
+settings_ui = jui.scene:new({}, {
+	titlebox = jui.layoutbox:new({
+		scaleSize = vec2.new(1, 0),
+		pixelSize = vec2.new(0, 30),
+	}, {
+		text = jui.text:new({
+			text = "Settings",
+			textYAlign = "center",
+			textXAlign = "center",
+			textColor = {0.8, 0.8, 0.8},
+			font = guiutil.fonts.font_20,
+		})
+	}),
+
+	options = jui.layoutbox:new({
+		scaleSize = vec2.new(1, 1),
+		pixelSize = vec2.new(0, -30),
+		scalePosition = vec2.new(0, 0),
+		pixelPosition = vec2.new(0, 30),
+	}, {
+		button_list = jui.list:new({}, {
+			[1] = s_fullscreen_btn,
+			[2] = s_particles_btn,
+			[3] = s_volume_slider,
+			[4] = s_vsync_btn,
+		})
+	})
 })
 
 credits_ui = jui.scene:new({}, {
@@ -276,12 +407,12 @@ credits_ui = jui.scene:new({}, {
 		font = guiutil.fonts.font_14,
 		textColor = jutils.color.fromHex("#FFFFFF"),
 		textXAlign = "center",
-		textYAlign = "bottom",	
+		textYAlign = "bottom",
 	}),
 	credits_text = jui.text:new({
 		pixelSize = jutils.vec2.new(1000, 20),
 		scaleSize = jutils.vec2.new(0, 0),
-		text = 
+		text =
 [[CAVE GAME
 Developed by conarium software. Copyright 2019-2020.
 _
@@ -331,7 +462,22 @@ local function activate_button()
 
 	local btn = buttonlist.children[selected]
 
-	btn.actuation()
+	if btn.actuation then
+		btn.actuation()
+	end
+end
+
+local function arrow_activate(dir)
+	local buttonlist = current_screen:find("button_list")
+
+	if buttonlist == nil then return end
+
+	local btn = buttonlist.children[selected]
+
+	if btn.arrow_activate then
+		btn.arrow_activate(dir)
+	end
+
 end
 
 function menu_module.keypressed(key)
@@ -344,6 +490,14 @@ function menu_module.keypressed(key)
 	end
 
 	selection_wrap_sanity_check()
+
+	if key == "left" then
+		arrow_activate(-1)
+	end
+
+	if key == "right" then
+		arrow_activate(1)
+	end
 
 	if key == "return" then
 		if current_screen == new_world_ui then
@@ -359,7 +513,7 @@ function menu_module.keypressed(key)
 		else
 			activate_button()
 		end
-		selected = 1
+		--selected = 1
 	end
 
 	if key == "f8" and current_screen == load_world_ui then
@@ -392,8 +546,33 @@ function menu_module.textinput(t)
     end
 end
 
+
+local base_menu_width = 1000
+local base_menu_height = 600
+
+local screen_ratio = 1
+
+local colors = {
+	[1] = {1, 0.5, 0.5},
+	[2] = {1, 1, 0.5},
+	[3] = {0.5, 1, 0.5},
+	[4] = {0.5, 1, 1},
+	[5] = {0.5, 0.5, 1},
+}
+
+local warp = 0
+
 function menu_module.update(dt)
 	current_screen:update(dt)
+
+	local c_screen_width = love.graphics.getWidth()
+	local c_screen_height = love.graphics.getHeight()
+
+	local h_ratio = c_screen_width/base_menu_width
+	local v_ratio = c_screen_height/base_menu_height
+
+
+	screen_ratio = math.min(h_ratio, v_ratio)
 
 
 	if current_screen == splash_ui then
@@ -402,6 +581,24 @@ function menu_module.update(dt)
 		if splashtime < 0 then
 			current_screen = main_ui
 		end
+
+		warp = warp + (dt*2)
+
+		local currentcolor = (math.floor(warp)%5)+1
+
+		local lastcolor = currentcolor-1
+
+
+
+		if lastcolor == 0 then
+			lastcolor = #colors
+		end
+
+		print(currentcolor, lastcolor)
+
+		local splash_img = splash_ui:find("logo")
+
+		splash_img.color = jutils.color.lerp(colors[lastcolor], colors[currentcolor], warp%1)
 	end
 
 	local buttonlist = current_screen:find("button_list")
@@ -426,15 +623,18 @@ local img = love.graphics.newImage("assets/csoft.png")
 
 function menu_module.draw()
 
+	love.graphics.push()
+	--love.graphics.scale(screen_ratio, screen_ratio)
+
 	if current_screen == splash_ui then
 		love.graphics.push()
 		love.graphics.translate(love.graphics.getWidth()/4, love.graphics.getHeight()/2)
 		love.graphics.setColor(1, 1, 1)
-		love.graphics.draw(img, 0, 0)
 
 		love.graphics.pop()
 	end
 	current_screen:draw()
+	love.graphics.pop()
 end
 
 

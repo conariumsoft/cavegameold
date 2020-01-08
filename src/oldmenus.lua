@@ -800,8 +800,6 @@ end
 
 --- Love2D Draw callback
 function menus.draw()
-
-
     -- calculate colors for this frame
     -- trigonometric functions are used to achieve a cycle without having
     -- to keep up with the number itself

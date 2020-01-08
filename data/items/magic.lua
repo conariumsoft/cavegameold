@@ -1,5 +1,6 @@
 local jutils = require("src.jutils")
 local input = require("src.input")
+local tiles = require("src.tiles")
 
 baseitem:new("PURPLE_STAFF", {
     displayname = "MAGIC STAFF",
@@ -49,6 +50,8 @@ baseitem:new("PURPLE_STAFF", {
 })
 
 
+
+
 baseitem:new("NIMDICK", {
     displayname = "NIMDOC",
     texture = "nimdoc.png",
@@ -75,13 +78,19 @@ baseitem:new("NIMDICK", {
                 run = false
                 return
             end
-            local result, colx, coly, sx, sy, nx, ny = player.world:castRay(startPos, direction, 400, 6)
+            local result, colx, coly, sx, sy, nx, ny, tile = player.world:castRay(startPos, direction, 400, 6)
 
             run = result
 
             if result == true then
+
                 player.world:addEntity("laser", startPos, jutils.vec2.new(colx, coly), decayIncrease)
                 startPos = jutils.vec2.new(colx, coly)
+
+                if tile == tiles.TNT.id then
+                    player.world:setTileState(math.floor(colx/8), math.floor(coly/8), 1)
+                end
+
             else
                 player.world:addEntity("laser", startPos, startPos + (direction*600), decayIncrease)
             end

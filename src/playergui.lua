@@ -16,10 +16,6 @@ local tiles = require("src.tiles")
 local inventory = require("src.inventory")
 local guiutil = require("src.guiutil")
 
-
-
-
-
 -- why the fuck is this an object?
 local system = jutils.object:subclass("PlayerGui")
 
@@ -35,10 +31,32 @@ local menu = jui.scene:new({}, {
 		borderEnabled = false,
 		backgroundColor = {0, 0, 0, 0.5}
 	}, {
-		exitbutton = jui.rectangle:new({
+		exitbutton = jui.nineslice:new({
+			scaleSize = jutils.vec2.new(0, 0),
+			pixelSize = jutils.vec2.new(150, 25),
+			scalePosition = jutils.vec2.new(1, 1),
+			pixelPosition = jutils.vec2.new(-155, -30),
+			color = {1, 1, 1},
+			image = love.graphics.newImage("assets/ui/niner.png"),
+			imageScale  = 2,
+			sourceWidth = 8,
+			sourceHeight = 8,
+			cornerWidth = 3,
+			cornerHeight = 3,
 
 		}, {
-			
+			bg = jui.text:new({
+				text = "Save and Exit",
+				textColor = jutils.color.fromHex("#FFFFFF"),
+				font = guiutil.fonts.font_14,
+				textXAlign = "center",
+				textYAlign = "center"
+			}),
+			klik = jui.mouseListener:new({
+				mouseButtonUp = function()
+					the_player.world.tryingToEnd = true
+				end,
+			})
 		})
 	})
 })

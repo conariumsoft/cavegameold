@@ -74,7 +74,6 @@ function humanoid:collisionCallback(tileid, tilepos, separation, normal)
 					self.velocity.x = self.velocity.x * 0.6
 					self.nextposition.y = (tryY-self.boundingbox.y)-1
 					self.climbcooldown = 0.05
-					print("WE DO IT", self.nextposition.y)
 				end
 			end
 		end
@@ -85,17 +84,19 @@ end
 local humanoidAudio = love.audio.newSource("assets/audio/hurt.ogg", "static")
 
 function humanoid:damage(amount)
-	physicalentity.damage(self, amount)
-	self.knockbackTimer = 0.25
-	humanoidAudio:stop()
-	humanoidAudio:setPitch(self.hurt_yell_pitch)
-	humanoidAudio:play()
+	if self.invulnerability <= 0 then
+		physicalentity.damage(self, amount)
+		self.knockbackTimer = 0.25
+		humanoidAudio:stop()
+		humanoidAudio:setPitch(self.hurt_yell_pitch)
+		humanoidAudio:play()
 
-	particlesystem.newBloodSplatter(self.position, 1)
+		particlesystem.newBloodSplatter(self.position, 1)
 
-	local e = self.world:addEntity("floatingtext", jutils.math.round(amount, 0), {1, 0.1, 0})
-	e:teleport(self.position)
-	e.position = e.position + jutils.vec2.new(-10, -20)
+		local e = self.world:addEntity("floatingtext", jutils.math.round(amount, 0), {1, 0.1, 0})
+		e:teleport(self.position)
+		e.position = e.position + jutils.vec2.new(-10, -20)
+	end
 end
 
 function humanoid:addStatusEffect(effectid, duration)
