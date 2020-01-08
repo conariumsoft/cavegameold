@@ -537,6 +537,14 @@ function menu_module.keypressed(key)
 		selected = selected + 1
 	end
 
+	if key == "j" then
+		selected = selected + 1
+	end
+
+	if key == "k" then
+		selected = selected - 1
+	end
+
 	selection_wrap_sanity_check()
 
 	if key == "left" then
