@@ -369,6 +369,7 @@ return function(args)
 			local graphicsStats = love.graphics.getStats()
 
 			local biome = terrain.getBiomeAt(plrGridX)
+			local p1, p2 = terrain.test_noise(plrGridX)
 
 			last_debug_info = "fps: "..love.timer.getFPS()..", lvm: ".. jutils.math.round(collectgarbage("count")/1024, 1).."mb"..
 						" dt: "..jutils.math.round(1000*love.timer.getAverageDelta(), 1).."ms"..
@@ -379,7 +380,7 @@ return function(args)
 						" light: "..light[1]..", "..light[2]..", "..light[3]..
 						" dmg: "..gameworld:getTileDamage(tx, ty).."\n"..
 						"pos: "..plrGridX..", "..plrGridY.." vel: "..jutils.math.round(player.velocity.x, 1)..", "..jutils.math.round(player.velocity.y, 1)..
-						" entities: "..(#gameworld.entities).." biome: "..biome
+						" entities: "..(#gameworld.entities).." biome: "..biome.." test: "..tostring(p1)..", "..tostring(p2)
 
 		end
 	end

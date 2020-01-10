@@ -523,10 +523,7 @@ local function arrow_activate(dir)
 	if btn.arrow_activate then
 		btn.arrow_activate(dir)
 	end
-
 end
-
-
 
 function menu_module.keypressed(key)
 	if key == "up" then
@@ -558,7 +555,7 @@ function menu_module.keypressed(key)
 	if key == "return" then
 		if current_screen == new_world_ui then
 			menu_module.has_chosen_world = true
-			menu_module.selected_world_name = jutils.string.sanitize(world_name_input.internalText, "_")
+			menu_module.selected_world_name = jutils.string.sanitize(string.sub(world_name_input.internalText, 1, 32), "_")
 		elseif current_screen == load_world_ui then
 			local buttonlist = current_screen:find("button_list")
 		

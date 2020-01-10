@@ -1,12 +1,25 @@
 
-local function saplinggrow(world, x, y)
-	
-	local maketree = require("data.structures.trees.maketree")
 
+
+local function pine_sapling_attempt_grow(world, x, y)
+	local pine_tree_gen     = require("data.structures.trees.pine_tree_gen")
+	
 	local state = world:getTileState(x, y)+1
 
 	if state > 8 then
-		maketree(world, x, y+1)
+		pine_tree_gen(world, x, y)
+		
+	else
+		world:setTileState(x, y, state)
+	end
+end
+
+local function saplinggrow(world, x, y)
+	local oak_tree_generate = require("data.structures.trees.oak_tree_gen")
+	local state = world:getTileState(x, y)+1
+
+	if state > 8 then
+		oak_tree_generate(world, x, y)
 		
 	else
 		world:setTileState(x, y, state)
@@ -249,14 +262,30 @@ newtile("SAPLING", {
 	hardness = 1,
 })
 
+newtile("PINE_SAPLING", {
+	texture = "sapling",
+	color = {1, 0.8, 0.9},
+	solid = false,
+	collide = false,
+	tileupdate = function(world, x, y)
+		if not plantValidityCheck(world, x, y) then
+			world:setTile(x, y, tilelist.AIR.id, true)
+		end
+	end,
+	randomupdate = pine_sapling_attempt_grow,
+	validplacement = plantValidityCheck,
+	tags = {"plant"},
+	hardness = 1,
+})
+
 newtile("PINE_ROOT", {
 	color = {0.45, 0.25, 0.1},
 	solid = true,
 	collide = false,
 	texture = "root",
-	drop = "PLANK_TILE",
+	drop = "PINE_PLANK_TILE",
 	hardness = 8,
-	tags = {"PINE_LOG"}
+	tags = {"PINE_LOG", "LOG"}
 })
 
 newtile("PINE_ROOT_LEFT", {
@@ -264,9 +293,9 @@ newtile("PINE_ROOT_LEFT", {
 	texture = "root_left",
 	color = {0.45, 0.25, 0.1},
 	hardness = 8,
-	drop = "PLANK_TILE", 
+	drop = "PINE_PLANK_TILE", 
 	tileupdate = function(world, x, y)
-		if world:getTile(x+1, y) ~= tilelist.ROOT.id then
+		if world:getTile(x+1, y) ~= tilelist.PINE_ROOT.id then
 			world:setTile(x, y, tilelist.AIR.id, true)
 		end
 	end,
@@ -277,9 +306,9 @@ newtile("PINE_ROOT_RIGHT", {
 	texture = "root_right",
 	color = {0.45, 0.25, 0.1},
 	hardness = 8,
-	drop = "PLANK_TILE",
+	drop = "PINE_PLANK_TILE",
 	tileupdate = function(world, x, y)
-		if world:getTile(x-1, y) ~= tilelist.ROOT.id then
+		if world:getTile(x-1, y) ~= tilelist.PINE_ROOT.id then
 			world:setTile(x, y, tilelist.AIR.id, true)
 		end
 	end,

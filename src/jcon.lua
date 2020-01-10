@@ -7,9 +7,6 @@ local jui = require("src.jui")
 
 local textinput = jui.textinput
 
-
-
-
 local styles = {
     window  = {
         scaleSize = jutils.vec2.new(1, 1),
@@ -141,6 +138,7 @@ jcon.open = false
 
 function inputTextObject:onInput(input)
     if #input > 0 then
+        input = string.sub(input, 1, 64) -- arbitrary limit for poopy...
         newMessage(">"..input, {0.4, 0.4, 0.4})
         local split = jutils.string.explode(input, " ")
         if split then
@@ -154,10 +152,26 @@ function inputTextObject:onInput(input)
     end
 end
 
+local canfit = 0
+
 function jcon:update(dt)
     if self.open then
+
         titleTextObject.text = " fps: "..love.timer.getFPS()..", luavm: "..jutils.math.round(collectgarbage("count")/1000, 2).."kb"
         console:update(dt)
+
+        local messagebox = console:find("messages")
+
+        canfit = math.floor(messagebox.absoluteSize.y/18)
+
+        local list = console:find("list")
+
+        if #list.children > canfit then
+            list.children[1] = nil
+            table.remove(list.children, 1)
+        end
+
+        print(canfit)
     end
 end
 

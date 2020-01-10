@@ -2,16 +2,11 @@
 -- @author Joshua O'Leary
 -- @copyright 2019 Conarium Software
 
-local generator = {}
 
 local config = require("config")
 local tiles = require("src.tiles")
 local backgrounds = require("src.backgrounds")
 
-local basefreq = 15
-local sys = 30
-
-local DEEPWORLD_DEPTH = 300
 
 local jutils = require("src.jutils")
 local noise = require("src.noise")
@@ -19,7 +14,6 @@ local noise = require("src.noise")
 local terrainMath = require("src.terrain")
 
 local getSurfaceNoise = terrainMath.getSurfaceNoise
-local getBiomeNoise = terrainMath.getBiomeNoise -- these are just surface biomes
 
 local surface_biome_depth = 250
 
@@ -267,10 +261,10 @@ local function chunkCavernPass(chunk, seed)
 			
 			-- shallow caves
 			elseif surface > 0 then
-				local caveCircle = noise.epicnoise(worldx+x, worldy+y, 333, 3)
+				local caveCircle = noise.epicnoise(worldx+x, worldy+y, 333, 4)
 
 				local caveSeeder = noise.noise(worldx+x, worldy+y, 24, 24)
-				local caveBubble = noise.epicnoise(worldx+x, worldy+y, 300, 3) - (caveSeeder*0.5)
+				local caveBubble = noise.epicnoise(worldx+x, worldy+y, 300, 4) - (caveSeeder*0.5)
 					
 				
 				if caveCircle > 0.4 and caveCircle < 0.55 then
@@ -285,7 +279,7 @@ local function chunkCavernPass(chunk, seed)
 						chunk.tiles[x][y] = tiles.AIR.id
 					end
 
-					if surface > 5 then
+					if surface > 10 then
 						chunk.backgrounds[x][y] = backgrounds.DIRT.id
 					end
 				end
