@@ -1,3 +1,5 @@
+make glowsticks lose momentum
+
 arrows
 bow item
 armour slots

@@ -20,7 +20,6 @@ function entity:init()
 	self.light = {1,1,1}
 	self.invulnerability = 0
 	
-
 	self.defense = 0
 	self.regenstrength = 0.01
 	self.texture = defaulttexture

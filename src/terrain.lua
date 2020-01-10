@@ -17,8 +17,6 @@ terrain_math.biomes = {
 	[6] = "wetlands",
 	[7] = "forest",
 	[8] = "wetlands",
-	
-	
 }
 
 local biome_noise_functions = {
@@ -85,12 +83,11 @@ function terrain_math.getSurfaceNoise(x, y)
 
 			if side > 0.9 then
 				local lerp = (1-side) * 10
-				--
 				add_to_base_noise = (b1_noise*lerp)
 			end
 			if side < 0.1 then
 				local lerp = (side*10)
-				add_to_base_noise = (b1_noise*lerp)	
+				add_to_base_noise = (b1_noise*lerp)
 			end
 		end
 

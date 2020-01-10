@@ -11,8 +11,6 @@ local function generate(world, x, y)
 
 	if tree_funcs.check_trunk_is_valid(world, x, y, goal_height) == false then return end
 
-	
-
 	if goal_height > 15 then
 		if world:getTile(x-1, y-1) == tiles.AIR.id and world:getTile(x-1, y) ~= tiles.AIR.id then
 			world:setTile(x-1, y-1, tiles.PINE_ROOT_LEFT.id)

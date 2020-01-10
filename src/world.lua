@@ -1243,7 +1243,8 @@ function world:draw()
 
 
 	-- draw cloud background
-	local bgscroll = 1.25
+	-- TODO: make cloud layer scroll at 1.25 speed correctly!
+	local bgscroll = 2
 	local texsize = 512
 	
 	local x = (camera_pos.x) / bgscroll

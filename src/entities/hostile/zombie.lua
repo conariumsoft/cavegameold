@@ -65,6 +65,8 @@ function zombie:init()
 	self.stun = 0
 	self.jump_wait = 0
 
+	
+
 	self.animationframes = {
 		[1] = love.graphics.newQuad(0, 0, 16, 24, 64, 24),-- standing still
 		[2] = love.graphics.newQuad(16, 0, 16, 24, 64, 24),-- walking1,
