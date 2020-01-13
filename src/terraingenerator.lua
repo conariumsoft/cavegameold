@@ -187,118 +187,127 @@ local function chunkCavernPass(chunk, seed)
 	local worldx = chunk.position.x*config.CHUNK_SIZE
 	local worldy = chunk.position.y*config.CHUNK_SIZE
 
-	for x = 1, config.CHUNK_SIZE do
-		for y = 1, config.CHUNK_SIZE do
+	for x = 1, config.CHUNK_SIZE do for y = 1, config.CHUNK_SIZE do
 
-			local surface = getSurfaceNoise(worldx+x, worldy+y)
+		local surface = getSurfaceNoise(worldx+x, worldy+y)
 
-			-- hell
-			if surface > 10000 then
-				local caveSeeder = noise.noise(worldx+x, worldy+y, 96, 96)
-				local caveAutism = noise.noise(worldx+x, worldy+y, 16, 24)
-				local caveBubble = noise.epicnoise(worldx+x, worldy+y, 345, 8) - (caveSeeder*0.3) - (caveAutism*0.3)
+		-- hell
+		if surface > 10000 then
+			local caveSeeder = noise.noise(worldx+x, worldy+y, 96, 96)
+			local caveAutism = noise.noise(worldx+x, worldy+y, 16, 24)
+			local caveBubble = noise.epicnoise(worldx+x, worldy+y, 345, 8) - (caveSeeder*0.3) - (caveAutism*0.3)
 
-				if caveBubble > 0.7 and caveBubble < 0.9 then
-					
-					if x % 3 == 0 and y % 3 == 0 then
-						chunk.tiles[x][y] = tiles.AIR.id
-					else
-						chunk.tiles[x][y] = tiles.LAVA.id
-						chunk.states[x][y] = 8
-						chunk.tileupdate[x][y] = true
-					end
-
-					chunk.backgrounds[x][y] = backgrounds.STONE.id
-				end
-
-
-			-- super deep caves
-			elseif surface > 2000 then
-
-				local caveSeeder = noise.noise(worldx+x, worldy+y, 128, 128)
-				local caveAutism = noise.noise(worldx+x, worldy+y, 16, 16)
-				local caveBubble = noise.epicnoise(worldx+x, worldy+y, 600, 6) - (caveSeeder*0.5) - (caveAutism*0.25)
-
-				if caveBubble > 0.6 and caveBubble < 0.85 then
-
-					local liquidNoise = noise.noise(worldx+x, worldy+y, 200, 200)
-
-					if liquidNoise > 0.9 then
-						chunk.tiles[x][y] = tiles.LAVA.id
-						chunk.states[x][y] = 8
-					elseif liquidNoise > 0.05 then
-						chunk.tiles[x][y] = tiles.AIR.id
-					else
-						chunk.tiles[x][y] = tiles.WATER.id
-						chunk.states[x][y] = 8
-					end
-
-					chunk.backgrounds[x][y] = backgrounds.STONE.id
-				end
-
-			-- deep caves
-			elseif surface > 300 then
-				local caveSeeder = noise.noise(worldx+x, worldy+y, 96, 96)
-				local caveAutism = noise.noise(worldx+x, worldy+y, 16, 16)
-				local caveBubble = noise.epicnoise(worldx+x, worldy+y, 400, 8) - (caveSeeder*0.5) - (caveAutism*0.25)
-
-				if caveBubble > 0.7 and caveBubble < 0.95 then
-
-					local liquidNoise = noise.noise(worldx+x, worldy+y, 100, 100)
-
-					if liquidNoise > 0.95 then
-						chunk.tiles[x][y] = tiles.LAVA.id
-						chunk.states[x][y] = 8
-					elseif liquidNoise > 0.1 then
-						chunk.tiles[x][y] = tiles.AIR.id
-					else
-						chunk.tiles[x][y] = tiles.WATER.id
-						chunk.states[x][y] = 8
-					end
-
-					chunk.backgrounds[x][y] = backgrounds.STONE.id
-				end
-			
-			-- shallow caves
-			elseif surface > 0 then
-				local caveCircle = noise.epicnoise(worldx+x, worldy+y, 333, 4)
-
-				local caveSeeder = noise.noise(worldx+x, worldy+y, 24, 24)
-				local caveBubble = noise.epicnoise(worldx+x, worldy+y, 300, 4) - (caveSeeder*0.5)
-					
+			if caveBubble > 0.7 and caveBubble < 0.9 then
 				
-				if caveCircle > 0.4 and caveCircle < 0.55 then
-					if caveCircle < 0.41 or caveCircle > 0.54 then
-						if chunk.tiles[x][y] == tiles.SAND.id then
-							chunk.tiles[x][y] = tiles.SANDSTONE.id
-						else
-							chunk.tiles[x][y] = tiles.GRASS.id
-						end
-						
-					else
-						chunk.tiles[x][y] = tiles.AIR.id
-					end
-
-					if surface > 10 then
-						chunk.backgrounds[x][y] = backgrounds.DIRT.id
-					end
+				if x % 3 == 0 and y % 3 == 0 then
+					chunk.tiles[x][y] = tiles.AIR.id
+				else
+					chunk.tiles[x][y] = tiles.LAVA.id
+					chunk.states[x][y] = 8
+					chunk.tileupdate[x][y] = true
 				end
 
-				if caveBubble > 0.8 and caveBubble < 1 and surface > 5 then
-					if caveBubble < 0.81 or caveBubble > 0.99 then
-						chunk.tiles[x][y] = tiles.GRASS.id
-						if chunk.tiles[x][y] == tiles.SAND.id then
-							chunk.tiles[x][y] = tiles.SANDSTONE.id
+				chunk.backgrounds[x][y] = backgrounds.STONE.id
+			end
+
+
+		-- super deep caves
+		elseif surface > 2000 then
+
+			local caveSeeder = noise.noise(worldx+x, worldy+y, 128, 128)
+			local caveAutism = noise.noise(worldx+x, worldy+y, 16, 16)
+			local caveBubble = noise.epicnoise(worldx+x, worldy+y, 600, 6) - (caveSeeder*0.5) - (caveAutism*0.25)
+
+			if caveBubble > 0.6 and caveBubble < 0.85 then
+
+				local liquidNoise = noise.noise(worldx+x, worldy+y, 150, 150)
+
+				if liquidNoise > 0.925 then
+					chunk.tiles[x][y] = tiles.LAVA.id
+					chunk.states[x][y] = 8
+				elseif liquidNoise > 0.05 then
+					chunk.tiles[x][y] = tiles.AIR.id
+				else
+					chunk.tiles[x][y] = tiles.WATER.id
+					chunk.states[x][y] = 8
+				end
+
+				chunk.backgrounds[x][y] = backgrounds.STONE.id
+			end
+
+		-- deep caves
+		elseif surface > 300 then
+			local caveSeeder = noise.noise(worldx+x, worldy+y, 96, 96)
+			local caveAutism = noise.noise(worldx+x, worldy+y, 16, 16)
+			local caveBubble = noise.epicnoise(worldx+x, worldy+y, 400, 8) - (caveSeeder*0.5) - (caveAutism*0.25)
+
+			if caveBubble > 0.7 and caveBubble < 0.95 then
+
+				local liquidNoise = noise.noise(worldx+x, worldy+y, 100, 100)
+				
+				local cobweb_cave_noise = noise.noise(worldx+x, worldy+y +88, 100, 99)
+
+				if liquidNoise > 0.975 then
+					chunk.tiles[x][y] = tiles.LAVA.id
+					chunk.states[x][y] = 8
+				elseif liquidNoise > 0.075 then
+
+					if cobweb_cave_noise > 0.95 then
+						if math.random() > 0.5 then
+							chunk.tiles[x][y] = tiles.COBWEB.id
+						else
+							chunk.tiles[x][y] = tiles.AIR.id
 						end
 					else
 						chunk.tiles[x][y] = tiles.AIR.id
 					end
+				else
+					chunk.tiles[x][y] = tiles.WATER.id
+					chunk.states[x][y] = 8
+				end
+
+				chunk.backgrounds[x][y] = backgrounds.STONE.id
+			end
+		
+		-- shallow caves
+		elseif surface > 0 then
+			local caveCircle = noise.epicnoise(worldx+x, worldy+y, 333, 4)
+
+			local caveSeeder = noise.noise(worldx+x, worldy+y, 24, 24)
+			local caveBubble = noise.epicnoise(worldx+x, worldy+y, 300, 4) - (caveSeeder*0.5)
+				
+			
+			if caveCircle > 0.4 and caveCircle < 0.55 then
+				if caveCircle < 0.41 or caveCircle > 0.54 then
+					if chunk.tiles[x][y] == tiles.SAND.id then
+						chunk.tiles[x][y] = tiles.SANDSTONE.id
+					else
+						chunk.tiles[x][y] = tiles.GRASS.id
+					end
+					
+				else
 					chunk.tiles[x][y] = tiles.AIR.id
+				end
+
+				if surface > 10 then
 					chunk.backgrounds[x][y] = backgrounds.DIRT.id
 				end
 			end
+
+			if caveBubble > 0.8 and caveBubble < 1 and surface > 5 then
+				if caveBubble < 0.81 or caveBubble > 0.99 then
+					chunk.tiles[x][y] = tiles.GRASS.id
+					if chunk.tiles[x][y] == tiles.SAND.id then
+						chunk.tiles[x][y] = tiles.SANDSTONE.id
+					end
+				else
+					chunk.tiles[x][y] = tiles.AIR.id
+				end
+				chunk.tiles[x][y] = tiles.AIR.id
+				chunk.backgrounds[x][y] = backgrounds.DIRT.id
+			end
 		end
-	end
+	end end
 end
 
 local function chunkOrePass(chunk, seed)
@@ -323,7 +332,7 @@ local function chunkOrePass(chunk, seed)
 
 			local bluegrassBiome = noise.noise(worldx+x, worldy+y, 512, 512)
 
-			local bluegrassTerrain = noise.epicnoise(worldx+x, worldy+y, 50, 4) - (noise.noise(worldx+x, worldy+y, 16, 16)*0.5)
+			local bluegrassTerrain = noise.epicnoise(worldx+x, worldy+y, 25, 2) - (noise.noise(worldx+x, worldy+y, 16, 16)*0.25)
 
 			bluegrassTerrain = jutils.math.round(bluegrassTerrain, 1)
 
@@ -354,33 +363,33 @@ local function chunkOrePass(chunk, seed)
 
 				if worldy+y > 0 then
 					-- iron, copper, and tin generation
-					oretest(tiles.IRON_ORE.id, x, y, 420, 16, 0.47)
+					oretest(tiles.IRON_ORE.id, x, y, 420, 12, 0.47)
 
-					oretest(tiles.COPPER_ORE.id, x, y, 69, 20, 0.45)
+					oretest(tiles.COPPER_ORE.id, x, y, 69, 16, 0.46)
 
-					oretest(tiles.TIN_ORE.id, x, y, -666, 24, 0.46)
+					oretest(tiles.TIN_ORE.id, x, y, -666, 20, 0.46)
 				end
 
 				-- gold, lead, aluminium
 
 				if worldy+y > 400 then
-					oretest(tiles.GOLD_ORE.id, x, y, 123, 8, 0.47)
+					oretest(tiles.GOLD_ORE.id, x, y, 123, 8, 0.48)
 					oretest(tiles.LEAD_ORE.id, x, y, -144, 20, 0.48)
-					oretest(tiles.ALUMINIUM_ORE.id, x, y, 357, 26, 0.49)
+					oretest(tiles.ALUMINIUM_ORE.id, x, y, 357, 15, 0.49)
 					oretest(tiles.SILVER_ORE.id, x, y, 1, 16, 0.48)
-					oretest(tiles.PALLADIUM_ORE.id, x, y, 41, 20, 0.47)
+					oretest(tiles.PALLADIUM_ORE.id, x, y, 41, 20, 0.48)
 				end
 
 				if worldy+y > 800 then
-					oretest(tiles.CHROMIUM_ORE.id, x, y, 555, 24, 0.48)
-					oretest(tiles.NICKEL_ORE.id, x, y, 666, 16, 0.48)
+					oretest(tiles.CHROMIUM_ORE.id, x, y, 555, 8, 0.48)
+					oretest(tiles.NICKEL_ORE.id, x, y, 666, 15, 0.48)
 					oretest(tiles.VANADIUM_ORE.id, x, y, 44, 16, 0.48)
 				end
 
 				-- cobalt, titanium
 				if worldy+y > 1200 then
-					oretest(tiles.COBALT_ORE.id, x, y, -404, 24, 0.495)
-					oretest(tiles.TITANIUM_ORE.id, x, y, -222, 16, 0.49)
+					oretest(tiles.COBALT_ORE.id, x, y, -404, 8, 0.495)
+					oretest(tiles.TITANIUM_ORE.id, x, y, -222, 8, 0.49)
 				end
 				-- titanium, uranium, cobalt and 
 				if worldy+y > 2400 then

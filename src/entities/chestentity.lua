@@ -37,5 +37,18 @@ function chestentity:fillLoot()
 	end
 end
 
+function chestentity:broken()
+	for _, item in pairs(self.inventory.items) do
+		local id = item[1]
+		local amount = item[2]
+
+		if id ~= 0 and amount ~= 0 then
+			local e = self.world:addEntity("itemstack", id, amount)
+			e:teleport(jutils.vec2.new(self.tilepositions[1][1]*8, self.tilepositions[1][2]*8))
+		end
+	end
+	self.dead = true
+end
+
 
 return chestentity

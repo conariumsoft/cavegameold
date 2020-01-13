@@ -42,7 +42,7 @@ return function(args)
 	-- as well as enabling debug info
 
 	settings.changed("volume", function(newvolume)
-		--love.audio.setVolume(newvolume/100)
+		love.audio.setVolume(newvolume/100)
 	end)
 
 	settings.changed("fullscreen", function(val)
@@ -74,6 +74,9 @@ return function(args)
 		gameworld.no_save = true
 		gameworld.camera.zoom = 1.5
 		gameworld.worldtime = 12*60
+		local p = gameworld:getPlayer()
+		p.noclip = true
+		p.apply_gravity = false
 	end
 
 	-- load into a specific world
@@ -387,8 +390,8 @@ return function(args)
 
 	function love.update(dt)
 		if in_menu then
-			menus.update(dt) 
-			
+			menus.update(dt)
+
 			if menus.has_chosen_world == true then
 				print(menus.selected_world_name)
 				in_menu = false
@@ -414,14 +417,12 @@ return function(args)
 				rendering.update(dt)
 
 				if gameworld.tryingToEnd == true then
-					if world_saved == false then
-						world_saved = true
-						gameworld.tryingToEnd = true
-						gameworld:savedata()
-						in_menu = true
-						-- TODO: confirm that gameworld gets fully cleaned up after exit
-						gameworld = nil
-					end
+					gameworld.tryingToEnd = false
+					gameworld:savedata()
+					in_menu = true
+					menus.go_to_screen("main")
+					-- TODO: confirm that gameworld gets fully cleaned up after exit
+					gameworld = nil
 				end
 			end
 		end

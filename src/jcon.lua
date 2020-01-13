@@ -140,6 +140,7 @@ function inputTextObject:onInput(input)
     if #input > 0 then
         input = string.sub(input, 1, 64) -- arbitrary limit for poopy...
         newMessage(">"..input, {0.4, 0.4, 0.4})
+        input = string.lower(input)
         local split = jutils.string.explode(input, " ")
         if split then
             local args = {}

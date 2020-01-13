@@ -22,6 +22,7 @@
 		string texture = "default",
 		bool collide = true,
 		bool solid = true,
+		bool canexplode = true,
 		number hardness = 2,
 		number absorb = 0.15,
 		number/table light = 1, -- setting to a table will enable RGB color
@@ -155,6 +156,7 @@ local function tile(name, data)
 		customrender = nil,
 		hardness = 2,
 		light = 0,
+		canexplode = true,
 		absorb = 0.15,
 	}
 

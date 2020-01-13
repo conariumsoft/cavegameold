@@ -80,16 +80,12 @@ local sky_color_table = {
 	[21] = {0.025, 0, 0.01},
 }
 
-local function get_sky_color(time)
-	time = time % 24
-
-	-- daytime
-	if time > 7 and time < 15 then
-
-	end
-
-	return sky_color_table[time]
-end
+local biome_bg_textures = {
+	forest 	= love.graphics.newImage("assets/backgrounds/forest.png"),
+	desert 	= love.graphics.newImage("assets/backgrounds/desert.png"),
+	plains 	= love.graphics.newImage("assets/backgrounds/plains.png"),
+	welands = love.graphics.newImage("assets/backgrounds/wetlands.png")
+}
 
 local function get_daylight(worldtime)
 	local light = 0.15
@@ -455,7 +451,8 @@ end
 ---
 function world:damageTile(tilex, tiley, additionaldamage)
 	local tile = self:rawget(tilex, tiley, "tiles")
-	local maxdamage = tiles:getByID(tile).hardness
+	local data = tiles:getByID(tile)
+	local maxdamage = data.hardness
 	local damage = self:rawget(tilex, tiley, "damage")
 
 	local newdamage = damage + additionaldamage
@@ -464,6 +461,8 @@ function world:damageTile(tilex, tiley, additionaldamage)
 
 	if newdamage >= maxdamage then
 		
+		
+
 		self:setTile(tilex, tiley, 0, true)
 		
 	else
@@ -531,6 +530,14 @@ function world:setTile(tilex, tiley, tile, drop, ignorecallback)
 
 	local current = self:getTile(tilex, tiley)
 	if current ~= tile then
+
+		if not ignorecallback then
+			local currentdata = tiles:getByID(current)
+			if currentdata.onbreak then
+				currentdata.onbreak(self, tilex, tiley)
+			end
+		end
+
 		self:setTileState(tilex, tiley, 0)
 		self:setTileDamage(tilex, tiley, 0)
 			
@@ -937,13 +944,15 @@ function world:updateEntities(dt)
 		if entity:isA("Player") then
 			local player = entity -- (cast)
 			local camera_pos = self.camera.position
+			
+			--self.camera.position = player.position
 
 			-- if camera is falling behind the player
 			-- we should lerp much faster
-			if camera_pos:distance(player.position) > 2000 then
+			if camera_pos:distance(player.position) > 500 then
 				self.camera.position = player.position
 			else
-				self.camera.position = camera_pos:lerp(player.position, (dt*4))
+				self.camera.position = camera_pos:lerp(player.position, (dt*5))
 			end
 		end
 
@@ -1144,9 +1153,6 @@ local cloud_bg_texture = love.graphics.newImage("assets/clouds.png")
 local star_bg_texture = love.graphics.newImage("assets/stars.png")
 local cave_bg_texture = love.graphics.newImage("assets/cavebg.png")
 
-local forest_bg_texture = love.graphics.newImage("assets/backgrounds/forest.png")
-local desert_bg_texture = love.graphics.newImage("assets/backgrounds/desert.png")
-
 
 
 
@@ -1223,24 +1229,24 @@ function world:draw()
 	--love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
 
 	-- make screen center the origin of screen coordinates
-	love.graphics.translate(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
+	love.graphics.translate(math.floor(love.graphics.getWidth() / 2), math.floor(love.graphics.getHeight() / 2))
 	-- zoom in coordinates
 	love.graphics.scale(self.camera.zoom, self.camera.zoom)
 
 	-- rounding the camera position is nessecary
 	-- to eliminate line flickering between
 	-- grid objects (tiles and backgrounds)
-	local camx = jutils.math.round(self.camera.position.x, 1)
-	local camy = jutils.math.round(self.camera.position.y, 1)	
+	local camx = jutils.math.round(self.camera.position.x, 2)
+	local camy = jutils.math.round(self.camera.position.y, 2)
 	
 	-- move to camera position (make camx and camy center of screen)
+	love.graphics.push()
 	love.graphics.translate(-camx, -camy)
 
 	local mx, my = love.graphics.inverseTransformPoint(love.mouse.getX(), love.mouse.getY())
 	input.setTransformedMouse(math.floor(mx), math.floor(my))
 
 	local camera_pos = self.camera.position
-
 
 	-- draw cloud background
 	-- TODO: make cloud layer scroll at 1.25 speed correctly!
@@ -1294,33 +1300,25 @@ function world:draw()
 	-- biome background
 
 	
-	if currentbiome then
-		for dx = -5, 5 do
+	if currentbiome and biome_bg_textures[currentbiome] ~= nil then
+		for dx = -3, 3 do
 
 			local shiftx = x + ( (posx+dx)*256)
 			local shifty = y + ( (posy)*512)
 			love.graphics.setColor(self.ambientlight-0.1, self.ambientlight-0.1, self.ambientlight-0.1, (biometransition~=0) and biometransition or 1)
 
-			if currentbiome == "forest" or currentbiome == "plains" then
-				love.graphics.draw(forest_bg_texture, shiftx, shifty, 0, 2, 2)
-			elseif currentbiome == "desert" then
-				love.graphics.draw(desert_bg_texture, shiftx, shifty, 0, 2, 2)
-			end
+			love.graphics.draw(biome_bg_textures[currentbiome], shiftx, shifty, 0, 2, 2)
 		end
 	end
 
-	if lastbiome ~= currentbiome then
-		for dx = -5, 5 do
+	if lastbiome ~= currentbiome and biome_bg_textures[lastbiome] ~= nil then
+		for dx = -3, 3 do
 
 			local shiftx = x + ( (posx+dx)*256)
 			local shifty = y + ( (posy)*512)
 			love.graphics.setColor(self.ambientlight-0.1, self.ambientlight-0.1, self.ambientlight-0.1, 1-biometransition)
 
-			if lastbiome == "forest" or lastbiome == "plains" then
-				love.graphics.draw(forest_bg_texture, shiftx, shifty, 0, 2, 2)
-			elseif lastbiome == "desert" then
-				love.graphics.draw(desert_bg_texture, shiftx, shifty, 0, 2, 2)
-			end
+			love.graphics.draw(biome_bg_textures[lastbiome], shiftx, shifty, 0, 2, 2)
 		end
 	end
 
@@ -1328,7 +1326,9 @@ function world:draw()
 
 	love.graphics.setColor(1,1,1)
 	-- draw foreground and background tiles
-	rendering.drawqueue()
+	love.graphics.pop()
+	rendering.drawqueue(-self.camera.position.x, -self.camera.position.y)
+	love.graphics.translate(-camx, -camy)
 	-- draw entities
 	self:drawEntities()
 	particlesystem.draw()

@@ -10,11 +10,11 @@ function glowstick:init(...)
 
 	self.lightemitter = {0.25, 1, 0.25}
 
-	self.mass = 0.4
+	self.mass = 0.5
+	self.xfriction = 0.2
 	self.save = false
 	self.boundingbox = jutils.vec2.new(3, 3)
 end
-
 
 function glowstick:entityCollision(otherEntity, separation, normal)
 	
@@ -26,10 +26,10 @@ function glowstick:collisionCallback(tileid, tilepos, separation, normal)
 
 	if tiledata.solid == true then
 		if normal.y and normal.y ~= 0 then
-			self.velocity.y = self.velocity.y * -0.8
+			self.velocity.y = self.velocity.y * -0.75
 		end
 		if normal.x and normal.x ~= 0 then
-			self.velocity.x = self.velocity.x * -0.8
+			self.velocity.x = self.velocity.x * -0.75
 		end
 	end
 end

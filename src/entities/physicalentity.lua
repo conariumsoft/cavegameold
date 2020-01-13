@@ -88,7 +88,8 @@ local function testCollision(self, tilex, tiley)
 
 	
 	if tiledata.customCollision then
-		tiledata.customCollision(self, separation, jutils.vec2.new(normalx, normaly), jutils.vec2.new(tilex, tiley))
+		local state = self.world:getTileState(tilex, tiley)
+		tiledata.customCollision(self, separation, jutils.vec2.new(normalx, normaly), jutils.vec2.new(tilex, tiley), state)
 	elseif tiledata.solid then-- default collision solver
 		if normalx ~= nil and normaly ~= nil then
 			self.nextposition = self.nextposition + separation
@@ -138,8 +139,10 @@ function physicalentity:updatePhysics(step)
 			self.falltime = self.falltime + step
 		else
 			local falldist = self.nextposition.y - self.lastgroundy
-			if falldist > 0 and self.falltime > 0.25 then
-				self:fell(falldist)
+			if falldist > 0 and self.falltime > 0.125 then
+				if self.touching_lava == false and self.touching_water == false then
+					self:fell(falldist)
+				end
 			end
 			self.lastgroundy = self.nextposition.y
 			self.falltime = 0

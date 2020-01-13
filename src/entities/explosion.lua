@@ -74,15 +74,20 @@ function explosion:update(dt)
 
 				if dist <= self.radius then
 
-					if self.world:getTile(tx+dx, ty+dy) == tiles.TNT.id then
-						self.world:setTileState(tx+dx, ty+dy, 1)
-						tiles.TNT.tileupdate(self.world, tx+dx, ty+dy)
-					end
+					local tile = tiles:getByID(self.world:getTile(tx+dx, ty+dy))
 
-					local damage = math.ceil((self.radius-dist))/(self.radius*0.3)
-					-- ? prevent damage of liquid tiles
-					self.world:damageTile(tx+dx, ty+dy, damage)
-					-- remove background?
+					if tile.canexplode == true then
+
+						if tile.id == tiles.TNT.id then
+							self.world:setTileState(tx+dx, ty+dy, 1)
+							tiles.TNT.tileupdate(self.world, tx+dx, ty+dy)
+						end
+
+						local damage = math.ceil((self.radius-dist))/(self.radius*0.3)
+						-- ? prevent damage of liquid tiles
+						self.world:damageTile(tx+dx, ty+dy, damage)
+						-- remove background?
+					end
 					self.world:setBackground(tx+dx, ty+dy, 0)
 				end
 			end

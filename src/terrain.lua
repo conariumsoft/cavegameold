@@ -77,7 +77,9 @@ function terrain_math.getSurfaceNoise(x, y)
 	if biome1 then
 		local add_to_base_noise = 0
 		
-		local b1_noise = biome_noise_functions[biome1](x, y) - 0.5
+		local b1_noise = biome_noise_functions[biome1](x, y)
+
+		b1_noise = b1_noise - 0.5
 		add_to_base_noise = b1_noise
 		if border then
 

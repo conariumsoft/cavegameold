@@ -41,7 +41,7 @@ local function find_intersect(l1p1, l1p2, l2p1, l2p2, seg1, seg2)
 
         if seg1 and not (min(l1p1.x, l1p2.x) <= x and x <= max(l1p1.x, l1p2.x) and min(l1p1.y, l1p2.y) <= y and y <= max(l1p1.y, l1p2.y)) or
            seg2 and not (min(l2p1.x, l2p2.x) <= x and x <= max(l2p1.x, l2p2.x) and min(l2p1.y, l2p2.y) <= y and y <= max(l2p1.y, l2p2.y)) then
-            return false    
+            return false
         end
     end
     return x, y

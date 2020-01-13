@@ -231,9 +231,9 @@ function renderer.queuetile(tileid, state, dmg, r, g, b, tx, ty)
 end
 
 ---
-function renderer.drawqueue()
-	love.graphics.draw(spriteBatch, 0, 0)
-	love.graphics.draw(damagebatch, 0, 0)
+function renderer.drawqueue(x, y)
+	love.graphics.draw(spriteBatch, x, y)
+	love.graphics.draw(damagebatch, x, y)
 end
 
 ---

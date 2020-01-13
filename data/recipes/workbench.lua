@@ -22,8 +22,32 @@ s({"IRON_INGOT", 12}, {"ANVIL", 1})
 r({{"OBSIDIAN_TILE", 20}, {"BOTTLE", 3}}, {{"ALCHEMY_LAB", 1}})
 
 s({"PLANK_TILE", 10}, {"DOOR", 1})
+
 r({{"PLANK_TILE", 8}, {"IRON_INGOT", 2}}, {{"CHEST", 1}})
 
 s({"STONE_TILE", 20}, {"FURNACE", 1})
 
 s({"PLANK_TILE", 1}, {"WOOD_PANEL_WALL", 4})
+
+s({"PLANK_TILE", 10}, {"CHAIR", 1})
+
+r({
+    {"PLANK_TILE", 15},
+    {"SILK", 5}
+}, {
+    {"BED", 1}
+})
+
+r({
+    {"PAPER", 10},
+    {"SILK", 1},
+}, {
+    {"BOOK", 1}
+})
+
+r({
+    {"PLANK_TILE", 20},
+    {"BOOK", 10}
+}, {
+    {"BOOKSHELF", 1}
+})

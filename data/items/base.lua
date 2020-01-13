@@ -57,9 +57,17 @@ baseitem:new("ENRICHED_URANIUM",
 {displayname = "ENRICHED URANIUM", texture = "ingot.png", color = {0.6, 1, 0.6}, stack = 999}
 )
 
-
 baseitem:new("PAPER", {
+	texture = "scroll.png",
+	stack = 99,
+})
 
+baseitem:new("SILK", {
+
+})
+
+baseitem:new("BOOK", {
+	
 })
 
 baseitem:new("MUSHROOM", {

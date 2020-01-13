@@ -649,7 +649,7 @@ function menu_module.update(dt)
 			lastcolor = #colors
 		end
 
-		print(currentcolor, lastcolor)
+		--print(currentcolor, lastcolor)
 
 		local splash_img = splash_ui:find("logo")
 
@@ -684,8 +684,24 @@ function menu_module.draw()
 end
 
 
-function menu_module.go_to_screen()
+function menu_module.go_to_screen(screen)
+	if screen == "main" then
+		current_screen = main_ui
+	end
 
+
+	if screen == "splash" then
+
+	end
+
+
+	if screen == "settings" then
+
+	end
+
+	if screen == "credits" then
+
+	end
 end
 
 return menu_module

@@ -127,8 +127,10 @@ jutils.math = {} do
         jutils.misc.check(start, "number")
         jutils.misc.check(finish, "number")
         jutils.misc.check(alpha, "number")
-    
-        return (1-alpha)*start + alpha*finish
+        
+        local shrek = (1-alpha)*start + alpha*finish
+        --print(start, finish, alpha, shrek)
+        return shrek
     end
 
     --- Round a number n to the nearest multiple.

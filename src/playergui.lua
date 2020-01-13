@@ -70,6 +70,7 @@ function system:init(player)
 	self.cursor = inventory:new(1, 1)
 	self.openContainer = nil
 	self.inventory = inventory:new(10, 4)
+	self.equipment = inventory:new(2, 3)
 	self.hotbarSelection = 1
 	self.slotsize = 32
 	self.recipeLookingAt = nil
@@ -80,7 +81,6 @@ function system:init(player)
 	self.slotpadding = 4
 	self.recipe_scroll = 0
 	self.fullslotsize = self.slotsize+self.slotpadding
-
 
 	the_player = player
 end
@@ -173,22 +173,91 @@ function system:clicked(button, istouch, presses)
 		local inv = self.inventory
 		local offset = 0
 
-		if self.slotPointingAt > 40 then
+		if self.slotPointingAt > 80 then
+			inv = self.equipment
+			offset = 80
+		elseif self.slotPointingAt > 40 then
 			inv = self.openContainer
 			offset = 40
 		end
+
+		
 		local slot = inv.items[self.slotPointingAt-offset]
 		local sid, samount = slot[1], slot[2]
 
 		local mid, mamount = self.cursor.items[1][1], self.cursor.items[1][2]
 
 		if button == 1 then
-			if mid == sid then
-				slot[2] = slot[2] + mamount
-				self.cursor.items[1] = {0, 0}
+			if love.keyboard.isDown("lshift") and self.openContainer ~= nil then
+				if inv == self.inventory then
+					local amtleft = self.openContainer:addItem(sid, samount)
+					inv.items[self.slotPointingAt-offset][2] = amtleft
+				end
+
+				if inv == self.openContainer then
+					local amtleft = self.inventory:addItem(sid, samount)
+					inv.items[self.slotPointingAt-offset][2] = amtleft
+				end
 			else
-				self.cursor.items[1] = {sid, samount}
-				inv.items[self.slotPointingAt-offset] = {mid, mamount}
+
+				local function swap()
+					self.cursor.items[1] = {sid, samount}
+					inv.items[self.slotPointingAt-offset] = {mid, mamount}
+				end
+
+				if mid == sid then
+					-- TODO: max checking
+					slot[2] = slot[2] + mamount
+					self.cursor.items[1] = {0, 0}
+				else
+					if inv == self.equipment then
+						-- confirm the item in the cursor can go
+
+						local success = false
+						
+						if mid == 0 then
+							self.cursor.items[1] = {sid, samount}
+							inv.items[self.slotPointingAt-offset] = {mid, mamount}
+							success = true
+						else
+							local data = items:getByID(mid)
+
+							if self.slotPointingAt-offset == 1 then
+								if data.helmet then swap() success = true end
+								
+							elseif self.slotPointingAt-offset == 2 then
+								if data.chestplate then swap() success = true end
+								
+							elseif self.slotPointingAt-offset == 3 then
+								if data.leggings then swap() success = true end
+								
+							else
+								if data.accessory then swap() success = true end
+								
+							end
+						end
+
+						if success == true then
+							if sid ~= 0 then
+								local old_item_data = items:getByID(sid)
+	
+								if old_item_data.onUnequip then
+									old_item_data:onUnequip(self.player)
+								end
+							end
+							
+							if mid ~= 0 then
+								local new_item_data = items:getByID(mid)
+
+								if new_item_data.onEquip then
+									new_item_data:onEquip(self.player)
+								end
+							end
+						end
+					else
+						swap()
+					end
+				end
 			end
 			menuhandled = true
 		elseif button == 2 then
@@ -246,11 +315,15 @@ function system:updateRecipeList()
 	--if self.recipe_scroll > numRecipes then self.recipe_scroll = numRecipes end
 end
 
-
 function system:update(dt)
 	menu:update(dt)
 	uiscale = love.graphics.getWidth()/1000
 	self.inventory:update(dt)
+	self.cursor:update(dt)
+	if self.openContainer then
+		self.openContainer:update(dt)
+	end
+	self.equipment:update(dt)
 	if self.open then
 		self.updateNearbyRecipeTimer = self.updateNearbyRecipeTimer + dt
 
@@ -493,6 +566,11 @@ local text = love.graphics.newText(love.graphics.getFont())
 
 local ITEM_DEBUG_INFO = true
 
+function system:drawEquipmentSlots()
+	local w, h = self:getScreenSize()
+	
+end
+
 function system:drawFullInventory()
 	
 	local w, h = self:getScreenSize()
@@ -516,12 +594,24 @@ function system:drawFullInventory()
 				self.slotPointingAt = 40+index
 			end
 		end
+	else
+		for index = 1, 6 do
+			local id, amount = self.equipment:getSlot(index)
+			local slotx, sloty = self.equipment:getSlotXY(index)
+	
+			local res = self:drawItemData(w-(self.fullslotsize*(self.equipment.width)), h-(self.fullslotsize*5) -4, slotx-1, sloty, self.slotsize, id, amount)
+			if res then
+				self.slotPointingAt = 80+index
+			end
+		end
 	end
 
 	-- draw item pointing at data
 	if self.slotPointingAt ~= -1 then
 		local slot = self.inventory.items[1]
-		if self.slotPointingAt > 40 then
+		if self.slotPointingAt > 80 then
+			slot = self.equipment.items[self.slotPointingAt-80]
+		elseif self.slotPointingAt > 40 then
 			slot = self.openContainer.items[self.slotPointingAt-40]
 		else
 			slot = self.inventory.items[self.slotPointingAt]
@@ -652,8 +742,10 @@ function system:draw()
 			love.graphics.pop()
 			if not self.openContainer then
 				self:drawRecipes()
+				
 			end
 			self:drawFullInventory()
+			self:drawEquipmentSlots()
 		else
 			self.recipe_scroll = 0
 			self:drawHotbar()

@@ -13,6 +13,16 @@ local function multitile(name, x, y, data)
 					w = x,
 					h = y,
 			}
+			dataTable.canexplode = false
+
+			-- weird ghetto hack
+			-- only let the top-left corner of tile be detonated,
+			-- this makes sure that only ONE item is dropped when furniture is broken
+			-- by an explosion
+			if tx == 1 and ty == 1 then 
+				dataTable.canexplode = true
+			end
+
 			dataTable.makeItem = false
 			dataTable.tileupdate = function(world, x, y)
 
@@ -104,9 +114,20 @@ multitile("CHEST", 2, 2, {
 	end,
 })
 
+
 tilelist.CHEST_1_1.onplace = function(world, x, y)
 	local chest = world:addEntity("chest", {{x, y}, {x+1, y}, {x, y+1}, {x+1, y+1}})
 end
+
+tilelist.CHEST_1_1.onbreak = function(world, x, y)
+	for _, e in pairs(world.entities) do
+		if e:isA("Chest") then
+			if e:isAtTile(x, y) then
+				e:broken()
+			end
+		end
+	end
+end,
 
 multitile("REFINERY", 3, 2, {
 	texture = "refinery",
@@ -284,6 +305,7 @@ multitile("BOOKSHELF", 2, 3, {
 	texture = "bookshelf",
 	solid = false,
 	collide = false,
+	drop = "BOOKSHELF",
 })
 
 
@@ -296,16 +318,19 @@ multitile("BED", 3, 1, {
 	texture = "bed",
 	solid = false,
 	collide = false,
+	drop = "BED",
 })
 
 multitile("CHAIR", 1, 2, {
 	texture = "chair",
 	solid = false,
 	collide = false,
+	drop = "CHAIR",
 })
 
 multitile("FOREST_PAINTING", 2, 2, {
 	texture = "art_forest",
 	solid = false,
 	collide = false,
+	drop = "FOREST_PAINTING"
 })

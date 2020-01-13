@@ -38,6 +38,7 @@ function player:init()
 	self.itemHolding = nil
 	self.lastItemHolding = nil
 	self.equipDebounce = false
+	self.god = false
 
 	self.itemCooldown = 0
 	self.itemIsRunning = false
@@ -279,6 +280,9 @@ function player:update(dt)
 
 	self.spawntimer = self.spawntimer - dt
 
+	if self.god then
+
+	end
 	
 	if self.spawntimer > 0 then
 		self.frozen = true

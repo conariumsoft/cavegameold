@@ -23,15 +23,12 @@ function inventory:init(width, height)
 	for index = 1, self.width * self.height do
 		self.items[index] = {0, 0}
 	end
-
 end
-
 ---
 function inventory:getSlotIndex(x, y)
 	local index = ((y - 1) * self.width) + x
 	return index
 end
-
 ---
 function inventory:getSlotXY(index)
 	local x = (index - 1) % (self.width) + 1
@@ -39,7 +36,6 @@ function inventory:getSlotXY(index)
 
 	return x, y
 end
-
 ---
 function inventory:getSlot(index)
 	return self.items[index][1], self.items[index][2]
@@ -62,7 +58,6 @@ function inventory:addItem(item, amount)
 			
 			data[1] = item
 
-			
 			-- stack isn't full
 			while (itemdata.stack > data[2]) and amountleft > 0 do
 				data[2] = data[2] + 1

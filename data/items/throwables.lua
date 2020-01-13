@@ -21,7 +21,7 @@ consumable:new("GLOWSTICK", {
 
 		-- ! gay hack
 		local new = jutils.vec2.new(player.position.x, player.position.y)
-		local stickentity = world:addEntity("glowstick", new, jutils.vec2.new(input.getTransformedMouse()), 300, 0.1, player)
+		local stickentity = world:addEntity("glowstick", new, jutils.vec2.new(input.getTransformedMouse()), 400, 0.1, player)
 		--stickentity:teleport(player.position)
 
 	    return true

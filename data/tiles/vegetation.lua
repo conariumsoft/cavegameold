@@ -379,3 +379,43 @@ newtile("FLOWERING_CACTUS", {
 		end
 	end
 })
+
+
+newtile("BAMBOO", {
+	texture = "cane_top",
+	solid = false,
+	collide = false,
+	tileupdate = function(world, x, y)
+		local below = world:getTile(x, y+1)
+
+		local t = tilemanager:getByID(below)
+
+
+		if below == tilelist.BAMBOO.id or below == tilelist.DIRT.id or below == tilelist.GRASS.id then
+			-- epic?
+		else
+			world:setTile(x, y, tilelist.AIR.id, true)
+		end
+	end,
+	randomupdate = function(world, x, y)
+		local state = world:getTileState(x, y)
+
+		state = state + 1
+
+		if state >= 6 then
+			if world:getTile(x, y-1) == tilelist.AIR.id then
+				world:setTile(x, y-1, tilelist.BAMBOO.id)
+			end
+		else
+			world:setTileState(x, y, state)
+		end
+	end,
+	customRenderLogic = function(x, y, state, dmg)
+		if state > 2 then
+			return "cane", {1,1,1}, 0
+		else
+			return "cane_top", {1,1,1}, 0
+		end
+	end,
+	--validplacement = function()end,
+})

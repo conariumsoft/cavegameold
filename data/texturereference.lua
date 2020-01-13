@@ -86,6 +86,9 @@ local references = {
 
 		
 
+		cane_top = tileQuad(8, 4),
+		cane = tileQuad(9, 4),
+
 		workbench_1_1 = tileQuad(10, 4),
 		workbench_2_1 = tileQuad(11, 4),
 		open_door_1_3 = tileQuad(12, 4),

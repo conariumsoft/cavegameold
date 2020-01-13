@@ -18,60 +18,12 @@ newtile("CHEST_GENERATOR", {
 	end,
 })
 
-local function getGasLevel(world, x, y)
-    local id = world:getTile(x, y)
-
-    if id == tilelist.AIR.id then
-        return 0
-    end
-
-    if id == tilelist.TOXIC_GAS.id then
-        return world:getTileState(x, y)
-    end
-
-    return -1
-end
-
-local function setGasLevel(world, x, y, state)
-    local id = world:getTile(x, y)
-
-    if id == tilelist.TOXIC_GAS.id then
-        world:setTileState(x, y, state)
-    end
-
-    if id == tilelist.AIR.id then
-        world:setTile(x, y, tilelist.TOXIC_GAS.id, false)
-        world:setTileState(x, y, state)
-    end
-
-end
-
-local function gas(world, x, y)
-    
-end
-
-newtile("TOXIC_GAS", {
-    color = {0.2, 0.8, 0.2},
-    light = {0, 0.3, 0.3},
-    absorb = 0.05,
-    solid = false,
-    collide = true,
-    onplace = function(world, x, y)
-        world:rawset(x, y, "states", 1)
-    end,
-
-    customCollision = function(entity, separation, normal)
-
-    end,
-    tileupdate = gas,
-    randomupdate = gas,
-})
-
 newtile("COBWEB", {
     texture = "cobweb",
     color = {1, 1, 1, 0.75},
     solid = false,
     hardness = 0.5,
+    drop = "SILK",
     customCollision = function(entity, separation, normal)
         if separation and normal then
             

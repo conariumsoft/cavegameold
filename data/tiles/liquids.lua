@@ -39,13 +39,16 @@ newtile("WATER",{
     onplace = function(world, x, y)
         world:rawset(x, y, "states", waterLevels)
     end,
-    customCollision = function(entity, separation, normal)
+    customCollision = function(entity, separation, normal, pos, state)
         if separation and normal then
             
-            if separation.x and separation.y and normal.x and normal.y then
-                entity.velocity.x = jutils.math.clamp(-30, entity.velocity.x, 30)
-                entity.velocity.y = jutils.math.clamp(-200, entity.velocity.y, 40)
-                entity.touching_water = true
+            if state >= 6 then
+                if separation.x and separation.y and normal.x and normal.y then
+                    entity.velocity.x = jutils.math.clamp(-30, entity.velocity.x, 30)
+                    entity.velocity.y = jutils.math.clamp(-200, entity.velocity.y, 40)
+                    entity.touching_water = true
+                    entity.falltime = 0
+                end
             end
         end
     end,
@@ -162,15 +165,18 @@ newtile("LAVA", {
     onplace = function(world, x, y)
         world:rawset(x, y, "states", waterLevels)
     end,
-    customCollision = function(entity, separation, normal)
+    customCollision = function(entity, separation, normal, pos, state)
 
-        if separation and separation.x and separation.y and normal and normal.x and normal.y then
-            entity.velocity.x = jutils.math.clamp(-10, entity.velocity.x, 10)
-            entity.velocity.y = jutils.math.clamp(-200, entity.velocity.y, 10)
-            entity.touching_lava = true
+        if state >= 6 then
+            if separation and separation.x and separation.y and normal and normal.x and normal.y then
+                entity.velocity.x = jutils.math.clamp(-10, entity.velocity.x, 10)
+                entity.velocity.y = jutils.math.clamp(-200, entity.velocity.y, 10)
+                entity.touching_lava = true
+                entity.falltime = 0
 
-            if entity:isA("Itemstack") then
-                entity.dead = true
+                if entity:isA("Itemstack") then
+                    entity.dead = true
+                end
             end
         end
     end,

@@ -330,5 +330,21 @@ oretile("NICKEL_ORE", {1, 0.5, 0.5}, 6)
 oretile("VANADIUM_ORE", {0.5, 1, 0.8}, 6)
 oretile("COBALT_ORE", {0.3, 0.3, 1}, 8)
 oretile("TITANIUM_ORE", {0.6, 0.6, 0.6}, 8)
-oretile("URANIUM_ORE", {0.6, 1, 0.6}, 12)
+oretile("URANIUM_ORE", {0.4, 0.8, 0.4}, 12)
 tilelist.URANIUM_ORE.light = {0, 0.2, 0}
+--[[
+-- playing around with this :D
+tilelist.URANIUM_ORE.customRenderLogic = function(tx, ty, state, dmg)
+	if math.random() > 0.95 then
+		return "ore", {0.5, 1, 0.5}, 0
+	else
+		return "ore", {0.4, 0.8, 0.4}, 0
+	end
+end
+]]
+
+newtile("SULPHUR", {
+	texture = "ore",
+	color = {1.5, 1.5, 0},
+	hardness = 1,
+})
