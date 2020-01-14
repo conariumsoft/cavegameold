@@ -17,6 +17,9 @@ local inventory = require("src.inventory")
 local guiutil = require("src.guiutil")
 
 -- why the fuck is this an object?
+-- this is actually a question i continually ask.
+-- TODO: seriously sit down and figure out a monolithic playergui
+--! not now though, focus on finishing up the game
 local system = jutils.object:subclass("PlayerGui")
 
 -- ! ghetto retard hack because im lazy
@@ -225,15 +228,13 @@ function system:clicked(button, istouch, presses)
 							if self.slotPointingAt-offset == 1 then
 								if data.helmet then swap() success = true end
 								
-							elseif self.slotPointingAt-offset == 2 then
+							elseif self.slotPointingAt-offset == 3 then
 								if data.chestplate then swap() success = true end
 								
-							elseif self.slotPointingAt-offset == 3 then
+							elseif self.slotPointingAt-offset == 5 then
 								if data.leggings then swap() success = true end
-								
 							else
 								if data.accessory then swap() success = true end
-								
 							end
 						end
 
@@ -566,11 +567,6 @@ local text = love.graphics.newText(love.graphics.getFont())
 
 local ITEM_DEBUG_INFO = true
 
-function system:drawEquipmentSlots()
-	local w, h = self:getScreenSize()
-	
-end
-
 function system:drawFullInventory()
 	
 	local w, h = self:getScreenSize()
@@ -604,6 +600,13 @@ function system:drawFullInventory()
 				self.slotPointingAt = 80+index
 			end
 		end
+
+
+		-- display player's defense
+
+		local def = self.player.defense
+		love.graphics.setColor(1,1,1)
+		love.graphics.print(def, w-(self.fullslotsize*(self.equipment.width)) - 30, h-(self.fullslotsize*5))
 	end
 
 	-- draw item pointing at data
@@ -745,7 +748,6 @@ function system:draw()
 				
 			end
 			self:drawFullInventory()
-			self:drawEquipmentSlots()
 		else
 			self.recipe_scroll = 0
 			self:drawHotbar()

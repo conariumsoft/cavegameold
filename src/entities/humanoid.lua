@@ -84,8 +84,9 @@ end
 local humanoidAudio = love.audio.newSource("assets/audio/hurt.ogg", "static")
 
 function humanoid:damage(amount)
-	if self.invulnerability <= 0 then
-		physicalentity.damage(self, amount)
+	local final_amount = physicalentity.damage(self, amount)
+
+	if final_amount then
 		self.knockbackTimer = 0.25
 		humanoidAudio:stop()
 		humanoidAudio:setPitch(self.hurt_yell_pitch)
@@ -93,7 +94,7 @@ function humanoid:damage(amount)
 
 		particlesystem.newBloodSplatter(self.position, 1)
 
-		local e = self.world:addEntity("floatingtext", jutils.math.round(amount, 0), {1, 0.1, 0})
+		local e = self.world:addEntity("floatingtext", jutils.math.round(final_amount, 0), {1, 0.1, 0})
 		e:teleport(self.position)
 		e.position = e.position + jutils.vec2.new(-10, -20)
 	end

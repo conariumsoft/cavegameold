@@ -98,20 +98,9 @@ function renderer.queuebackground(bgid, r, g, b, tx, ty)
 	return true
 end
 
-local tile_cache = {
-	
-}
-
-
-local function stencilFunc()
-	love.graphics.circle("fill", 0, 0, 8)
-end
-
 ---
 function renderer.queuetile(tileid, state, dmg, r, g, b, tx, ty)
 	
-	
-
 	if properties.draw_air == false then
 		if tileid == 0 then return true end
 	elseif tileid == 0 then
@@ -278,6 +267,40 @@ function renderer.drawItem(itemid, x, y, xscale, yscale, rotation, offx, offy)
 		offx or 0,
 		offy or 0
 	)
+end
+
+
+function renderer.draw_item_detailed(itemid, x, y, xscale, yscale, rotation, offx, offy, light)
+	love.graphics.setColor(light)
+	
+
+	local data = items:getByID(itemid)
+
+	local quad = defaultQuad
+
+	local color = {
+		data.color[1] * light[1],
+		data.color[2] * light[2],
+		data.color[3] * light[3],
+	}
+
+	love.graphics.setColor(color)
+	local texture = data.texture
+
+	if texture == "tiletexture" then
+		quad = data.quad
+		texture = tilesheet
+	end
+	if data.animation then
+		local animFrame = math.floor(frametimer * data.animationspeed)
+		local animNum = (animFrame % (#data.animation)) + 1
+		quad = data.animation[animNum]
+	end
+
+	if type(quad) == "string" then
+		quad = textureReference.tiles[quad]
+	end
+	love.graphics.draw(texture, quad, x, y, rotation, xscale, yscale, offx or 0, offy or 0)
 end
 
 function renderer.drawTile(tileid, x, y, xscale, yscale, rotation, offx, offy)

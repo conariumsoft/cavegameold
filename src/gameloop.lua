@@ -227,24 +227,15 @@ return function(args)
 		["settile"] = {
 			desc = "",
 			func = function(args)
-
 				local player = gameworld:getPlayer()
-
 				local tx, ty = grid.pixelToTileXY(player.position.x, player.position.y)
 
 				local tile = tiles[string.upper(args[1])]
 				if not tile then jcon.message("NOT A TILE NERD", {1, 0, 0}) return end
 
-				local x = args[2]
-
-				local y = args[3]
-
-				local x2 = args[4]
- 
-				local y2 = args[5]
+				local x, y, x2, y2 = args[2], args[3], args[4], args[5]
 
 				if tile and x and y then
-
 					-- relative position
 					if x:sub(1, 1) == "~" then
 						
@@ -254,22 +245,15 @@ return function(args)
 							x = x+xadd
 						end
 					end
-
 					-- relative y
 					if y:sub(1, 1) == "~" then
-						
 						local yadd = tonumber(y:sub(2))
 						y = ty
-						if yadd then
-							y = y+yadd
-						end
+						if yadd then y = y+yadd end
 					end
-
 					-- span mode
 					if x2 and y2 then
-
 						if x2:sub(1, 1) == "~" then
-							
 							local x2add = tonumber(x2:sub(2))
 							x2 = tx
 							if x2add then
@@ -291,7 +275,6 @@ return function(args)
 								gameworld:setTile(dx, dy, tile.id)
 							end
 						end
-					-- single tile mode
 					else
 						gameworld:setTile(tonumber(x), tonumber(y), tile.id)
 					end
@@ -347,11 +330,9 @@ return function(args)
 		end
 	end)
 
-
 	local function update_debug_info()
 
 		local mx, my = input.getTransformedMouse()
-
 
 		local tx, ty = grid.pixelToTileXY(mx, my)
 
@@ -361,7 +342,6 @@ return function(args)
 		local bgid = gameworld:getBackground(tx, ty)
 		local bgdata = backgrounds:getByID(bgid >= 0 and bgid or 0)
 		
-
 		local light = gameworld:getLight(tx, ty)
 		local player = gameworld:getPlayer()
 
@@ -445,7 +425,6 @@ return function(args)
 
 		if key == "f2" then
 			local s = love.graphics.captureScreenshot("screenshots/"..os.time() .. '.png')
-
 		end
 
 		if gameworld then
@@ -490,6 +469,8 @@ return function(args)
 		elseif gameworld then
 			gameworld:draw()
 
+			gameworld:getPlayer().gui:draw()
+
 			if gameworld:getPlayer().show_ui then
 				if show_debug_info then
 					love.graphics.setColor(0,0,0, 0.5)
@@ -502,7 +483,6 @@ return function(args)
 					love.graphics.print("fps: "..love.timer.getFPS(), 2, 2)
 				end
 			end
-
 			jcon:draw()
 		end
 	end

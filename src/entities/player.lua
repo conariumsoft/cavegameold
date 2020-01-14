@@ -22,7 +22,6 @@ function player:init()
 	self.fallthrough = false
 	self.mass = 0.8
 	
-	self.freecamspeed = 4
 	self.inventoryOpen = false
 	self.openContainer = nil
 	self.guiscale = 2
@@ -46,7 +45,7 @@ function player:init()
 	self.spawntimer = 3
 	
 	self.mouse = {
-		down = false, bounce = false, 
+		down = false, bounce = false,
 		position = jutils.vec2.new(0, 0)
 	}
 	self.itemdata = {}
@@ -98,7 +97,10 @@ function player:serialize()
 
 	data.health = self.health
 
+	data.defense = self.defense
+
 	data.items = self.gui.inventory.items
+	data.equipment = self.gui.equipment.items
 
 	input.mousepressed:disconnect(self.inputcallbacks.mousepressed)
 	input.mousereleased:disconnect(self.inputcallbacks.mousereleased)
@@ -111,23 +113,30 @@ function player:deserialize(data)
 	self.nextposition = jutils.vec2.new(data.x, data.y)
 
 	self.health = data.health
-
+	self.defense = data.defense or 0
 	self.gui.inventory.items = data.items
+
+	if data.equipment then
+		self.gui.equipment.items = data.equipment
+	end
 end
 
 local humanoidAudio = love.audio.newSource("assets/audio/hurt.ogg", "static")
 
 function player:damage(amount)
-	physicalentity.damage(self, amount)
-	self.knockbackTimer = 0.25
+	local final_amount = physicalentity.damage(self, amount)
 
-	humanoidAudio:stop()
-	humanoidAudio:setPitch(self.hurt_yell_pitch)
-	humanoidAudio:play()
+	if final_amount then
+		self.knockbackTimer = 0.25
 
-	particlesystem.newBloodSplatter(self.position, 1.1)
-	local e = self.world:addEntity("floatingtext", math.floor(amount), {1, 0.5, 0})
-	e:teleport(self.position)
+		humanoidAudio:stop()
+		humanoidAudio:setPitch(self.hurt_yell_pitch)
+		humanoidAudio:play()
+
+		particlesystem.newBloodSplatter(self.position, 1.1)
+		local e = self.world:addEntity("floatingtext", math.floor(final_amount), {1, 0.5, 0})
+		e:teleport(self.position)
+	end
 end
 
 function player:dies()
@@ -176,7 +185,7 @@ function player:onKeyPressed(key)
 		self.gui.open = not self.gui.open
 	end
 
-	-- item dropping, 
+	-- item dropping
 	-- TODO: make it's own method
 	if key == "q" then
 		local stack = self.itemHoldingStack
@@ -193,14 +202,9 @@ function player:onKeyPressed(key)
 		end
 	end
 
-	if key == "f9" then
-		self.show_ui = not self.show_ui
-	end
+	if key == "f9" then self.show_ui = not self.show_ui end
 
-	if key == "p" then
-		self.nextposition = self.mouse.position
-	end
-
+	if key == "p" then self.nextposition = self.mouse.position end
 
 	if hotbarKeys[key] then
 		self.hotbarslot = hotbarKeys[key]
@@ -240,9 +244,7 @@ function player:scroll(change)
 
 		self.gui.hotbarSelection = self.hotbarslot
 	end
-	
 end
-
 
 function player:inventoryUpdate(dt)
 	local item = self.gui:getEquippedItem()
@@ -361,12 +363,13 @@ local oscillator = 0
 
 function player:draw()
 	
-
 	oscillator = oscillator + (1/20)
 
 	local mousex, mousey = grid.pixelToTileXY(input.getTransformedMouse())
 
 	local tile = self.world:getTile(mousex, mousey)
+
+	-- draw the yellow rectangle around an interactive tile
 	if tile > 0 then
 		local tiledata = tiles:getByID(tile)
 
@@ -374,12 +377,14 @@ function player:draw()
 			love.graphics.setColor(1, 1, 0, (math.sin(oscillator)+1)/2)
 
 			-- TODO: make glow cover the whole object, instead of one tile
+			love.graphics.setLineWidth(1)
 			love.graphics.rectangle("line", mousex*config.TILE_SIZE, mousey*config.TILE_SIZE, config.TILE_SIZE, config.TILE_SIZE)
 		end
 	end
 	
 	local actionframe = self:getAnimationFrame()
 
+	-- draw the player's texture and animation
 	love.graphics.setColor(self.light)
 	love.graphics.draw(
 		self.texture,
@@ -388,6 +393,44 @@ function player:draw()
 		self.textureorigin.x, self.textureorigin.y
 	)
 
+	-- draw player's equipment
+	local helmet      = self.gui.equipment.items[1][1]
+	local chestplate  = self.gui.equipment.items[3][1]
+	local leggings    = self.gui.equipment.items[5][1]
+	local accessory_1 = self.gui.equipment.items[2][1]
+	local accessory_2 = self.gui.equipment.items[4][1]
+	local accessory_3 = self.gui.equipment.items[6][1]
+
+	-- TODO: make this shit reflect the lighting of the equipment
+	-- draw helmet
+	local scale = 1.5
+	if helmet ~= 0 then
+		local offx, offy = 4, 12
+		rendering.draw_item_detailed(
+			helmet, self.position.x, self.position.y,
+			scale*(-self.direction), scale, 0, offx, offy, self.light
+		)
+	end
+
+	if leggings ~= 0 then
+		local offx, offy = 4, -2
+		rendering.draw_item_detailed(
+			leggings, self.position.x, self.position.y,
+			scale*(-self.direction), scale, 0, offx, offy, self.light
+		)
+	end
+
+	if chestplate ~= 0 then
+		local offx, offy = 4, 4
+		rendering.draw_item_detailed(
+			chestplate, self.position.x, self.position.y,
+			scale*(-self.direction), scale, 0, offx, offy, self.light
+		)
+	end
+	-- TODO: draw armor and accessories on top of the player
+
+	-- draw the currently using item
+	--! this needs to be fixed up, the animations are wonky as fuck.
 	if self.animation.running then
 		local data = self.animation.item
 		local item = data.id
@@ -438,6 +481,7 @@ function player:draw()
 		end
 	end
 	
+	-- show mouse pointer.
 	local mouse = self:getMousePosition()
 	local tmx, tmy = grid.pixelToTileXY(mouse.x, mouse.y)
 	local px, py = grid.pixelToTileXY(self.position.x, self.position.y)
@@ -446,8 +490,10 @@ function player:draw()
 		love.graphics.setLineWidth(1)
 		love.graphics.rectangle("line", tmx*config.TILE_SIZE, tmy*config.TILE_SIZE, config.TILE_SIZE, config.TILE_SIZE)
 	end
+
 	humanoid.draw(self)
-	self.gui:draw()
+
+	--self.gui:draw()
 end
 
 return player

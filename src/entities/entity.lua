@@ -56,6 +56,8 @@ function entity:damage(amount)
 		amount = math.max(amount - self.defense, 1)
 		self.health = self.health - amount
 		self.invulnerability = 0.5
+
+		return amount
 	end
 end
 
