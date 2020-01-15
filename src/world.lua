@@ -1162,9 +1162,6 @@ local cloud_bg_texture = love.graphics.newImage("assets/clouds.png")
 local star_bg_texture = love.graphics.newImage("assets/stars.png")
 local cave_bg_texture = love.graphics.newImage("assets/cavebg.png")
 
-
-
-
 function world:draw()
 
 	-- store graphics coordinate info to reset later
@@ -1274,7 +1271,7 @@ function world:draw()
 			local shiftx = x + ( (posx+dx)*texsize)
 			local shifty = y + ( (posy+dy)*texsize)
 
-			if self.camera.position.y/8 > config.UNDERGROUND_DEPTH then
+			if self.camera.position.y/8 > (config.UNDERGROUND_DEPTH)-50 then
 
 				if self:getPlayer() ~= nil then
 					local tx, ty = grid.pixelToTileXY(shiftx, shifty)
@@ -1282,6 +1279,7 @@ function world:draw()
 					local color = self:getPlayer().light
 
 					-- TODO: make the bgcolor darker for the farther out tiles
+					--! or make it reflect the color of that area
 					love.graphics.setColor(color)
 					love.graphics.draw(cave_bg_texture, shiftx, shifty, 0, 2, 2)
 				end

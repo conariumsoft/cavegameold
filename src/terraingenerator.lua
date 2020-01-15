@@ -232,7 +232,7 @@ local function chunkCavernPass(chunk, seed)
 					chunk.states[x][y] = 8
 				end
 
-				chunk.backgrounds[x][y] = backgrounds.STONE.id
+				--chunk.backgrounds[x][y] = backgrounds.STONE.id
 			end
 
 		-- deep caves
@@ -266,7 +266,7 @@ local function chunkCavernPass(chunk, seed)
 					chunk.states[x][y] = 8
 				end
 
-				chunk.backgrounds[x][y] = backgrounds.STONE.id
+				--chunk.backgrounds[x][y] = backgrounds.STONE.id
 			end
 		
 		-- shallow caves
