@@ -231,57 +231,77 @@ local function swordUseEnd(self, player)
 
 end
 
+local sword = baseitem:subclass("Sword") do
+    sword.texture = love.graphics.newImage("assets/items/sword.png")
+    sword.tooltip = SWORD_TOOLTIP
+    sword.stack = 1
+    sword.inWorldScale = 2
+    sword.playeranim = jabanim(false, 20)
+    sword.playerHoldPosition = jutils.vec2.new(0, 8)
+    sword.defaultRotation = math.rad(45)
+    sword.use = swordUse
+    sword.usestep = swordUseStep
+    sword.useend = swordUseEnd
+    sword.holdbegin = function(self, player)
 
-baseitem:new("RUSTY_SWORD", {
+    end
+    sword.holdend = function(self, player)
+
+    end
+end
+
+local longsword = sword:subclass("Longsword") do
+    longsword.playeranim = swinganim()
+    longsword.use = function() end
+    longsword.usestep = function() end
+    longsword.useend = function() end
+    
+end
+
+sword:new("RUSTY_SWORD", {
     displayname = "RUSTY SWORD",
     speed = 1/4,
-    texture = "sword.png",
     color = {0.7, 0.4, 0.3},
-    tooltip = SWORD_TOOLTIP,
-    stack = 1,
-    inWorldScale = 2,
     repeating = false,
-    playeranim = jabanim(false, 20),
-    playerHoldPosition = jutils.vec2.new(0, 8),
-    defaultRotation = math.rad(45),
     knockback = 30,
     damage = 5,
     range = 20,
-    holdbegin = function(self, player)
-
-    end,
-    holdend = function(self, player)
-
-    end,
-    use = swordUse,
-    usestep = swordUseStep,
-    useend = swordUseEnd,
-        
 })
 
-baseitem:new("IRON_SWORD", {
+sword:new("IRON_SWORD", {
     displayname = "IRON SWORD",
-    speed = 1/6,
-    texture = "sword.png",
+    speed = 1/3,
     color = {0.9, 0.8, 0.8},
-    tooltip = SWORD_TOOLTIP,
-    stack = 1,
-    inWorldScale = 2,
-    playeranim = jabanim(false, 20),
-    playerHoldPosition = jutils.vec2.new(0, 8),
-    defaultRotation = math.rad(45),
+    repeating = false,
     knockback = 50,
     damage = 8,
     range = 20,
-    holdbegin = function(self, player)
+})
 
-    end,
-    holdend = function(self, player)
+sword:new("COPPER_SWORD", {
+    displayname = "COPPER SWORD",
+    speed = 1/7,
+    color = {1, 0.45, 0.0},
+    repeating = false,
+    knockback = 40,
+    damage = 6,
+    range = 16,
+})
 
-    end,
-    use = swordUse,
-    usestep = swordUseStep,
-    useend = swordUseEnd,
+sword:new("LEAD_SWORD", {
+
+})
+
+sword:new("SILVER_SWORD", {
+
+})
+
+longsword:new("PALLADIUM_SWORD", {
+
+})
+
+longsword:new("COBALT_SWORD", {
+
 })
 
 baseitem:new("PUNCHY", {

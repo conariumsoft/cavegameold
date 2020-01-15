@@ -2,15 +2,15 @@ local jutils = require("src.jutils")
 local grid = require("src.grid")
 
 newtile("CHEST_GENERATOR", {
-	tileupdate = function(world, x, y)
+    tileupdate = function(world, x, y)
 		world:setTile(x, y, tilelist.CHEST_1_1.id)
 		world:setTile(x, y+1, tilelist.CHEST_1_2.id)
 		world:setTile(x+1, y, tilelist.CHEST_2_1.id)
 		world:setTile(x+1, y+1, tilelist.CHEST_2_2.id)
-
 		for _, entity in pairs(world.entities) do
 			if entity:isA("Chest") then
-				if entity:isAtTile(x, y) then
+                if entity:isAtTile(x, y) then
+                    -- TODO: variable chest loot??
 					entity:fillLoot()
 				end
 			end

@@ -544,10 +544,19 @@ function world:setTile(tilex, tiley, tile, drop, ignorecallback)
 		if drop then
 			local tiledata = tiles:getByID(current)
 			if tiledata.drop ~= false then
-				local item = items[tiledata.drop]
-				print("dropping entity")
-				local e = self:addEntity("itemstack", item.id, 1)
-				e:teleport(jutils.vec2.new(tilex*config.TILE_SIZE, tiley*config.TILE_SIZE))
+				if type(tiledata.drop) == "string" then
+					local item = items[tiledata.drop]
+					local e = self:addEntity("itemstack", item.id, 1)
+					e:teleport(jutils.vec2.new(tilex*config.TILE_SIZE, tiley*config.TILE_SIZE))
+				end
+
+				if type(tiledata.drop) == "function" then
+					local itemname, amount = tiledata.drop()
+
+					local item = items[itemname]
+					local e = self:addEntity("itemstack", item.id, amount)
+					e:teleport(jutils.vec2.new(tilex*config.TILE_SIZE, tiley*config.TILE_SIZE))
+				end
 			end
 		end
 			

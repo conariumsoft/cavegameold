@@ -14,46 +14,46 @@ local function magnitude(x1, y1, x2, y2)
 	return math.sqrt( (x2 - x1)^2 + (y2-y1)^2 )
 end
 
-baseitem:new("IRON_INGOT", 
+baseitem:new("IRON_INGOT",
 {displayname = "IRON INGOT", texture = "ingot.png", color = {1, 0.8, 0.8}, stack = 999}
 )
 baseitem:new("COPPER_INGOT",
 {displayname = "COPPER INGOT", texture = "ingot.png", color = {1, 0.45, 0.0}, stack = 999}
 )
-baseitem:new("LEAD_INGOT", 
+baseitem:new("LEAD_INGOT",
 {displayname = "LEAD INGOT", texture = "ingot.png", color = {0.35, 0.35, 0.45}, stack = 999}
 )
-baseitem:new("SILVER_INGOT", 
+baseitem:new("SILVER_INGOT",
 {displayname = "SILVER INGOT", texture = "ingot.png", color = {1,1,1}, stack = 999}
 )
-baseitem:new("PALLADIUM_INGOT", 
+baseitem:new("PALLADIUM_INGOT",
 {displayname = "PALLADIUM INGOT", texture = "ingot.png", color = {0.9, 0.5, 0.9}, stack = 999}
 )
 baseitem:new("CHROMIUM_INGOT",
 {displayname = "CHROMIUM INGOT", texture = "ingot.png", color = {0.5, 1, 1}, stack = 999}
 )
-baseitem:new("TIN_INGOT", 
+baseitem:new("TIN_INGOT",
 {displayname = "TIN INGOT", texture = "ingot.png", color = {0.6, 0.4, 0.4}, stack = 999}
 )
-baseitem:new("GOLD_INGOT", 
+baseitem:new("GOLD_INGOT",
 {displayname = "GOLD INGOT", texture = "ingot.png", color = {1,1,0.5}, stack = 999}
 )
 baseitem:new("ALUMINIUM_INGOT",
 {displayname = "ALUMINIUM INGOT", texture = "ingot.png", color = {0.9, 0.9, 0.9}, stack = 999}
 )
-baseitem:new("NICKEL_INGOT", 
+baseitem:new("NICKEL_INGOT",
 {displayname = "NICKEL INGOT", texture = "ingot.png", color = {1, 0.5, 0.5}, stack = 999}
 )
-baseitem:new("VANADIUM_INGOT", 
+baseitem:new("VANADIUM_INGOT",
 {displayname = "VANADIUM INGOT", texture = "ingot.png", color = {0.5, 1, 0.8}, stack = 999}
 )
 baseitem:new("COBALT_INGOT",
 {displayname = "COBALT INGOT", texture = "ingot.png", color = {0.3, 0.3, 1}, stack = 999}
 )
-baseitem:new("TITANIUM_INGOT", 
+baseitem:new("TITANIUM_INGOT",
 {displayname = "TITANIUM INGOT", texture = "ingot.png", color = {0.6, 0.6, 0.6}, stack = 999}
 )
-baseitem:new("ENRICHED_URANIUM", 
+baseitem:new("ENRICHED_URANIUM",
 {displayname = "ENRICHED URANIUM", texture = "ingot.png", color = {0.6, 1, 0.6}, stack = 999}
 )
 

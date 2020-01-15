@@ -168,11 +168,23 @@ do
 
 	pickaxe:new("PALLADIUM_PICKAXE", {
 		displayname = "PALLADIUM PICKAXE",
+		texture = "bigpickaxe.png",
 		color = {1, 1, 1},
 		speed = 1/3,
 		tooltip = PICKAXE_TOOLTIP,
 		usedistance = 14,
 		strength = 6,
+		rarity = 2,
+	})
+
+	pickaxe:new("COBALT_PICKAXE", {
+		displayname = "COBALT PICKAXE",
+		texture = "bigpickaxe.png",
+		color = {1,1,1},
+		speed = 1/5,
+		tooltip = PICKAXE_TOOLTIP,
+		usedistance = 15,
+		strength = 5,
 		rarity = 2,
 	})
 

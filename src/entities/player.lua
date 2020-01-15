@@ -21,7 +21,7 @@ function player:init()
 	self.textureorigin = jutils.vec2.new(8, 12)
 	self.fallthrough = false
 	self.mass = 0.8
-	
+
 	self.inventoryOpen = false
 	self.openContainer = nil
 	self.guiscale = 2
@@ -352,7 +352,6 @@ function player:update(dt)
 		self.jumping = love.keyboard.isDown(config.keybinds.PLAYER_JUMP)
 	end
 
-	
 	self.gui:update(dt)
 end
 
@@ -360,6 +359,35 @@ local function magnitude(x1, y1, x2, y2)
 	return math.sqrt( (x2 - x1)^2 + (y2-y1)^2 )
 end
 local oscillator = 0
+
+local armor_textures = {
+	base  = love.graphics.newImage("assets/armor/basearmor.png"),
+	witch = love.graphics.newImage("assets/armor/witch.png"),
+}
+
+local tex_w, tex_h = armor_textures.base:getDimensions()
+
+local helmet_quads = {
+	[1] = love.graphics.newQuad(0, 0, 16, 8, tex_w, tex_h),
+	[2] = love.graphics.newQuad(16, 0, 16, 8, tex_w, tex_h),
+	[3] = love.graphics.newQuad(32, 0, 16, 8, tex_w, tex_h),
+	[4] = love.graphics.newQuad(48, 0, 16, 8, tex_w, tex_h),
+}
+
+local chestplate_quads = {
+	[1] = love.graphics.newQuad(0, 8, 16, 12, tex_w, tex_h),
+	[2] = love.graphics.newQuad(16, 8, 16, 12, tex_w, tex_h),
+	[3] = love.graphics.newQuad(32, 8, 16, 12, tex_w, tex_h),
+	[4] = love.graphics.newQuad(48, 8, 16, 12, tex_w, tex_h),
+}
+
+local legging_quads = {
+	[1] = love.graphics.newQuad(0, 20, 16, 8, tex_w, tex_h),
+	[2] = love.graphics.newQuad(16, 20, 16, 8, tex_w, tex_h),
+	[3] = love.graphics.newQuad(32, 20, 16, 8, tex_w, tex_h),
+	[4] = love.graphics.newQuad(48, 20, 16, 8, tex_w, tex_h),
+}
+
 
 function player:draw()
 	
@@ -402,29 +430,45 @@ function player:draw()
 	local accessory_3 = self.gui.equipment.items[6][1]
 
 	-- TODO: make this shit reflect the lighting of the equipment
+
 	-- draw helmet
-	local scale = 1.5
+	local scale = 1
 	if helmet ~= 0 then
-		local offx, offy = 4, 12
-		rendering.draw_item_detailed(
-			helmet, self.position.x, self.position.y,
-			scale*(-self.direction), scale, 0, offx, offy, self.light
+
+		local helmet_data = items:getByID(helmet)
+
+		local color = jutils.color.multiply(helmet_data.color, self.light)
+
+		local offx, offy = 8, 16
+		love.graphics.setColor(color)
+		love.graphics.draw(armor_textures[helmet_data.set], helmet_quads[actionframe],
+			self.position.x, self.position.y, 0, -self.direction, 1, offx, offy
 		)
 	end
 
 	if leggings ~= 0 then
-		local offx, offy = 4, -2
-		rendering.draw_item_detailed(
-			leggings, self.position.x, self.position.y,
-			scale*(-self.direction), scale, 0, offx, offy, self.light
+
+		local leggings_data = items:getByID(leggings)
+
+		local color = jutils.color.multiply(leggings_data.color, self.light)
+
+		local offx, offy = 8, -4
+		love.graphics.setColor(color)
+		love.graphics.draw(armor_textures[leggings_data.set], legging_quads[actionframe],
+			self.position.x, self.position.y, 0, -self.direction, 1, offx, offy
 		)
 	end
 
 	if chestplate ~= 0 then
-		local offx, offy = 4, 4
-		rendering.draw_item_detailed(
-			chestplate, self.position.x, self.position.y,
-			scale*(-self.direction), scale, 0, offx, offy, self.light
+
+		local chestplate_data = items:getByID(chestplate)
+
+		local color = jutils.color.multiply(chestplate_data.color, self.light)
+
+		local offx, offy = 8, 8
+		love.graphics.setColor(color)
+		love.graphics.draw(armor_textures[chestplate_data.set], chestplate_quads[actionframe],
+			self.position.x, self.position.y, 0, -self.direction, 1, offx, offy
 		)
 	end
 	-- TODO: draw armor and accessories on top of the player
