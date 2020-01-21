@@ -423,6 +423,10 @@ return function(args)
 	
 	function love.keypressed(key)
 
+		if key == "f11" then
+			love.window.setFullscreen(true)
+		end
+
 		if key == "f2" then
 			local s = love.graphics.captureScreenshot("screenshots/"..os.time() .. '.png')
 		end

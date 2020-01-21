@@ -9,26 +9,26 @@ local textinput = jui.textinput
 
 local styles = {
     window  = {
-        scaleSize = jutils.vec2.new(1, 1),
-        pixelSize = jutils.vec2.new(-100, -100),
-        pixelPosition = jutils.vec2.new(50, 50),
-        scalePosition = jutils.vec2.new(0, 0),
-        backgroundColor = {0, 0, 0},
-        borderColor = {1, 1, 1},
-        borderWidth = 4,
+        scaleSize = jutils.vec2.new(0.5, 1),
+        pixelSize = jutils.vec2.new(-50, -50),
+        pixelPosition = jutils.vec2.new(25, 25),
+        scalePosition = jutils.vec2.new(0.5, 0),
+        backgroundColor = {0, 0, 0, 0},
+        borderColor = {0.5, 0.5, 0.5, 0.75},
+        borderWidth = 2,
     },
     topbar = {
         scaleSize = jutils.vec2.new(1, 0),
         pixelSize = jutils.vec2.new(0, 16),
         pixelPosition = jutils.vec2.new(0, 0),
-        backgroundColor = {0.4, 0.4, 0.4},
+        backgroundColor = {0.25, 0.25, 0.25},
         borderEnabled = false,
     },
     content = {
         scaleSize = jutils.vec2.new(1, 1),
         pixelSize = jutils.vec2.new(0, -16),
         pixelPosition = jutils.vec2.new(0, 16),
-        backgroundColor = {0.7, 0.7, 0.7},
+        backgroundColor = {0.85, 0.85, 0.85, 0.6},
         borderEnabled = false,
     },
     titleText = {

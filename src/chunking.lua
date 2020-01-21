@@ -114,8 +114,6 @@ function chunking:decode(chunkstring)
 		end
 	else
 
-		print("converting chunk")
-
 		local info = love.filesystem.getInfo("conversionmaps/"..lastVersion)
 
 		if info then

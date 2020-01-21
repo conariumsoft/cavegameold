@@ -7,6 +7,9 @@ local settings_mod = require("src.settings")
 
 local guiutil = require("src.guiutil")
 
+local menu_worldtime = 16*60
+local ambientlight = 0
+
 
 ----------------------------------------------
 -- der util functions
@@ -601,6 +604,20 @@ function menu_module.textinput(t)
     end
 end
 
+local function get_daylight(worldtime)
+	local light = 0.15
+	local timeDial = worldtime
+
+	if timeDial > (5.5*60)  and timeDial < (20*60)    then light = light + 0.15 end
+	if timeDial > (5.75*60) and timeDial < (19.75*60) then light = light + 0.10 end
+	if timeDial > (6*60)    and timeDial < (19.5*60)  then light = light + 0.10 end
+	if timeDial > (6.25*60) and timeDial < (19.25*60) then light = light + 0.10 end
+	if timeDial > (6.5*60)  and timeDial < (18.75*60) then light = light + 0.10 end
+	if timeDial > (6.75*60) and timeDial < (18.5*60)  then light = light + 0.10 end
+	if timeDial > (7.25*60) and timeDial < (18.25*60) then light = light + 0.10 end
+	if timeDial > (7.5*60)  and timeDial < (18*60)    then light = light + 0.10 end
+	return light
+end
 
 local base_menu_width = 1000
 local base_menu_height = 600
@@ -618,6 +635,14 @@ local colors = {
 local warp = 0
 
 function menu_module.update(dt)
+	menu_worldtime = menu_worldtime + (dt*15)
+
+	if menu_worldtime > 1440 then
+		menu_worldtime = 0
+	end
+
+	ambientlight = get_daylight(menu_worldtime)
+
 	current_screen:update(dt)
 
 	local c_screen_width = love.graphics.getWidth()
@@ -628,7 +653,6 @@ function menu_module.update(dt)
 
 
 	screen_ratio = math.min(h_ratio, v_ratio)
-
 
 	if current_screen == splash_ui then
 		splashtime = splashtime - dt
@@ -676,10 +700,101 @@ function menu_module.update(dt)
 			textlabel.textColor = {1, 1, 1}
 		end
 	end
+
+	
 end
 
 
+
+
+local cloud_bg_texture = love.graphics.newImage("assets/clouds.png")
+local star_bg_texture = love.graphics.newImage("assets/stars.png")
+
 function menu_module.draw()
+	local sky_color = {0.05, 0.05, 0.05}
+
+	local world_time_hour = menu_worldtime/60
+
+	local daytime_color = {0.15, 0.35, 0.9}
+
+
+	-- daytime
+	if world_time_hour >= 9 and world_time_hour <= 17 then
+		sky_color = daytime_color
+		love.graphics.setColor(daytime_color)
+		love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+	end
+
+	-- night time
+	if world_time_hour >= 22 or world_time_hour <= 4 then
+
+		sky_color = {0, 0, 0.01}
+		love.graphics.setColor(sky_color)
+		love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+	end
+
+	-- sunrise
+	if world_time_hour >= 4 and world_time_hour <= 9 then
+
+		local diff_time = ((menu_worldtime/60)-4)/5
+		local top_color = jutils.color.multiply({diff_time, diff_time, diff_time}, daytime_color)
+		local bottom_color = jutils.color.multiply({diff_time, diff_time, diff_time}, {1, 1, 0.15})
+
+		local cucr = 0
+
+		if world_time_hour > 6.75 then
+			cucr = (world_time_hour-6.75)*2
+		end
+
+		for slice = 0, 20 do
+
+			love.graphics.setColor(jutils.color.lerp(top_color, bottom_color, (slice/20)-cucr))
+			love.graphics.rectangle("fill", 0, (love.graphics.getHeight()/20)*slice, love.graphics.getWidth(), love.graphics.getHeight()/20)
+		end
+	end
+
+	-- sunset
+	if world_time_hour >= 17 and world_time_hour <= 22 then
+		local diff_time = 1-((menu_worldtime/60)-17)/5
+		local top_color = jutils.color.multiply({diff_time, diff_time, diff_time}, daytime_color)
+		local bottom_color = jutils.color.multiply({diff_time, diff_time, diff_time}, {0.75, 0.35, 0.15})
+
+		local cucr = 0
+
+		if world_time_hour < 19.25 then cucr = -((world_time_hour-19.25)*2) end
+
+		if world_time_hour > 19.75 then cucr = (world_time_hour-19.75)*2 end
+
+		for slice = 0, 20 do
+			love.graphics.setColor(jutils.color.lerp(top_color, bottom_color, (slice/20)-cucr))
+			love.graphics.rectangle("fill", 0, (love.graphics.getHeight()/20)*slice, love.graphics.getWidth(), love.graphics.getHeight()/20)
+		end
+	end
+
+	-- TODO: make cloud layer scroll at 1.25 speed correctly!
+	local bgscroll = 2
+	local texsize = 512
+	
+	local x = (0) / bgscroll
+	local y = 0 / bgscroll
+
+	local posx = math.floor(x/texsize) 
+	local posy = math.floor(y/texsize)
+	
+	for dx = -4, 4 do
+		for dy = -3, 3 do
+				
+			local shiftx = x + ( (posx+dx)*texsize)
+			local shifty = y + ( (posy+dy)*texsize)
+
+
+			love.graphics.setColor(ambientlight, ambientlight, ambientlight, ambientlight)
+			love.graphics.draw(cloud_bg_texture, shiftx, shifty, 0, 2, 2)
+			love.graphics.setColor(1-ambientlight, 1-ambientlight, 1-ambientlight, 1-ambientlight)
+			love.graphics.draw(star_bg_texture, shiftx, shifty, 0, 2, 2)
+		end
+	end
+
 	current_screen:draw()
 end
 

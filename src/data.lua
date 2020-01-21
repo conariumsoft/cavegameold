@@ -33,7 +33,6 @@ return function(args)
 
     function love.wheelmoved(x, y)
         scroll = scroll + y
-        print(scroll)
     end
     
     function love.keypressed(key)

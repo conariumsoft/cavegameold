@@ -7,7 +7,6 @@ local s = function(re, pr)
 end
 
 s({"PALLADIUM_ORE_TILE", 3}, {"PALLADIUM_INGOT", 1})
-s({"ALUMINIUM_ORE_TILE", 4}, {"ALUMINIUM_INGOT", 1})
 s({"CHROMIUM_ORE_TILE", 3}, {"CHROMIUM_INGOT", 1})
 s({"NICKEL_ORE_TILE", 3}, {"NICKEL_INGOT", 1})
 s({"VANADIUM_ORE_TILE", 3}, {"VANADIUM_INGOT", 1})

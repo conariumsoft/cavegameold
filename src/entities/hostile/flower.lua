@@ -102,7 +102,6 @@ function flower:update(dt)
 				entpos.x, entpos.y, entity.boundingbox.x, entity.boundingbox.y
 			)
 			if sx~=nil and sy~=nil then
-				print("coll?")
 				local nx, ny = collision.solve(sx, sy, self.velocity.x-entity.velocity.x, self.velocity.y-entity.velocity.y)
 					
 				if self.attackCooldown < 0 and nx~=nil and ny~= nil then

@@ -7,7 +7,7 @@ local s = function(re, pr)
 end
 
 s({"ALUMINIUM_INGOT", 20}, {"REFINERY", 1})
-r({{"TITANIUM_INGOT", 20}, {"WORKBENCH", 1}}, {{"MECHANARIUM", 1}})
+r({{"ALUMINIUM_INGOT", 16}, {"WORKBENCH", 1}}, {{"MECHANARIUM", 1}})
 
 --! Recipes made of iron ingot
 s({"IRON_INGOT", 3}, {"BUCKET", 1})

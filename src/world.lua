@@ -523,10 +523,11 @@ end
 -- @param tile
 -- @param drop drop the previous tile.
 -- @param ignorecallback should the onPlace callback be called for this tile
+
 function world:setTile(tilex, tiley, tile, drop, ignorecallback)
 	assert(type(tilex) == "number")
 	assert(type(tiley) == "number")
-	assert(type(tile) == "number")
+	assert(type(tile)  == "number")
 
 	local current = self:getTile(tilex, tiley)
 	if current ~= tile then
@@ -575,7 +576,7 @@ function world:setTile(tilex, tiley, tile, drop, ignorecallback)
 		self:tileUpdate(tilex, tiley + 1)
 		self:tileUpdate(tilex + 1, tiley)
 		self:tileUpdate(tilex - 1, tiley)
-		channels.tilechange:push({tilex, tiley, tile})	
+		channels.tilechange:push({tilex, tiley, tile})
 	end
 end
 
@@ -684,7 +685,7 @@ end
 ---
 function world:map_fillChunkFields()
 	local fx, fy = self.focuspoint.x, self.focuspoint.y
-	
+
 	local genradius = config.CHUNK_DRAW_RADIUS + config.CHUNK_SIMULATION_RADIUS + config.CHUNK_BUFFER_RADIUS
 
 	for cx = -genradius, genradius do
@@ -1216,16 +1217,11 @@ function world:draw()
 
 		local cucr = 0
 
-		if world_time_hour < 19.25 then
-			cucr = -((world_time_hour-19.25)*2)
-		end
+		if world_time_hour < 19.25 then cucr = -((world_time_hour-19.25)*2) end
 
-		if world_time_hour > 19.75 then
-			cucr = (world_time_hour-19.75)*2
-		end
+		if world_time_hour > 19.75 then cucr = (world_time_hour-19.75)*2 end
 
 		for slice = 0, 20 do
-
 			love.graphics.setColor(jutils.color.lerp(top_color, bottom_color, (slice/20)-cucr))
 			love.graphics.rectangle("fill", 0, (love.graphics.getHeight()/20)*slice, love.graphics.getWidth(), love.graphics.getHeight()/20)
 		end
@@ -1288,8 +1284,6 @@ function world:draw()
 				love.graphics.draw(cloud_bg_texture, shiftx, shifty, 0, 2, 2)
 				love.graphics.setColor(1-self.ambientlight, 1-self.ambientlight, 1-self.ambientlight, 1-self.ambientlight)
 				love.graphics.draw(star_bg_texture, shiftx, shifty, 0, 2, 2)
-
-				
 			end
 		end
 	end
@@ -1328,8 +1322,6 @@ function world:draw()
 			love.graphics.draw(biome_bg_textures[lastbiome], shiftx, shifty, 0, 2, 2)
 		end
 	end
-
-
 
 	love.graphics.setColor(1,1,1)
 	-- draw foreground and background tiles

@@ -48,6 +48,14 @@ newtile("WATER",{
                     entity.velocity.y = jutils.math.clamp(-200, entity.velocity.y, 40)
                     entity.touching_water = true
                     entity.falltime = 0
+
+                    entity.touching_lava = false
+                    
+                    if entity:isA("Humanoid") then
+                        entity:removeStatusEffect("BURNING")
+                        entity.onfire = false
+
+                    end
                 end
             end
         end

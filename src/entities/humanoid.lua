@@ -103,11 +103,22 @@ end
 function humanoid:addStatusEffect(effectid, duration)
 	for _, effect in pairs(self.statuseffects) do
 		if effect.id == effectid then
-			effect.time = effect.time + duration/5
+			effect.time = effect.time + duration
 			return
 		end
 	end
 	table.insert(self.statuseffects, {time = duration, id = effectid, handled = false})
+end
+
+-- TODO: rework this into a proper API...
+function humanoid:removeStatusEffect(effectid)
+	for inc, effect in pairs(self.statuseffects) do
+		if effect.id == effectid then
+			effect.time = -1
+			self:statuseffect_update(0)
+			return
+		end
+	end
 end
 
 function humanoid:fell(distance)
@@ -164,7 +175,6 @@ end
 function humanoid:updatePhysics(dt)
 	self.touchingrope = false
 	physicalentity.updatePhysics(self, dt)
-
 
 	if self.touchingrope == true then
 		if self.onrope == false then
@@ -227,7 +237,16 @@ function humanoid:updatePhysics(dt)
 	end
 end
 
+local debug_text = ""
+
+local round = function(n) return jutils.math.round(n, 2) end
+
 function humanoid:update(dt)
+
+	debug_text = "jump: "..tostring(self.jumping).."\n"..
+				 "vel:".. round(self.velocity.x)..", ".. round(self.velocity.y) .."\n"..
+				 "pos:".. round(self.position.x)..", ".. round(self.position.y).."\n"
+				 
 
 	if self.onfire then
 		if self.fireEmitter == nil then
@@ -242,7 +261,6 @@ function humanoid:update(dt)
 		if self.fireEmitter then
 			self.fireEmitter:release()
 			self.fireEmitter = nil
-
 		end
 	end
 	
@@ -255,6 +273,10 @@ function humanoid:update(dt)
 	self.climbcooldown = self.climbcooldown - dt
 end
 
+local DEBUG = false
+
+local crapfont = love.graphics.newFont()
+
 function humanoid:draw()
 	
 	physicalentity.draw(self)
@@ -262,6 +284,15 @@ function humanoid:draw()
 	if self.fireEmitter then
 		love.graphics.setColor(1, 1, 1)
 		love.graphics.draw(self.fireEmitter, self.position.x, self.position.y)
+	end
+
+	if DEBUG then
+		love.graphics.push()
+		love.graphics.scale(0.5, 0.5)
+		love.graphics.setColor(1,1,1)
+		love.graphics.setFont(crapfont)
+		love.graphics.print(debug_text, self.position.x*2, self.position.y*2)
+		love.graphics.pop()
 	end
 end
 

@@ -115,6 +115,9 @@ local references = {
 		mechanarium_2_1 = tileQuad(13, 6),
 		mechanarium_3_1 = tileQuad(14, 6),
 
+		pressure_plate = tileQuad(0, 8),
+		inverter = tileQuad(3, 7),
+		and_gate = tileQuad(0, 7),
 		wire = tileQuad(1, 7),
 		wire_base = tileQuad(2, 7),
 		switch = tileQuad(2, 6),

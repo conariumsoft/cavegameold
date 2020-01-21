@@ -74,7 +74,6 @@ baseitem:new("NIMDICK", {
             decayIncrease = decayIncrease + 0.1
 
             if limiter < 0 then
-                print("ran outta steam")
                 run = false
                 return
             end

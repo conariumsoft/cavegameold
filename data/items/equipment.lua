@@ -189,8 +189,6 @@ armour_item:new("COBALT_LEGGINGS", {
 	protection = 6,
 })
 
-
-
 armour_item:new("WITCH_HAT", {
 	set = "witch",
 	texture = "helmet.png",

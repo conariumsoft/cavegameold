@@ -12,7 +12,6 @@ function magicball:init(...)
 
 
 	--self.rotation = 
-	print()
 
 	self.rotation = math.rad(jutils.vec2.new(0, 0):angle(self.direction))
 	self.power = 1
