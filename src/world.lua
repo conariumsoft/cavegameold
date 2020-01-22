@@ -889,6 +889,8 @@ local function try_caster_spawn(gameworld, tx, ty)
 	if (light[1]+light[2]+light[3]) > 0.2 then return end
 
 
+
+	if is_solid(gameworld, tx, ty-1) == false then return end
 	-- needs a 2x3 of free space
 	if is_solid(gameworld, tx, ty) then return end
 	if is_solid(gameworld, tx, ty+1) then return end
@@ -917,6 +919,8 @@ local function try_slime_spawn(gameworld, tx, ty)
 	if is_solid(gameworld, tx+1, ty+1) then return end
 	if is_solid(gameworld, tx, ty+2) then return end
 	if is_solid(gameworld, tx+1, ty+2) then return end
+
+	if gameworld:getTile(tx, ty-1) ~= tiles.GRASS.id then return end
 
 	local mob = gameworld:addEntity("slime")
 
@@ -949,15 +953,11 @@ local mob_weights = {
 local function mob_spawn_pass(gameworld, tx, ty)
 
 	local selected_mob = math.random(#mob_weights)
-
 	local mob_roll = math.random()
-
 	local weight = mob_weights[selected_mob].weight
 
 	if mob_roll < weight then
-
 		local spawn_func = mob_weights[selected_mob].func
-
 		spawn_func(gameworld, tx, ty)
 	end	
 end

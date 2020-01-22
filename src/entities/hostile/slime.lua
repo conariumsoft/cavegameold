@@ -1,5 +1,6 @@
 local jutils = require("src.jutils")
 local collision = require("src.collision")
+local items = require("src.items")
 
 local humanoid = require("src.entities.humanoid")
 
@@ -20,35 +21,23 @@ function slime:init(size)
     self.health = 10*size
     self.mass = 1
     self.hostile = true
-    self.xfriction = 0.25
+    self.xfriction = 0.3
     self.attackCooldown = 0
 
     self.hop_direction = -1
-
     self.hop_timer = 0
-
-   --[[ self.animationframes = {
-		[1] = love.graphics.newQuad(0, 0, 16, 16, 48, 16),-- standing still
-		[2] = love.graphics.newQuad(16, 0, 16, 16, 48, 16),-- walking1,
-		[3] = love.graphics.newQuad(32, 0, 16, 16, 48, 16),--walking2
-	--	[4] = love.graphics.newQuad(48, 0, 16, 16, 48, 16),--walking2
-	}]]
 end
 
-function slime:updatePhysics(step)
-    humanoid.updatePhysics(self, step)
+function slime:dies()
 
-   -- self.velocity.x = self.velocity.x + self.direction
-end
+	local itemstack = self.world:addEntity("itemstack", items.GOO.id, math.random(1, 5))
+	itemstack:teleport(self.position:copy())
 
-
-function slime:collisionCallback()
-    --self.velocity.x = 0
+	humanoid.dies(self)
 end
 
 function slime:update(dt)
     humanoid.update(self, dt)
-
 
     self.hop_timer = self.hop_timer + dt
 
@@ -86,7 +75,6 @@ function slime:update(dt)
 				p.velocity.y = -50
 				self.attackCooldown = 0.5
             end
-
         end
 
     end
@@ -94,6 +82,9 @@ function slime:update(dt)
 end
 
 function slime:draw()
+
+    humanoid.draw(self)
+
     love.graphics.setColor(self.light)
    -- local quad = math.floor(self.age % 3) + 1
     love.graphics.draw(self.texture,

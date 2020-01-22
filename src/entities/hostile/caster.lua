@@ -4,7 +4,6 @@ local humanoid = require("src.entities.humanoid")
 
 local items = require("src.items")
 
-
 local caster = humanoid:subclass("Caster")
 
 local casterTexture = love.graphics.newImage("assets/entities/caster.png")
