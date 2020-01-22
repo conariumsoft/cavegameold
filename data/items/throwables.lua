@@ -9,6 +9,7 @@ local function getPlayerTile(playerentity)
 end
 
 consumable:new("GLOWSTICK", {
+	texture = "glowstick.png",
 	stack = 99,
 	consume = function(self, player)
 		local mx, my = input.getTransformedMouse()

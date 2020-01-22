@@ -50,6 +50,16 @@ baseitem:new("PURPLE_STAFF", {
 })
 
 
+-- TODO: finish details of this item
+baseitem:new("WICKED_FLAME", {
+    displayname = "WICKED FLAME",
+    texture = "scroll.png",
+    stack = 1,
+    rarity = 2,
+    speed = 1/2,
+
+})
+
 
 
 baseitem:new("NIMDICK", {

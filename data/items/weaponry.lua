@@ -15,28 +15,29 @@ local function magnitude(x1, y1, x2, y2)
 	return math.sqrt( (x2 - x1)^2 + (y2-y1)^2 )
 end
 
-baseitem:new("BULLET", {
-    stack = 999,
+local bullet = baseitem:subclass("Bullet") do
+    bullet.texture = love.graphics.newImage("assets/items/bullet.png")
+    bullet.stack = 999
+end
+
+bullet:new("BULLET", {
+    tooltip = ""
+    
+})
+
+bullet:new("SILVER_BULLET", {
     tooltip = ""
 })
 
-baseitem:new("SILVER_BULLET", {
-    stack = 999,
+bullet:new("FRAGMENT_BULLET", {
     tooltip = ""
 })
 
-baseitem:new("FRAGMENT_BULLET", {
-    stack = 999,
+bullet:new("HOLY_BULLET", {
     tooltip = ""
 })
 
-baseitem:new("HOLY_BULLET", {
-    stack = 999,
-    tooltip = ""
-})
-
-baseitem:new("NANOBULLET", {
-    stack = 999,
+bullet:new("NANOBULLET", {
     tooltip = ""
 })
 
@@ -94,6 +95,7 @@ baseitem:new("FLINTLOCK", {
 })
 
 baseitem:new("ARROW", {
+    texture = "arrow.png",
     displayname = "ARROW",
     stack = 300,
 })
@@ -168,7 +170,25 @@ consumable:new("STICKY_BOMB", {
 })
 
 consumable:new("DYNAMITE", {
-    
+    texture = "dynamite.png",
+    stack = 99,
+    speed = 1,
+    consume = function(self, player)
+        local mx, my = input.getTransformedMouse()
+
+        local tx, ty = grid.pixelToTileXY(mx, my)
+        local px, py = getPlayerTile(player)
+
+
+        local world = player.world
+
+        local bombentity = world:addEntity("dynamite", 5, player)
+        bombentity:teleport(player.position)
+        local mousepos = jutils.vec2.new(mx, my)
+        local unitvec = (mousepos - player.position):unitvec()
+        bombentity.velocity = unitvec*400
+        return true
+    end
 })
 
 

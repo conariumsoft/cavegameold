@@ -66,6 +66,11 @@ baseitem:new("SILK", {
 
 })
 
+baseitem:new("GOO", {
+	texture = "goo.png",
+	stack = 999,
+})
+
 baseitem:new("BOOK", {
 	
 })

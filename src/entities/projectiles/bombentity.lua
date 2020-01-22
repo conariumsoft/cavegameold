@@ -22,6 +22,7 @@ function bombentity:init(timer, creator)
 	self.scale = jutils.vec2.new(0.5, 0.5)
 	self.save = false
 	self.lightemitter = {0.8, 0.5, 0.3}
+	self.power = 8
 
 
 end
@@ -60,7 +61,7 @@ function bombentity:update(dt)
 
 		
 
-		local exp = world:addEntity("explosion", self.position, 8, 8, true)
+		local exp = world:addEntity("explosion", self.position, self.power, self.power, true)
 
 		self.dead = true
 	end

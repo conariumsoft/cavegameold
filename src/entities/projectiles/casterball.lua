@@ -19,6 +19,7 @@ function caster_ball:init(...)
 	self.mass = 0
 	self.xfriction = 0
 	self.noclip = true
+	self.color = {0.25, 0.75, 0.25}
 
 	self.animationframes = {
 		[1] = love.graphics.newQuad(0, 0, 8, 8, 16, 8),-- standing still
@@ -32,38 +33,23 @@ function caster_ball:init(...)
 end
 function caster_ball:collisionCallback(tileid, tilepos, separation, normal)
 
-	--local tiledata = tiles:getByID(tileid)
-
-	--if tiledata.solid == true then
-      --  self.dead = true
---	end
 end
 
 function caster_ball:entityCollision(otherEntity, separation, normal)
-    
    
 	if otherEntity:isA("Player") then
 		otherEntity:damage(15)
 		self.dead = true
 	end
-
 end
 
 function caster_ball:update(dt)
 	projectile.update(self, dt)
 
-	--self.timer = self.timer - dt
-
-	-- time's up, let's explode
-	--if self.timer < 0 then
-	--	local world = self.world
---
-    --local exp = world:addEntity("explosion", self.position, 8, 8, true)
-	--end
 end
 
 function caster_ball:draw()
-	love.graphics.setColor(self.light)
+	love.graphics.setColor(jutils.color.multiply(self.light, self.color))
 
 	local num = (math.floor(self.age) % 2) + 1
 

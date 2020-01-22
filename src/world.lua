@@ -45,6 +45,7 @@ local entitylist = {
 	bullet 			= require("src.entities.projectiles.bullet"),
 	bombentity 		= require("src.entities.projectiles.bombentity"),
 	stickybomb 		= require("src.entities.projectiles.stickybombentity"),
+	dynamite 		= require("src.entities.projectiles.dynamiteentity"),
 	glowstick 		= require("src.entities.projectiles.glowstick"),
 	magicball 		= require("src.entities.projectiles.magicball"),
 	arrow 			= require("src.entities.projectiles.arrow"),
@@ -866,13 +867,11 @@ local function try_tortured_spawn(gameworld, tx, ty)
 	local light = gameworld:getLight(tx, ty)
 	if (light[2]+light[3]) > 0.15 then return end
 
-
 	-- needs a 2x2 of free space
 	if is_solid(gameworld, tx, ty) then return end
 	if is_solid(gameworld, tx, ty-1) then return end
 	if is_solid(gameworld, tx+1, ty) then return end
 	if is_solid(gameworld, tx+1, ty+1) then return end
-
 
 	local mob = gameworld:addEntity("tortured")
 
@@ -901,7 +900,27 @@ local function try_caster_spawn(gameworld, tx, ty)
 	local mob = gameworld:addEntity("caster")
 
 	mob:teleport(jutils.vec2.new(tx*config.TILE_SIZE, ty*config.TILE_SIZE))
+end
 
+local function try_slime_spawn(gameworld, tx, ty)
+
+	-- must be day time
+	if not (gameworld.worldtime > (7*60) and gameworld.worldtime < (60*17)) then return end
+
+	--local light = gameworld:getLight(tx, ty)
+	--if (light[1]+light[2]+light[3]) < 0.6 then return end
+
+	-- needs a 2x3 of free space
+	if is_solid(gameworld, tx, ty) then return end
+	if is_solid(gameworld, tx, ty+1) then return end
+	if is_solid(gameworld, tx+1, ty) then return end
+	if is_solid(gameworld, tx+1, ty+1) then return end
+	if is_solid(gameworld, tx, ty+2) then return end
+	if is_solid(gameworld, tx+1, ty+2) then return end
+
+	local mob = gameworld:addEntity("slime")
+
+	mob:teleport(jutils.vec2.new(tx*config.TILE_SIZE, ty*config.TILE_SIZE))
 end
 
 local mob_weights = {
@@ -918,8 +937,12 @@ local mob_weights = {
 		func = try_tortured_spawn,
 	},
 	[4] = {
-		weight = 0.01,
+		weight = 0.005,
 		func = try_caster_spawn,
+	},
+	[5] = {
+		weight = 0.05,
+		func = try_slime_spawn,
 	}
 }
 

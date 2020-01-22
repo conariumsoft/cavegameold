@@ -90,27 +90,26 @@ function flower:update(dt)
 
 	end
 
-	for _, entity in pairs(self.world.entities) do
-		if entity:isA("Player") then
-			self.goal = entity.position
-			
-			local mypos = self.nextposition
-			local entpos = entity.nextposition
+	local player = self.world:getPlayer()
+	if player then
+		self.goal = player.position
+		
+		local mypos = self.nextposition
+		local entpos = player.nextposition
 
-			local sx, sy = collision.test(
-				mypos.x, mypos.y, self.boundingbox.x, self.boundingbox.y, 
-				entpos.x, entpos.y, entity.boundingbox.x, entity.boundingbox.y
-			)
-			if sx~=nil and sy~=nil then
-				local nx, ny = collision.solve(sx, sy, self.velocity.x-entity.velocity.x, self.velocity.y-entity.velocity.y)
-					
-				if self.attackCooldown < 0 and nx~=nil and ny~= nil then
-					entity:damage(5 + (math.random(10)) )
-					entity.velocity.x = entity.velocity.x - nx*250
-					entity.velocity.y = -50
-					self.attackCooldown = 0.5
-					self.dormant = false
-				end
+		local sx, sy = collision.test(
+			mypos.x, mypos.y, self.boundingbox.x, self.boundingbox.y,
+			entpos.x, entpos.y, player.boundingbox.x, player.boundingbox.y
+		)
+		if sx~=nil and sy~=nil then
+			local nx, ny = collision.solve(sx, sy, self.velocity.x-player.velocity.x, self.velocity.y-player.velocity.y)
+				
+			if self.attackCooldown < 0 and nx~=nil and ny~= nil then
+				player:damage(5 + (math.random(10)) )
+				player.velocity.x = player.velocity.x - nx*250
+				player.velocity.y = -50
+				self.attackCooldown = 0.5
+				self.dormant = false
 			end
 		end
 	end
