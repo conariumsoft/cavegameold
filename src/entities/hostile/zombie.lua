@@ -6,7 +6,6 @@ local zombie = humanoid:subclass("Zombie")
 
 local badguytexture = love.graphics.newImage("assets/entities/badguy.png")
 
-
 local zombie_types = {
 	[1] = {
 		health = 50,

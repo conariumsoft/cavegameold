@@ -879,6 +879,31 @@ local function try_tortured_spawn(gameworld, tx, ty)
 	mob:teleport(jutils.vec2.new(tx*config.TILE_SIZE, ty*config.TILE_SIZE))
 end
 
+local function try_caster_spawn(gameworld, tx, ty)
+
+	if ty > 100 then return end
+
+	-- must be night time
+	if (gameworld.worldtime > (7*60) and gameworld.worldtime < (60*17)) then return end
+
+	local light = gameworld:getLight(tx, ty)
+	if (light[1]+light[2]+light[3]) > 0.2 then return end
+
+
+	-- needs a 2x3 of free space
+	if is_solid(gameworld, tx, ty) then return end
+	if is_solid(gameworld, tx, ty+1) then return end
+	if is_solid(gameworld, tx+1, ty) then return end
+	if is_solid(gameworld, tx+1, ty+1) then return end
+	if is_solid(gameworld, tx, ty+2) then return end
+	if is_solid(gameworld, tx+1, ty+2) then return end
+
+	local mob = gameworld:addEntity("caster")
+
+	mob:teleport(jutils.vec2.new(tx*config.TILE_SIZE, ty*config.TILE_SIZE))
+
+end
+
 local mob_weights = {
 	[1] = {
 		weight = 0.27,
@@ -889,8 +914,12 @@ local mob_weights = {
 		func = try_flower_spawn,
 	},
 	[3] = {
-		weight = 0.005,
+		weight = 0.01,
 		func = try_tortured_spawn,
+	},
+	[4] = {
+		weight = 0.01,
+		func = try_caster_spawn,
 	}
 }
 

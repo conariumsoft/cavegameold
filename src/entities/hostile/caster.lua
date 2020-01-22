@@ -16,7 +16,6 @@ function caster:init()
 	self.displayname = "Caster"
 	self.hurt_yell_pitch = 1.25
 	self.texture = casterTexture
-	
 	self.mass = 1.5
 	self.maxhealth = 30
 	self.health = 30
@@ -24,10 +23,8 @@ function caster:init()
 	self.jump_wait = 0
 	self.apply_gravity = false
 	self.hostile = true
-
 	self.move_timer = 0
 	self.fireball_timer = 0
-
 end
 
 function caster:update(dt)
@@ -46,7 +43,6 @@ function caster:update(dt)
 		self.moveRight = false
 		self.moveLeft = false
 
-
 		if goal.x > self.position.x then
 			self.moveRight = true
 		end
@@ -58,7 +54,6 @@ function caster:update(dt)
 		if goal.x > self.position.y then
 			self.moveUp = true
 		end
-
 	end
 
 	if self.fireball_timer > 5 then
@@ -68,12 +63,15 @@ function caster:update(dt)
 
 		local start = self.position:copy()
 		local goal = player.position:copy()
-		local propulsion = 90
-		local mass = 0.5
 
-		local caster_ball = self.world:addEntity("casterball", start, goal, propulsion, mass)
+		if goal:distance(start) < 50 then
 
+			local propulsion = 90
+			local mass = 0.5
 
+			local caster_ball = self.world:addEntity("casterball", start, goal, propulsion, mass)
+
+		end
 	end
 end
 
