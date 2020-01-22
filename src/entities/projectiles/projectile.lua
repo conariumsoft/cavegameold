@@ -7,6 +7,7 @@ local projectile = physicalentity:subclass("Projectile")
 
 function projectile:init(start, goal, prop, mass)
 	physicalentity.init(self)
+
 	self.nextposition = start
 	self.position = start
 	self.direction = (goal-start):unitvec()
@@ -24,13 +25,13 @@ function projectile:update(dt)
 	-- TODO: entity collision checks controlled by the world script
 	-- i've got similar loops in about 3 other entitties already :(
 	for _, entity in pairs(self.world.entities) do
-		if entity:isA("PhysicalEntity") and entity:isA("Player") == false and entity ~= self then
+		if entity:isA("PhysicalEntity") and entity ~= self then
 			self.goaldirection = (self.position-entity.position):unitvec()
 			local mypos = self.nextposition
 			local entpos = entity.nextposition
 
 			local sx, sy = collision.test(
-				mypos.x, mypos.y, self.boundingbox.x, self.boundingbox.y, 
+				mypos.x, mypos.y, self.boundingbox.x, self.boundingbox.y,
 				entpos.x, entpos.y, entity.boundingbox.x, entity.boundingbox.y
 			)
 			if sx~=nil and sy~=nil then

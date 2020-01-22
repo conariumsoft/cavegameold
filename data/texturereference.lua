@@ -84,8 +84,6 @@ local references = {
 		open_door_2_2 = tileQuad(13, 3),
 		door_1_2 = tileQuad(14, 3),
 
-		
-
 		cane_top = tileQuad(8, 4),
 		cane = tileQuad(9, 4),
 
@@ -146,8 +144,6 @@ local references = {
 		bed_1_1 = tileQuad(13, 8),
 		bed_2_1 = tileQuad(14, 8),
 		bed_3_1 = tileQuad(15, 8),
-
-
 
 		art_forest_1_1 = tileQuad(14, 14),
 		art_forest_2_1 = tileQuad(15, 14),

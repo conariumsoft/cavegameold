@@ -529,8 +529,13 @@ jutils.vec2 = {} do
     end
 
     --- Unimplemented
-    function jutils.vec2.angle(vector)
 
+    function jutils.vec2.copy(vector)
+        return jutils.vec2.new(vector.x, vector.y)
+    end
+
+    function jutils.vec2.angle(vector)
+        error("NOT IMPLEMENTED")
     end
 
     --- Returns the angle between two vectors.

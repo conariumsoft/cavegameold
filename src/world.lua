@@ -41,6 +41,7 @@ local entitylist = {
 	chest 			= require("src.entities.chestentity"),
 	floatingtext    = require("src.entities.floatingtext"),
 	-- projectiles
+	casterball      = require("src.entities.projectiles.casterball"),
 	bullet 			= require("src.entities.projectiles.bullet"),
 	bombentity 		= require("src.entities.projectiles.bombentity"),
 	stickybomb 		= require("src.entities.projectiles.stickybombentity"),

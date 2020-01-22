@@ -4,6 +4,7 @@ local jutils = require("src.jutils")
 local air_id
 local water_id
 local lava_id
+local blood_id
 
 local function getWaterLevel(world, x, y)
     local id = world:getTile(x, y)
@@ -277,6 +278,135 @@ newtile("LAVA", {
     end
 })
 
+
+local function getBloodLevel(world, x, y)
+    local id = world:getTile(x, y)
+
+    if id == air_id then
+        return 0
+    end
+
+    if id == blood_id then
+        return world:getTileState(x, y)
+    end
+
+    if tilemanager:tileHasTag(id, "fakeempty") then
+        return 0
+    end
+
+    return -1
+end
+
+local function setBloodLevel(world, x, y, state)
+    local id = world:getTile(x, y)
+
+    if id == blood_id then
+        world:setTileState(x, y, state)
+        return
+    end
+
+    if id == air_id or tilemanager:tileHasTag(id, "fakeempty") then
+        world:setTile(x, y, blood_id, false)
+        world:setTileState(x, y, state)
+        return
+    end
+
+end
+
+newtile("BLOOD", {
+    color = {0.75, 0.05, 0.05},
+    absorb = 0,
+    solid = false,
+    collide = true,
+    tags = {"fakeempty"},
+    onplace = function(world, x, y)
+        world:rawset(x, y, "states", waterLevels)
+    end,
+    customCollision = function(entity, separation, normal, pos, state)
+
+        if state >= 6 then
+            if separation and separation.x and separation.y and normal and normal.x and normal.y then
+                entity.velocity.x = jutils.math.clamp(-10, entity.velocity.x, 10)
+                entity.velocity.y = jutils.math.clamp(-200, entity.velocity.y, 10)
+                entity.touching_water = true
+                entity.falltime = 0
+
+                entity.touching_lava = false
+                
+                if entity:isA("Humanoid") then
+                    entity:removeStatusEffect("BURNING")
+                    entity.onfire = false
+
+                end
+            end
+        end
+    end,
+    tileupdate = function(world, x, y)
+        local bloodMax = 8
+
+        local this = getBloodLevel(world, x, y)
+        if this < 1 then
+            world:setTile(x, y, air_id, false)
+            return
+        end
+
+        
+        -- try to flow downward
+        local below = getBloodLevel(world, x, y+1)
+        local function check(val)
+            if val ~= -1 and val < bloodMax then return true end
+        end
+
+        if check(below) and this > 0 then
+            this = this-1
+            below = below+1
+            setBloodLevel(world, x, y, this)
+            setBloodLevel(world, x, y+1, below)
+            return
+        end
+
+        -- try to flow outwards once you're on the ground?
+        local left = getBloodLevel(world, x-1, y)
+        if check(left) and this > 0 and this~=left then
+            if this > left+1 then
+                this = this-1
+                left = left+1
+            elseif this-left == 1 then
+                local rand = math.random()
+                if rand > 0.5 then
+                    this = this
+                    left = this
+                else
+                    this = left
+                    left = left
+                end
+            end
+            setBloodLevel(world, x, y, this)
+            setBloodLevel(world, x-1, y, left)
+        end
+
+        local right = getBloodLevel(world, x+1, y)
+        if check(right) and this > 0 and this ~= right then
+            if this > right+1 then
+                this = this-1
+                right = right+1
+            elseif this-right == 1 then
+                local rand = math.random()
+                if rand > 0.5 then
+                    this = this
+                    right = this
+                else
+                    this = right
+                    right = right
+                end
+            end
+            setBloodLevel(world, x, y, this)
+            setBloodLevel(world, x+1, y, right)
+        end
+    end
+})
+
 air_id = tilelist.AIR.id
 water_id = tilelist.WATER.id
 lava_id = tilelist.LAVA.id
+blood_id = tilelist.BLOOD.id

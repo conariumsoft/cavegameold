@@ -191,7 +191,7 @@ function renderer.queuetile(tileid, state, dmg, r, g, b, tx, ty)
 	-- cap visible light
 
 	spriteBatch:setColor(endr, endg, endb, a)
-	if tileid == tiles.WATER.id or tileid == tiles.LAVA.id then
+	if tileid == tiles.WATER.id or tileid == tiles.LAVA.id or tileid == tiles.BLOOD.id then
 		if state > 0 and state < 9 then
 			spriteBatch:add(textureReference.liquids[state], tx*config.TILE_SIZE, ty*config.TILE_SIZE)
 		end
