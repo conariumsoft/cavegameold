@@ -143,15 +143,12 @@ setmetatable(itemEnvironment, {__index = _G})
 
 local files = love.filesystem.getDirectoryItems("data/items/")
 
---print("loading item scripts")
-for k, file in ipairs(files) do  
-	--print("\tfile ".. file)
+for k, file in ipairs(files) do
 
 	local d, errmsg = love.filesystem.load("data/items/"..file)
 	if errmsg then print(errmsg) end
 	setfenv(d, itemEnvironment)
 	d()
 end
---print("done")
 
 return itemcollector

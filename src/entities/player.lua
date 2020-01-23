@@ -124,6 +124,9 @@ end
 local humanoidAudio = love.audio.newSource("assets/audio/hurt.ogg", "static")
 
 function player:damage(amount)
+
+	if self.god then return end
+
 	local final_amount = physicalentity.damage(self, amount)
 
 	if final_amount then

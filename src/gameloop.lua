@@ -281,7 +281,25 @@ return function(args)
 				end
 			end
 		},
-	
+
+		["god"] = {
+			desc = "player godmode",
+			func = function(args)
+				local player = gameworld:getPlayer()
+
+				player.god = not player.god
+			end,
+		},
+		["noclip"] = {
+			desc = "player noclip",
+			func = function(args)
+				local player = gameworld:getPlayer()
+
+
+				player.noclip = not player.noclip
+				player.apply_gravity = not player.apply_gravity
+			end
+		},
 		["quit"] = {
 			desc = "quits the game",
 			func = function(args)
