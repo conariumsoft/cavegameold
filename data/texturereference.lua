@@ -72,6 +72,9 @@ local references = {
 		eye_3 = tileQuad(2, 5),
 		eye_4 = tileQuad(3, 5),
 
+		dirty_stone = tileQuad(4, 4),
+		mossy_stone = tileQuad(5, 4),
+
 		pot = tileQuad(7, 3),
 
 		cobweb = tileQuad(6, 3),

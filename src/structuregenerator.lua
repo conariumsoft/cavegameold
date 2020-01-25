@@ -162,6 +162,20 @@ return function(world, tilex, tiley)
 				end
 			end
 		end
+
+
+		local mudhut_noise = noise.noise(tilex, tiley, 92, 92)
+
+
+		if mudhut_noise > 0.99 then
+			if world:getTile(tilex, tiley) == tiles.AIR.id then
+				local chance = math.random()
+				if chance > 0.99 then
+					generateFromFile(require("data.structures.mudhut"), world, tilex, tiley)
+				end
+			end
+		end
+
 	end
 
 	if surface_noise > 1000 then

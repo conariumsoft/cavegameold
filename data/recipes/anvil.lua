@@ -62,3 +62,5 @@ r({{"COBALT_INGOT", 18}, {"tag:plank", 15}}, {{"COBALT_SWORD", 1}})
 s({"IRON_INGOT", 1}, {"BULLET", 25})
 s({"SILVER_INGOT", 1}, {"SILVER_BULLET", 25})
 s({"PLANK_TILE", 1}, {"ARROW", 10})
+
+s({"PLANK_TILE", 30}, {"BOW", 1})

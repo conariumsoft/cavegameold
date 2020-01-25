@@ -319,6 +319,12 @@ multitile("BED", 3, 1, {
 	solid = false,
 	collide = false,
 	drop = "BED",
+	playerInteract = function(player, x, y, button)
+		if button == 2 then
+			player.spawn_position = jutils.vec2.new(x*8, y*8)
+			-- TODO: pass the night time?
+		end
+	end,
 })
 
 multitile("CHAIR", 1, 2, {

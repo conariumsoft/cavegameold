@@ -5,9 +5,10 @@ local entity = require("src.entities.entity")
 local floating_text_entity = entity:subclass("FloatingText")
 
 
-function floating_text_entity:init(text, textcolor)
+function floating_text_entity:init(text, textcolor, font)
 
     entity.init(self)
+    font = font or guiutil.fonts.font_12
 
     self.text = text
     self.textcolor = textcolor or {1, 0, 0}
@@ -15,6 +16,7 @@ function floating_text_entity:init(text, textcolor)
     self.float_up_direction = math.random(1, 3) - 2
     self.text_fade = 3
     self.float_stop_time = 0
+    self.font = font
     
 end
 
@@ -33,7 +35,7 @@ function floating_text_entity:update(dt)
 end
 
 function floating_text_entity:draw()
-    love.graphics.setFont(guiutil.fonts.font_12)
+    love.graphics.setFont(self.font)
     love.graphics.setColor(self.textcolor[1], self.textcolor[2], self.textcolor[3], self.text_fade)
 
     love.graphics.print(self.text, self.position.x, self.position.y)

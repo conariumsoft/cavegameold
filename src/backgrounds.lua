@@ -186,6 +186,16 @@ background("STONE", {
 	texture = "stone",
 })
 
+background("DIRTY_STONE", {
+	color = {1,1,1},
+	texture = "dirty_stone",
+})
+
+background("MOSSY_STONE", {
+	color = {1,1,1},
+	texture = "mossy_stone"
+})
+
 background("CHISELED_STONE", {
 	color = {0.6, 0.6, 0.6},
 	texture = "chiseled_stone",

@@ -1,4 +1,7 @@
 local jutils = require("src.jutils")
+
+local tiles = require("src.tiles")
+
 local projectile = require("src.entities.projectiles.projectile")
 
 local arrow = projectile:subclass("Arrow")
@@ -19,12 +22,18 @@ function arrow:init()
 	self.texture = arrowTexture
 	self.textureorigin = jutils.vec2.new(2, 2)
 	self.boundingbox = jutils.vec2.new(2, 2)
-	self.cooldown = 0
+	self.cooldown = 0.1
+	self.death_timer = 0
 end
 
 function arrow:collisionCallback(tileid, tilepos, separation, normal)
-	self.stuck = true
-	self.dead = true
+
+	local data = tiles:getByID(tileid)
+
+	if data.solid == true then
+		self.stuck = true
+		--self.dead = true
+	end
 end
 
 function arrow:entityCollision(entity, separationVec, normalVec)
@@ -37,6 +46,14 @@ function arrow:entityCollision(entity, separationVec, normalVec)
 end
 
 function arrow:update(dt)
+	if self.stuck then
+		self.death_timer = self.death_timer + dt
+
+		if self.death_timer > 1 then
+			self.dead = true
+		end
+		return
+	end
 	projectile.update(self, dt)
 
 	self.cooldown = self.cooldown - dt

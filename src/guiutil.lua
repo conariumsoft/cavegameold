@@ -9,6 +9,7 @@ love.graphics.setDefaultFilter("nearest", "nearest")
 
 local fonts = {
     default     = love.graphics.newFont(12),
+    font_6      = love.graphics.newFont("assets/fonts/adds.ttf", 6 ),
     font_8      = love.graphics.newFont("assets/fonts/adds.ttf", 8 ),
     font_12     = love.graphics.newFont("assets/fonts/adds.ttf", 12),
     font_14     = love.graphics.newFont("assets/fonts/adds.ttf", 14),

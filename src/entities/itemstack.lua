@@ -2,6 +2,10 @@ local physicalentity = require("src.entities.physicalentity")
 local rendering = require("src.rendering")
 local jutils = require("src.jutils")
 
+local guiutil = require("src.guiutil")
+
+local items = require("src.items")
+
 local itemstack = physicalentity:subclass("Itemstack")
 
 function itemstack:init(itemid, amount)
@@ -45,6 +49,25 @@ function itemstack:update(dt)
 
 					if dist <= 12 then
 						local amountleft = entity.gui.inventory:addItem(self.id, self.amount)
+
+						
+
+						if self.amount - amountleft >= 1 then
+							local data = items:getByID(self.id)
+
+
+							local txt = ""
+
+							-- TODO: make text color reflect item rarity
+							if self.amount - amountleft > 1 then
+								txt = tostring(self.amount-amountleft).."x"
+							end
+							-- TODO: make labels offset from each other.
+							local label = entity.world:addEntity("floatingtext", data.displayname.. " ".. txt, {1,1,1}, guiutil.fonts.font_6)
+							label:teleport(entity.position)
+							label.position = label.position + jutils.vec2.new(-10, -20)
+						end
+
 						self.amount = amountleft
 						if self.amount < 1 then
 							self.dead = true

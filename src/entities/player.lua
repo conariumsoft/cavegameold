@@ -21,6 +21,7 @@ function player:init()
 	self.textureorigin = jutils.vec2.new(8, 12)
 	self.fallthrough = false
 	self.mass = 0.8
+	self.spawn_position = nil
 
 	self.inventoryOpen = false
 	self.openContainer = nil
@@ -95,6 +96,12 @@ function player:serialize()
 	data.x = self.position.x
 	data.y = self.position.y
 
+	-- tile coordinates, not pixel coordinates
+	if self.spawn_position then
+		data.spawn_x = self.spawn_position.x
+		data.spawn_y = self.spawn_position.y
+	end
+
 	data.health = self.health
 
 	data.defense = self.defense
@@ -110,6 +117,9 @@ function player:serialize()
 end
 
 function player:deserialize(data)
+	if data.spawn_x and data.spawn_y then
+		self.spawn_position = jutils.vec2.new(data.spawn_x, data.spawn_y)
+	end
 	self.nextposition = jutils.vec2.new(data.x, data.y)
 
 	self.health = data.health
@@ -145,7 +155,12 @@ end
 function player:dies()
 	
 	self.health = self.maxhealth
-	self.nextposition = jutils.vec2.new(0, self.world.spawnPointY)
+	if self.spawn_position then
+		print(self.spawn_position)
+		self.nextposition = self.spawn_position:copy()
+	else
+		self.nextposition = jutils.vec2.new(0, self.world.spawnPointY)
+	end
 	self.dead = false
 end
 
