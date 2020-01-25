@@ -395,10 +395,14 @@ function system:drawRecipes()
 	local slotY = 0
 	
 	local startx = 32
-	local starty = 16
+	local starty = 24
 	local mx, my = self:getMouse()
 	local idx = 0
 	local counter = 0
+
+	local show_top_arrow = (self.recipe_scroll == 0) and true or false
+	local show_bottom_arrow = true
+
 	for station, list in pairs(recipes) do
 		for _, recipe in pairs(list) do
 			-- check if player has the nessecary items for the recipe
@@ -510,6 +514,17 @@ function system:drawRecipes()
 				end
 			end
 		end
+	end
+
+	love.graphics.setColor(1, 1, 1)
+
+	love.graphics.setFont(guiutil.fonts.font_14)
+
+	if show_top_arrow then
+		love.graphics.print("\\/", 4, 40)
+	elseif show_bottom_arrow then
+		love.graphics.print("/\\", 4, 40)
+		
 	end
 end
 

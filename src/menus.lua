@@ -483,6 +483,7 @@ Evan Walter
 "bosswalrus"
 "AndrewJ"
 "Sorci"
+Courtland Phillips
 ]],
 		font = guiutil.fonts.font_20,
 		textColor = jutils.color.fromHex("#FFFFFF"),
@@ -667,13 +668,9 @@ function menu_module.update(dt)
 
 		local lastcolor = currentcolor-1
 
-
-
 		if lastcolor == 0 then
 			lastcolor = #colors
 		end
-
-		--print(currentcolor, lastcolor)
 
 		local splash_img = splash_ui:find("logo")
 
@@ -700,23 +697,18 @@ function menu_module.update(dt)
 			textlabel.textColor = {1, 1, 1}
 		end
 	end
-
-	
 end
-
-
-
 
 local cloud_bg_texture = love.graphics.newImage("assets/clouds.png")
 local star_bg_texture = love.graphics.newImage("assets/stars.png")
 
 function menu_module.draw()
+
 	local sky_color = {0.05, 0.05, 0.05}
 
 	local world_time_hour = menu_worldtime/60
 
 	local daytime_color = {0.15, 0.35, 0.9}
-
 
 	-- daytime
 	if world_time_hour >= 9 and world_time_hour <= 17 then
@@ -778,7 +770,7 @@ function menu_module.draw()
 	local x = (0) / bgscroll
 	local y = 0 / bgscroll
 
-	local posx = math.floor(x/texsize) 
+	local posx = math.floor(x/texsize)
 	local posy = math.floor(y/texsize)
 	
 	for dx = -4, 4 do
@@ -795,28 +787,18 @@ function menu_module.draw()
 		end
 	end
 
+	love.graphics.setColor(0, 0, 0, 0.25)
+	love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+
 	current_screen:draw()
 end
 
 
 function menu_module.go_to_screen(screen)
-	if screen == "main" then
-		current_screen = main_ui
-	end
-
-
-	if screen == "splash" then
-
-	end
-
-
-	if screen == "settings" then
-
-	end
-
-	if screen == "credits" then
-
-	end
+	if screen == "main"     then current_screen = main_ui     end
+	if screen == "splash"   then current_screen = splash_ui   end
+	if screen == "settings" then current_screen = settings_ui end
+	if screen == "credits"  then current_screen = credits_ui  end
 end
 
 return menu_module

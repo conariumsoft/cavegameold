@@ -47,9 +47,9 @@ baseitem:new("FLINTLOCK", {
     texture = "flintlock.png",
     tooltip = "work in progress bruh",
     stack = 1,
-    playeranim = pointanim(true),
+    playeranim = pointanim(false),
     inWorldScale = 2,
-    defaultRotation = math.rad(90),
+    --defaultRotation = math.rad(90),
     playerHoldPosition = jutils.vec2.new(0, 4),
     use = function(self, player)
 

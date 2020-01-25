@@ -41,21 +41,19 @@ function itemstack:update(dt)
 		end
 
 		if entity:isA("Player") then
-			local dist = self.position:distance(entity.position) 
+			local dist = self.position:distance(entity.position)
 			if dist <= 35 then
 				if self.playermagnet > 0 then
 					local attraction = 1.2
+					-- holy fuck
 					self.velocity = self.velocity + ((entity.position-self.position):unitvec() * math.max(((35-dist)^attraction), 0.1))
 
 					if dist <= 12 then
 						local amountleft = entity.gui.inventory:addItem(self.id, self.amount)
 
-						
-
 						if self.amount - amountleft >= 1 then
 							local data = items:getByID(self.id)
-
-
+							
 							local txt = ""
 
 							-- TODO: make text color reflect item rarity

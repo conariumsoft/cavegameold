@@ -504,11 +504,23 @@ function player:draw()
 			if style == "point" then
 				local followmouse = data.playeranim.follow
 				local rotation = 0
+
+				local dir = self.direction
 				if followmouse then
 
-					rotation = math.rad(180+ self.position:angleBetween(jutils.vec2.new(input.getTransformedMouse())))
+					rotation = self.position:angleBetween(jutils.vec2.new(input.getTransformedMouse()))
+
+
+					if rotation > 90 then
+						dir = -dir
+					end
+
+					rotation = math.rad(rotation)
 				end
-				rendering.drawItem(item, self.position.x, self.position.y, data.inWorldScale*(self.direction), data.inWorldScale, (data.defaultRotation*self.direction) +rotation, data.playerHoldPosition.x, data.playerHoldPosition.y)
+
+				rendering.drawItem(item, self.position.x, self.position.y,
+				data.inWorldScale*(dir), data.inWorldScale, (data.defaultRotation + rotation)*(dir), data.playerHoldPosition.x, data.playerHoldPosition.y)
+
 			end
 			if style == "jab" then
 				local followmouse = data.playeranim.follow
@@ -524,7 +536,7 @@ function player:draw()
 					rotation = math.rad(self.position:angleBetween(jutils.vec2.new(input.getTransformedMouse())))
 					
 				end
-				rendering.drawItem(item, self.position.x+(current*(self.direction)), self.position.y, data.inWorldScale*(self.direction), data.inWorldScale, (data.defaultRotation*self.direction) + rotation, data.playerHoldPosition.x, data.playerHoldPosition.y)
+				rendering.drawItem(item, self.position.x+(current*(self.direction)), self.position.y, data.inWorldScale*(self.direction), data.inWorldScale, self.direction + rotation, data.playerHoldPosition.x, data.playerHoldPosition.y)
 			end
 			if style == "swing" then
 				local startang = data.playeranim.start
