@@ -30,7 +30,7 @@ local properties = {
 }
 
 function renderer.enable_air(val)
-	properties.draw_air = val
+	_G.NO_TEXTURE = val
 end
 
 ---
@@ -77,7 +77,7 @@ function renderer.queuebackground(bgid, r, g, b, tx, ty)
 
 	local quad = data.texture
 
-	if properties.no_textures then
+	if _G.NO_TEXTURE then
 		quad = textureReference.tiles["blank"]
 		spriteBatch:add(quad, tx*config_tile_size, ty*config_tile_size)
 		return true
@@ -118,16 +118,6 @@ function renderer.queuetile(tileid, state, dmg, r, g, b, tx, ty)
 	end
 
 	local data = tiles:getByID(tileid)
-	--[[local p = tile_cache[tileid]
-	if p then
-		data = p
-	else
-	 	local b = tiles:getByID(tileid)
-
-		tile_cache[tileid] = b
-
-		data = b
-	end]]
 
 	local maxdamage = data.hardness
 
@@ -140,7 +130,7 @@ function renderer.queuetile(tileid, state, dmg, r, g, b, tx, ty)
 	local endb = data.color[3] * b
 	local a = data.color[4]
 
-	if properties.no_textures then
+	if _G.NO_TEXTURE then
 		local quad = textureReference.tiles["blank"]
 		spriteBatch:add(quad, tx*config.TILE_SIZE, ty*config.TILE_SIZE)
 		return true
@@ -189,8 +179,10 @@ function renderer.queuetile(tileid, state, dmg, r, g, b, tx, ty)
 	end
 
 	-- cap visible light
-
 	spriteBatch:setColor(endr, endg, endb, a)
+
+	--! for some odd reason, liquid rendering is handled here, instead of having a customRenderLogic. fine with me.
+	-- probably for the textureReference.liquids stuff...
 	if tileid == tiles.WATER.id or tileid == tiles.LAVA.id or tileid == tiles.BLOOD.id then
 		if state > 0 and state < 9 then
 			spriteBatch:add(textureReference.liquids[state], tx*config.TILE_SIZE, ty*config.TILE_SIZE)

@@ -117,12 +117,12 @@ newtile("LAMP", {
 })
 
 newtile("POWERED_LAMP", {
+	drop = "LAMP_TILE",
 	texture = "weird",
 	color = {1, 1, 0.6},
 	hardness = 3,
 	solid = true,
 	light = {1.5, 1.5, 1.5},
-
 })
 
 newtile("TOGGLE_BRICK", {

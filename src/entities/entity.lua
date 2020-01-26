@@ -89,7 +89,6 @@ function entity:update(dt)
 	
 end
 
-local ENTITY_DEBUG = false
 
 function entity:draw()
 
@@ -103,7 +102,7 @@ function entity:draw()
 	end
 	love.graphics.setFont(guiutil.fonts.default)
 
-	if ENTITY_DEBUG then
+	if _G.ENTITY_DEBUG then
 		love.graphics.setLineWidth(0)
 		love.graphics.setPointSize(2)
 		love.graphics.setColor(1, 0, 0)

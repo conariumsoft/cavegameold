@@ -178,7 +178,6 @@ function world.new(worldname, seed)
 	
 	self.update_tick = 0
 	self.random_tick_speed = 1
-	self.debug_fullbright = false
 	self.no_save = false
 
 	-- generate ID mappings for this version of the game if they don't yet exists
@@ -1089,7 +1088,7 @@ function world:drawchunks()
 					local b = c_lights[3][x][y]
 
 					-- cheat mode used to look at the entire world
-					if self.debug_fullbright then
+					if _G.FULLBRIGHT then
 						r = 1 g = 1 b = 1
 					end
 
@@ -1156,9 +1155,9 @@ function world:update(dt)
 	self:map_unloadOldChunks()
 
 	tileUpdateDelta = tileUpdateDelta + dt
-	if tileUpdateDelta > 1/60 then
+	if tileUpdateDelta >= 1/60 then
 		self:map_updateCurrentChunks()
-		tileUpdateDelta = 0
+		tileUpdateDelta = tileUpdateDelta - (1/60)
 	end
 
 	redrawTick = redrawTick + dt
@@ -1226,12 +1225,19 @@ function world:draw()
 	local world_time_hour = self.worldtime/60
 
 	local daytime_color = {0.05, 0.3, 0.85}
+	local daytime_color_lower = {0, 0.2, 0.5}
 
 	-- daytime
 	if world_time_hour >= 7 and world_time_hour <= 19 then
 		sky_color = daytime_color
+		
 		love.graphics.setColor(daytime_color)
 		love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+
+		for slice = 0, 20 do
+			love.graphics.setColor(jutils.color.lerp(daytime_color, daytime_color_lower, slice/20))
+			love.graphics.rectangle("fill", 0, (love.graphics.getHeight()/20)*slice, love.graphics.getWidth(), love.graphics.getHeight()/20)
+		end
 	end
 
 	-- night time

@@ -72,7 +72,7 @@ local running = true
 
 
 while running do
-	love.timer.sleep(1/30)
+	love.timer.sleep(1/60)
 	local package = channels.io_kill:pop()
 
 	if package then running = false end

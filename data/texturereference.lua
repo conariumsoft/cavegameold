@@ -6,7 +6,7 @@ local function tileQuad(qx, qy)
 end
 
 local references = {
-	tiles = { 
+	tiles = {
 		default 		= tileQuad(0, 0),
 		stone 			= tileQuad(1, 0),
 		plank 			= tileQuad(2, 0),

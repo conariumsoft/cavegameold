@@ -25,6 +25,11 @@ local menus = require("src.menus")
 -- ie. the game, structure editor, so on.
 return function(args)
 
+	-- globals
+	_G.ENTITY_DEBUG = false
+	_G.FULLBRIGHT = false
+	_G.NO_TEXTURE = false
+
 	local show_debug_info = false
 
 	local in_menu = true
@@ -109,6 +114,12 @@ return function(args)
 
 	-- console command list
 	local commands = {
+		["entity_info"] = {
+			desc = "shows entity data",
+			func = function(_)
+				_G.ENTITY_DEBUG = not _G.ENTITY_DEBUG
+			end,
+		},
 		["gimme"] = {
 			desc = "gives the player an item",
 			arg = "[itemname] [amount]",
@@ -181,7 +192,13 @@ return function(args)
 		["fullbright"] = {
 			desc = "toggles game lighting",
 			func = function(args)
-				gameworld.debug_fullbright = not gameworld.debug_fullbright
+				_G.FULLBRIGHT = not _G.FULLBRIGHT
+			end
+		},
+		["notex"] = {
+			desc = "toggles tile textures",
+			func = function(args)
+				_G.NO_TEXTURE = not _G.NO_TEXTURE
 			end
 		},
 		["respawn"] = {
@@ -402,7 +419,7 @@ return function(args)
 			if show_debug_info then
 				debug_info_update = debug_info_update + dt
 
-				if debug_info_update > (0.1) then
+				if debug_info_update > (1/60) then
 					debug_info_update = 0
 					update_debug_info()
 				end

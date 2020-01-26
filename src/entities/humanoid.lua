@@ -237,16 +237,9 @@ function humanoid:updatePhysics(dt)
 	end
 end
 
-local debug_text = ""
 
-local round = function(n) return jutils.math.round(n, 2) end
 
 function humanoid:update(dt)
-
-	debug_text = "jump: "..tostring(self.jumping).."\n"..
-				 "vel:".. round(self.velocity.x)..", ".. round(self.velocity.y) .."\n"..
-				 "pos:".. round(self.position.x)..", ".. round(self.position.y).."\n"
-				 
 
 	if self.onfire then
 		if self.fireEmitter == nil then
@@ -263,7 +256,7 @@ function humanoid:update(dt)
 			self.fireEmitter = nil
 		end
 	end
-	
+
 	physicalentity.update(self, dt)
 
 	self:animation_update(dt)
@@ -273,26 +266,13 @@ function humanoid:update(dt)
 	self.climbcooldown = self.climbcooldown - dt
 end
 
-local DEBUG = false
-
-local crapfont = love.graphics.newFont()
-
 function humanoid:draw()
-	
+
 	physicalentity.draw(self)
 
 	if self.fireEmitter then
 		love.graphics.setColor(1, 1, 1)
 		love.graphics.draw(self.fireEmitter, self.position.x, self.position.y)
-	end
-
-	if DEBUG then
-		love.graphics.push()
-		love.graphics.scale(0.5, 0.5)
-		love.graphics.setColor(1,1,1)
-		love.graphics.setFont(crapfont)
-		love.graphics.print(debug_text, self.position.x*2, self.position.y*2)
-		love.graphics.pop()
 	end
 end
 

@@ -163,13 +163,20 @@ function physicalentity:updatePhysics(step)
 
 end
 
+local debug_text = ""
+
+local round = function(n) return jutils.math.round(n, 2) end
+
 function physicalentity:update(dt)
 	entity.update(self, dt)
 
+	debug_text = "vel:".. round(self.velocity.x)..", ".. round(self.velocity.y) .."\n"..
+				 "pos:".. round(self.position.x)..", ".. round(self.position.y).."\n"
+
 	self.internal_physics_step = self.internal_physics_step + dt
-	while self.internal_physics_step > (1/100) do
-		self.internal_physics_step = self.internal_physics_step - (1/100)
-		self:updatePhysics(1/100)
+	while self.internal_physics_step >= (1/60) do
+		self.internal_physics_step = self.internal_physics_step - (1/60)
+		self:updatePhysics(1/60)
 	end
 
 	if self.touching_lava then
@@ -183,8 +190,19 @@ function physicalentity:update(dt)
 	self.touching_water = false
 end
 
+local crapfont = love.graphics.newFont()
+
 function physicalentity:draw()
 	entity.draw(self)
+
+	if _G.ENTITY_DEBUG then
+		love.graphics.push()
+		love.graphics.scale(0.5, 0.5)
+		love.graphics.setColor(1,1,1)
+		love.graphics.setFont(crapfont)
+		love.graphics.print(debug_text, self.position.x*2 + 10, self.position.y*2 - 30)
+		love.graphics.pop()
+	end
 end
 
 return physicalentity

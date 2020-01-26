@@ -32,7 +32,7 @@ end
 local waterLevels = 8
 
 newtile("WATER",{
-    color = {0, 0, 0.5},
+    color = {0, 0, 0.5, 0.75},
     solid = false,
     collide = true,
     absorb = 0.05,
@@ -314,7 +314,7 @@ local function setBloodLevel(world, x, y, state)
 end
 
 newtile("BLOOD", {
-    color = {0.75, 0.05, 0.05},
+    color = {0.75, 0.05, 0.05, 0.9},
     absorb = 0,
     solid = false,
     collide = true,
