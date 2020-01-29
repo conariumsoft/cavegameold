@@ -125,6 +125,7 @@ local splash_ui = jui.scene:new({}, {
 	})
 })
 
+local reset_load_menu_states
 
 local main_ui = jui.scene:new({}, {
 	title_box = jui.layoutbox:new({
@@ -161,6 +162,7 @@ local main_ui = jui.scene:new({}, {
 			end),
 			[2] = create_button("Load World", function()
 				current_screen = load_world_ui
+				reset_load_menu_states()
 			end),
 			[3] = create_button("Settings",   function()
 				current_screen = settings_ui
@@ -286,7 +288,7 @@ local function get_world_saves()
 	end
 end
 
-local function reset_load_menu_states()
+function reset_load_menu_states()
 	get_world_saves()
 end
 
@@ -568,6 +570,8 @@ function menu_module.keypressed(key)
 				menu_module.selected_world_name = btn.worldname
 				menu_module.has_chosen_world = true
 			end
+
+			
 		else
 			activate_button()
 		end

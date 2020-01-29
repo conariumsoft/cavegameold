@@ -54,9 +54,6 @@ end
 
 local function is_tile_powered(world, x, y)
 	if is_wire_powered(world, x, y) == true then return true end
-
-
-
 	return false
 end
 

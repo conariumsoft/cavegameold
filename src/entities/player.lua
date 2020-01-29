@@ -522,6 +522,7 @@ function player:draw()
 				data.inWorldScale*(dir), data.inWorldScale, (data.defaultRotation + rotation)*(dir), data.playerHoldPosition.x, data.playerHoldPosition.y)
 
 			end
+			
 			if style == "jab" then
 				local followmouse = data.playeranim.follow
 
@@ -536,8 +537,9 @@ function player:draw()
 					rotation = math.rad(self.position:angleBetween(jutils.vec2.new(input.getTransformedMouse())))
 					
 				end
-				rendering.drawItem(item, self.position.x+(current*(self.direction)), self.position.y, data.inWorldScale*(self.direction), data.inWorldScale, self.direction + rotation, data.playerHoldPosition.x, data.playerHoldPosition.y)
+				rendering.drawItem(item, self.position.x+(current*(self.direction)), self.position.y, data.inWorldScale*(self.direction), data.inWorldScale, (rotation+data.defaultRotation)*self.direction, data.playerHoldPosition.x, data.playerHoldPosition.y)
 			end
+
 			if style == "swing" then
 				local startang = data.playeranim.start
 				local dist = data.playeranim.distance

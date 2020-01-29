@@ -192,7 +192,7 @@ consumable:new("DYNAMITE", {
 })
 
 
-local SWORD_TOOLTIP = 
+local SWORD_TOOLTIP =
 [[
 {speed} Speed
 {knockback} Knockback

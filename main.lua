@@ -44,6 +44,8 @@
 function love.load(cmdlineargs)
 	
 	love.graphics.setDefaultFilter("nearest", "nearest")
+
+	love.filesystem.setIdentity("cavegame")
 	love.filesystem.createDirectory("worlds")
 	love.filesystem.createDirectory("screenshots")
 	love.filesystem.createDirectory("data")
