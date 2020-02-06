@@ -5,7 +5,6 @@
 
 
 local config 			= require("config")
-
 local tiles 			= require("src.tiles")
 local jutils 			= require("src.jutils")
 local rendering 		= require("src.rendering")
@@ -19,6 +18,7 @@ local backgrounds 		= require("src.backgrounds")
 local particlesystem 	= require("src.particlesystem")
 local terrainMath 		= require("src.terrain")
 local collision 		= require("src.collision")
+local guiutil 			= require("src.guiutil")
 
 -- list of all entities that the world "can" spawn under varying conditions
 -- NOTE: this is the list that the "summon" command uses.
@@ -49,7 +49,7 @@ local entitylist = {
 	glowstick 		= require("src.entities.projectiles.glowstick"),
 	magicball 		= require("src.entities.projectiles.magicball"),
 	arrow 			= require("src.entities.projectiles.arrow"),
-	-- 
+	-- balls
 	laser 			= require("src.entities.projectiles.laser"),	
 }
 
@@ -92,10 +92,9 @@ local biome_bg_textures = {
 local function get_daylight(worldtime)
 	local light = 0.15
 	local timeDial = worldtime
-
-	if timeDial > (5.5*60)  and timeDial < (20*60)    then light = light + 0.15 end
-	if timeDial > (5.75*60) and timeDial < (19.75*60) then light = light + 0.10 end
-	if timeDial > (6*60)    and timeDial < (19.5*60)  then light = light + 0.10 end
+	if timeDial > (5.5*60)  and timeDial < (20*60)    then light = light + 0.05 end
+	if timeDial > (5.75*60) and timeDial < (19.75*60) then light = light + 0.15 end
+	if timeDial > (6*60)    and timeDial < (19.5*60)  then light = light + 0.15 end
 	if timeDial > (6.25*60) and timeDial < (19.25*60) then light = light + 0.10 end
 	if timeDial > (6.5*60)  and timeDial < (18.75*60) then light = light + 0.10 end
 	if timeDial > (6.75*60) and timeDial < (18.5*60)  then light = light + 0.10 end
@@ -104,24 +103,12 @@ local function get_daylight(worldtime)
 	return light
 end
 
---[[
-	NOTE:
-	world file format:
+local ambience_birds_1
 
-	worldname/
-		chunks/
-		idmaps/
 
-		metadata.json
-			worldname
-			seed
-		entities.json
-]]
 
 local world = {} -- TODO: make world a class object instead of ghetto-rigged metatable
-
 world.__index = world
-
 
 --- Generates a new world instance. 
 -- Worldname is the name of the folder where it will read and save data to.
@@ -324,8 +311,6 @@ function world:addEntity(entityname, ...)
 	return entity
 end
 
-
-
 function world:castRay(origin, direction, raydistance, rayaccuracy)
 	local max_ray_search_distance = raydistance
 
@@ -356,7 +341,6 @@ function world:castRay(origin, direction, raydistance, rayaccuracy)
 	end
 	return false
 end
-
 
 ---------------------------------------
 -- World's map functionality
@@ -1392,6 +1376,7 @@ function world:draw()
 	particlesystem.draw()
 	
 	love.graphics.pop()
+
 
 	if SHOW_ENTITY_LIST then
 		love.graphics.setColor(0,0,0)

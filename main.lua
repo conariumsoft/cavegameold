@@ -42,7 +42,7 @@
 ]]
 
 function love.load(cmdlineargs)
-	
+
 	love.graphics.setDefaultFilter("nearest", "nearest")
 
 	love.filesystem.setIdentity("cavegame")

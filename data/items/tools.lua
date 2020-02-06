@@ -22,6 +22,8 @@ do
 	local pickaxeSwingAudio = love.audio.newSource("assets/audio/swing.ogg", "static")
 	local drillEngineAudio = love.audio.newSource("assets/audio/drill.ogg", "static")
 
+	local swish_sfx_1 = love.audio.newSource("assets/audio/swish1.ogg", "static")
+
 	local function pickaxeEquip(pickaxe, player)
 		player.showMouseTileDistance = pickaxe.usedistance
 	end
@@ -33,8 +35,9 @@ do
 	local function pickaxeUse(pickaxe, player)
 		local mx, my = input.getTransformedMouse()
 
-		pickaxeSwingAudio:stop()
-		pickaxeSwingAudio:play()
+		swish_sfx_1:stop()
+		swish_sfx_1:setPitch(pickaxe.pitch)
+		swish_sfx_1:play()
 
 		local tx, ty = grid.pixelToTileXY(mx, my)
 		local px, py = getPlayerTile(player)
@@ -78,6 +81,7 @@ do
 		pickaxe.holdbegin = pickaxeEquip
 		pickaxe.holdend = pickaxeUnequip
 		pickaxe.stack = 1
+		pickaxe.pitch = 1
 		pickaxe.texture = love.graphics.newImage("assets/items/pickaxenew.png")
 		pickaxe.inWorldScale = 2
 		pickaxe.playeranim = swinganim(-90, 130)
@@ -137,6 +141,7 @@ do
 		rarity = 2,
 		usedistance = 10,
 		strength = 1,
+		pitch = 1.1,
 	})
 
 	pickaxe:new("LEAD_PICKAXE", {
@@ -145,7 +150,7 @@ do
 		usedistance = 12,
 		strength = 4,
 		rarity = 2,
-
+		pitch = 0.7,
 	})
 	
 	pickaxe:new("TIN_PICKAXE",{

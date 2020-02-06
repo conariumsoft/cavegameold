@@ -37,11 +37,11 @@ function caster:updatePhysics(dt)
 	humanoid.updatePhysics(self, dt)
 
 	if self.moveUp == true then
-		self.velocity.y = 20
+		self.velocity.y = -20
 	end
 
 	if self.moveDown == true then
-		self.velocity.y = -20
+		self.velocity.y = 20
 	end
 end
 
@@ -68,7 +68,7 @@ function caster:update(dt)
 		self.move_timer = 0
 		local player = self.world:getPlayer()
 
-		local goal = player.position:copy()
+		local goal = player.position + jutils.vec2.new(0, -20)
 
 		self.moveRight = false
 		self.moveLeft = false
@@ -84,11 +84,11 @@ function caster:update(dt)
 		end
 
 		if goal.y > self.position.y then
-			self.moveUp = true
+			self.moveDown = true
 		end
 
 		if goal.y < self.position.y then
-			self.moveDown = true
+			self.moveUp = true
 		end
 	end
 
@@ -106,15 +106,16 @@ function caster:update(dt)
 			local mass = 0.5
 
 			local caster_ball = self.world:addEntity("casterball", start, goal, propulsion, mass)
-
 		end
 	end
 end
 
 function caster:draw()
+	local num = 1
 
-
-	local num = (math.floor(self.age*4) % 2) + 1
+	if self.fireball_timer > 4 then
+		num = 2
+	end
 
 	local q = self.animationframes[num]
 

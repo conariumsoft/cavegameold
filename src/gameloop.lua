@@ -2,21 +2,27 @@
 -- @author Joshua O'Leary
 -- @copyright 2019 Conarium Software
 
-local config = require("config")
-local grid = require("src.grid")
-local jutils = require("src.jutils")
+local config 		= require("config")
+local grid 			= require("src.grid")
+local jutils 		= require("src.jutils")
+local terrain 		= require("src.terrain")
+local items 		= require("src.items")
+local input 		= require("src.input")
+local rendering 	= require("src.rendering")
+local jcon 			= require("src.jcon")
+local tiles 		= require("src.tiles")
+local backgrounds 	= require("src.backgrounds")
+local settings 		= require("src.settings")
+local world 		= require("src.world")
+local guiutil 		= require("src.guiutil")
+local menus 		= require("src.menus")
 
-local terrain = require("src.terrain")
-local items = require("src.items")
-local input = require("src.input")
-local rendering = require("src.rendering")
-local jcon = require("src.jcon")
-local tiles = require("src.tiles")
-local backgrounds = require("src.backgrounds")
-local settings = require("src.settings")
-local world = require("src.world")
 
-local menus = require("src.menus")
+local music
+
+local music_menu_timer = 3
+local is_playing_menu_music = false
+local game_music_timer = 15*60
 
 
 -- callback function for main.lua
@@ -29,6 +35,7 @@ return function(args)
 	_G.ENTITY_DEBUG = false
 	_G.FULLBRIGHT = false
 	_G.NO_TEXTURE = false
+	_G.RUN_WITH_STEAM = false
 
 	local show_debug_info = false
 
@@ -40,8 +47,15 @@ return function(args)
 	local debug_info_update = 0
 	local last_debug_info = "collecting stats..."
 
-	love.audio.setVolume(0.1)
 
+	music = {
+		big_brother   = love.audio.newSource("assets/audio/mu/big_brother.ogg", "stream"),
+		cliff         = love.audio.newSource("assets/audio/mu/cliff.ogg", "stream"),
+		hey_bella     = love.audio.newSource("assets/audio/mu/hey_bella.ogg", "stream"),
+		mithril_ocean = love.audio.newSource("assets/audio/mu/mithril_ocean.ogg", "stream"),
+	}
+
+	love.audio.setVolume(0.1)
 
 	-- skip menu screens and load into world
 	-- as well as enabling debug info
@@ -62,9 +76,9 @@ return function(args)
 		-- gotta restart to take effect
 	end)
 
-
 	settings.load()
 
+	-- game launch arguments
 	if args[1] == "-dev" then
 		show_debug_info = true
 		in_menu = false
@@ -138,6 +152,15 @@ return function(args)
 				end
 				jcon.message("Item "..args[1].. " does not exist!", {1, 0, 0})
 			end
+		},
+		["exec"] = {
+			desc = "",
+			func = function(args)
+				local str = jutils.string.fromTable(args)
+
+
+				loadstring(str)()
+			end,
 		},
 		["tp"] = {
 			desc = "",
@@ -407,6 +430,11 @@ return function(args)
 		if in_menu then
 			menus.update(dt)
 
+			if is_playing_menu_music == false then
+				is_playing_menu_music = true
+				music.hey_bella:play()
+			end
+
 			if menus.has_chosen_world == true then
 				print(menus.selected_world_name)
 				in_menu = false
@@ -415,6 +443,29 @@ return function(args)
 				menus.selected_world_name = ""
 			end
 		elseif gameworld then
+			is_playing_menu_music = false
+
+			game_music_timer = game_music_timer - dt
+
+			if game_music_timer <= 0 then
+				game_music_timer = 15*60
+				
+				local rand = math.random(1, 4)
+
+				if rand == 1 then
+					music.hey_bella:stop()
+					music.hey_bella:play()
+				elseif rand == 2 then
+					music.cliff:stop()
+					music.cliff:play()
+				elseif rand == 3 then
+					music.big_brother:stop()
+					music.big_brother:play()
+				else
+					music.mithril_ocean:play()
+					music.mithril_ocean:play()
+				end
+			end
 
 			if show_debug_info then
 				debug_info_update = debug_info_update + dt
@@ -507,19 +558,18 @@ return function(args)
 			menus.draw()
 		elseif gameworld then
 			gameworld:draw()
-
 			gameworld:getPlayer().gui:draw()
-
 			if gameworld:getPlayer().show_ui then
 				if show_debug_info then
 					love.graphics.setColor(0,0,0, 0.5)
 					love.graphics.rectangle("fill", 2, 2, 500, 48)
 					love.graphics.setColor(1,1,1)
 					love.graphics.print(last_debug_info, 2, 2)
-
 				else
 					love.graphics.setColor(1,1,1)
-					love.graphics.print("fps: "..love.timer.getFPS(), 2, 2)
+					love.graphics.setFont(guiutil.fonts.font_12)
+					love.graphics.print("cavegame "..config.GAME_VERSION.."\nfps: "..love.timer.getFPS(), 2, 2)
+					love.graphics.setFont(guiutil.fonts.default)
 				end
 			end
 			jcon:draw()

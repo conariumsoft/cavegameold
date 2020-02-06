@@ -2,6 +2,9 @@ local jutils = require("src.jutils")
 local input = require("src.input")
 local tiles = require("src.tiles")
 
+
+local magic_sfx_1 = love.audio.newSource("assets/audio/iceball.ogg", "stream")
+
 baseitem:new("PURPLE_STAFF", {
     displayname = "MAGIC STAFF",
     texture = "purplestaff.png",
@@ -78,6 +81,10 @@ baseitem:new("NIMDICK", {
         local run = true
         local limiter = 10
         local decayIncrease = 0
+
+
+        magic_sfx_1:stop()
+        magic_sfx_1:play()
 
         while run == true do
             limiter = limiter - 1

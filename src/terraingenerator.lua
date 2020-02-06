@@ -3,14 +3,11 @@
 -- @copyright 2019 Conarium Software
 
 
-local config = require("config")
-local tiles = require("src.tiles")
+local config      = require("config")
+local tiles       = require("src.tiles")
 local backgrounds = require("src.backgrounds")
-
-
-local jutils = require("src.jutils")
-local noise = require("src.noise")
-
+local jutils      = require("src.jutils")
+local noise       = require("src.noise")
 local terrainMath = require("src.terrain")
 
 local getSurfaceNoise = terrainMath.getSurfaceNoise
@@ -24,7 +21,6 @@ local function chunkSurfacePass(chunk)
 		for y = 1, config.CHUNK_SIZE do
 
 			local level = getSurfaceNoise(worldx+x, worldy+y)
-			
 			
 			if level > 10000 then
 				chunk.tiles[x][y] = tiles.HELLROCK.id

@@ -30,7 +30,7 @@ local properties = {
 }
 
 function renderer.enable_air(val)
-	_G.NO_TEXTURE = val
+	properties.draw_air = val
 end
 
 ---

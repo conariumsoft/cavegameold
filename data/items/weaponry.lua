@@ -15,6 +15,10 @@ local function magnitude(x1, y1, x2, y2)
 	return math.sqrt( (x2 - x1)^2 + (y2-y1)^2 )
 end
 
+
+local swish_sfx_3 = love.audio.newSource("assets/audio/swish3.ogg", "static")
+local swish_sfx_4 = love.audio.newSource("assets/audio/swish4.ogg", "static")
+
 local bullet = baseitem:subclass("Bullet") do
     bullet.texture = love.graphics.newImage("assets/items/bullet.png")
     bullet.stack = 999
@@ -143,6 +147,8 @@ consumable:new("BOMB", {
         local unitvec = (mousepos - player.position):unitvec()
         bombentity.velocity = unitvec*400
 
+        swish_sfx_3:stop()
+        swish_sfx_3:play()
         return true
     end,
 })
@@ -165,6 +171,9 @@ consumable:new("STICKY_BOMB", {
         local mousepos = jutils.vec2.new(mx, my)
         local unitvec = (mousepos - player.position):unitvec()
         bombentity.velocity = unitvec*400
+
+        swish_sfx_3:stop()
+        swish_sfx_3:play()
         return true
     end,
 })
@@ -187,9 +196,13 @@ consumable:new("DYNAMITE", {
         local mousepos = jutils.vec2.new(mx, my)
         local unitvec = (mousepos - player.position):unitvec()
         bombentity.velocity = unitvec*400
+
+        swish_sfx_3:stop()
+        swish_sfx_3:play()
         return true
     end
 })
+
 
 
 local SWORD_TOOLTIP =
@@ -202,7 +215,8 @@ local SWORD_TOOLTIP =
 
 local function swordUse(self, player)
     -- figure out hitbox overlaps
-    
+    swish_sfx_4:stop()
+    swish_sfx_4:play()
     return true
 
 end

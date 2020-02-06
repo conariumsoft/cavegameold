@@ -1,14 +1,14 @@
+local jui 			= require("src.jui")
+local config 		= require("config")
+local jutils		= require("src.jutils")
+local settings_mod 	= require("src.settings")
+local guiutil 		= require("src.guiutil")
 
-local jui = require("src.jui")
-local config = require("config")
-
-local jutils = require("src.jutils")
-local settings_mod = require("src.settings")
-
-local guiutil = require("src.guiutil")
 
 local menu_worldtime = 16*60
 local ambientlight = 0
+
+local menu_blip_noise = love.audio.newSource("assets/audio/blip.ogg", "static")
 
 
 ----------------------------------------------
@@ -508,6 +508,7 @@ local function selection_wrap_sanity_check()
 end
 
 local function activate_button()
+	
 	local buttonlist = current_screen:find("button_list")
 
 	if buttonlist == nil then return end
@@ -515,11 +516,15 @@ local function activate_button()
 	local btn = buttonlist.children[selected]
 
 	if btn.actuation then
+		menu_blip_noise:stop()
+		menu_blip_noise:setPitch(0.75)
+		menu_blip_noise:play()
 		btn.actuation()
 	end
 end
 
 local function arrow_activate(dir)
+	
 	local buttonlist = current_screen:find("button_list")
 
 	if buttonlist == nil then return end
@@ -527,6 +532,11 @@ local function arrow_activate(dir)
 	local btn = buttonlist.children[selected]
 
 	if btn.arrow_activate then
+
+		menu_blip_noise:stop()
+		menu_blip_noise:setPitch(1.25)
+		menu_blip_noise:play()
+
 		btn.arrow_activate(dir)
 	end
 end
@@ -534,18 +544,30 @@ end
 function menu_module.keypressed(key)
 	if key == "up" then
 		selected = selected - 1
+		menu_blip_noise:stop()
+		menu_blip_noise:setPitch(1)
+		menu_blip_noise:play()
 	end
 
 	if key == "down" then
 		selected = selected + 1
+		menu_blip_noise:stop()
+		menu_blip_noise:setPitch(1)
+		menu_blip_noise:play()
 	end
 
 	if key == "j" then
 		selected = selected + 1
+		menu_blip_noise:stop()
+		menu_blip_noise:setPitch(1)
+		menu_blip_noise:play()
 	end
 
 	if key == "k" then
 		selected = selected - 1
+		menu_blip_noise:stop()
+		menu_blip_noise:setPitch(1)
+		menu_blip_noise:play()
 	end
 
 	selection_wrap_sanity_check()
@@ -639,12 +661,16 @@ local colors = {
 
 local warp = 0
 
+local ligma = 0
+
 function menu_module.update(dt)
 	menu_worldtime = menu_worldtime + (dt*15)
 
 	if menu_worldtime > 1440 then
 		menu_worldtime = 0
 	end
+
+	ligma = ligma + (dt*12)
 
 	ambientlight = get_daylight(menu_worldtime)
 
@@ -771,7 +797,7 @@ function menu_module.draw()
 	local bgscroll = 2
 	local texsize = 512
 	
-	local x = (0) / bgscroll
+	local x = 0 / bgscroll
 	local y = 0 / bgscroll
 
 	local posx = math.floor(x/texsize)
@@ -791,7 +817,7 @@ function menu_module.draw()
 		end
 	end
 
-	love.graphics.setColor(0, 0, 0, 0.25)
+	love.graphics.setColor(0, 0, 0, 0.5)
 	love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
 
 	current_screen:draw()

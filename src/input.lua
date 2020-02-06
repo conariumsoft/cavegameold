@@ -46,8 +46,8 @@ function love.mousereleased(...)
 
 end
 
-function love.gamepadpressed(...)
-
+function love.gamepadpressed(jstick, button)
+	print("bruh", button)
 end
 
 function love.gamepadreleased(...)
@@ -57,7 +57,7 @@ end
 
 
 
-
+ 
 function input_module.getGamePointer()
 
 end

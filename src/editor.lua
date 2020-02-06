@@ -297,6 +297,10 @@ local commands = {
 
 return function(args)
 
+	_G.ENTITY_DEBUG = false
+	_G.FULLBRIGHT = false
+	_G.NO_TEXTURE = false
+
 	love.window.setTitle("cavegame structure editor")
 	love.window.setMode(1280, 720, {resizable = true, vsync = false})
 
@@ -513,7 +517,7 @@ return function(args)
 
 		--? this names suck but im fucking high right now
 		local screen_grid_num_width = (love.graphics.getWidth()/2) / gridsize
-		local screen_grid_num_height = (love.graphics.getHeight()/2)
+		local screen_grid_num_height = (love.graphics.getHeight()/2) / gridsize
 
 		love.graphics.setLineWidth(0.25)
 		love.graphics.setColor(0.1, 0.1, 0.1)

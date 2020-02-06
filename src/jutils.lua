@@ -182,6 +182,12 @@ jutils.math = {} do
         return math.min(math.max(low, n), high)
     end
 
+    function jutils.math.noise(x, y, z, seed)
+
+    end
+
+
+
 end
 jutils.table = {} do
 
@@ -245,9 +251,7 @@ jutils.table = {} do
     -- @return table
     function jutils.table.combine(...)
         local tabs = {...}
-        
         local finalT = {}
-
         for idx, t in ipairs(tabs) do
             for index, value in pairs(t) do
                 if finalT[index] == nil then
@@ -257,7 +261,6 @@ jutils.table = {} do
         end
         return finalT
     end
-
 end
 
 jutils.string = {} do
@@ -269,9 +272,7 @@ jutils.string = {} do
     function jutils.string.explode(str, divider)
         jutils.misc.check(str, "string")
         jutils.misc.check(divider, "string")
-
         local o = {}
-
 		while true do
 			local pos1, pos2 = str:find(divider)
 			if not pos1 then
@@ -283,11 +284,23 @@ jutils.string = {} do
 		return o
     end
 
+    ---
+    function jutils.string.fromTable(strTable)
+        local endstr = ""
+        for idx, val in ipairs(strTable) do
+            endstr = endstr .. val
+            if not (idx >= #strTable) then
+                endstr = endstr .. " "
+            end
+        end
+        return endstr
+    end
+
+    ---
     function jutils.string.sanitize(str, replacement)
         for _, char in pairs(illegal_characters) do
             str = str:gsub(char, replacement)
         end
-    
         return str
     end
 
@@ -548,18 +561,11 @@ jutils.vec2 = {} do
         return math.atan2(vec2.y - vec1.y, vec2.x - vec1.x) * 180 / math.pi
     end
     
-
-    --- Unimplemented
+    --- Returns the dot product of two vectors.
+    -- @see https://www.mathsisfun.com/algebra/vectors-dot-product.html
     function jutils.vec2.dotProduct(vec1, vec2)
-
+        return (vec1.x * vec2.x) + (vec1.y * vec2.y)
     end
-
-    --- Unimplemented
-    function jutils.vec2.crossProduct(vec1, vec2)
-
-    end
-
-
 end
 jutils.line = {} do
 

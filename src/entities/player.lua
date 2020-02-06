@@ -361,13 +361,25 @@ function player:update(dt)
 	
 	-- rope and platform controls
 	if self.spawntimer < 0 then
-		self.grabrope = love.keyboard.isDown(config.keybinds.PLAYER_MOVE_UP)
-		self.fallthrough = love.keyboard.isDown(config.keybinds.PLAYER_MOVE_DOWN)
-		self.moveUp = love.keyboard.isDown(config.keybinds.PLAYER_MOVE_UP)
-		self.moveDown = love.keyboard.isDown(config.keybinds.PLAYER_MOVE_DOWN)
-		self.moveLeft = love.keyboard.isDown(config.keybinds.PLAYER_MOVE_LEFT)
-		self.moveRight = love.keyboard.isDown(config.keybinds.PLAYER_MOVE_RIGHT)
-		self.jumping = love.keyboard.isDown(config.keybinds.PLAYER_JUMP)
+
+		if _G.CONTROLLER then
+			self.grabrope = _G.CONTROLLER:isGamepadDown("dpup")
+			self.fallthrough = _G.CONTROLLER:isGamepadDown("dpdown")
+			self.moveUp = _G.CONTROLLER:isGamepadDown("dpup")
+			self.moveDown = _G.CONTROLLER:isGamepadDown("dpdown")
+			self.moveLeft = _G.CONTROLLER:isGamepadDown("dpleft")
+			self.moveRight = _G.CONTROLLER:isGamepadDown("dpright")
+			self.jumping = _G.CONTROLLER:isGamepadDown("a")
+
+		else
+			self.grabrope = love.keyboard.isDown(config.keybinds.PLAYER_MOVE_UP)
+			self.fallthrough = love.keyboard.isDown(config.keybinds.PLAYER_MOVE_DOWN)
+			self.moveUp = love.keyboard.isDown(config.keybinds.PLAYER_MOVE_UP)
+			self.moveDown = love.keyboard.isDown(config.keybinds.PLAYER_MOVE_DOWN)
+			self.moveLeft = love.keyboard.isDown(config.keybinds.PLAYER_MOVE_LEFT)
+			self.moveRight = love.keyboard.isDown(config.keybinds.PLAYER_MOVE_RIGHT)
+			self.jumping = love.keyboard.isDown(config.keybinds.PLAYER_JUMP)
+		end
 	end
 
 	self.gui:update(dt)
