@@ -16,7 +16,6 @@ function arrow:init()
 
 	self.health = 20
 	self.maxhealth = 20
-
 	self.mass = 0.4
 	self.xfriction = 0.25
 	self.texture = arrowTexture

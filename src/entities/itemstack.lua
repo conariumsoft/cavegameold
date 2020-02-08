@@ -54,14 +54,8 @@ function itemstack:update(dt)
 						if self.amount - amountleft >= 1 then
 							local data = items:getByID(self.id)
 							
-							local txt = ""
-
-							-- TODO: make text color reflect item rarity
-							if self.amount - amountleft > 1 then
-								txt = tostring(self.amount-amountleft).."x"
-							end
 							-- TODO: make labels offset from each other.
-							local label = entity.world:addEntity("floatingtext", data.displayname.. " ".. txt, {1,1,1}, guiutil.fonts.font_6)
+							local label = entity.world:addEntity("itempickup", data.displayname, self.amount-amountleft, {1, 1, 1})
 							label:teleport(entity.position)
 							label.position = label.position + jutils.vec2.new(-10, -20)
 						end

@@ -174,8 +174,8 @@ function physicalentity:update(dt)
 				 "pos:".. round(self.position.x)..", ".. round(self.position.y).."\n"
 
 	self.internal_physics_step = self.internal_physics_step + dt
-	while self.internal_physics_step >= (1/60) do
-		self.internal_physics_step = self.internal_physics_step - (1/60)
+	while self.internal_physics_step >= (1/61) do
+		self.internal_physics_step = self.internal_physics_step - (1/61)
 		self:updatePhysics(1/60)
 	end
 

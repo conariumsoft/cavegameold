@@ -18,7 +18,6 @@ local backgrounds 		= require("src.backgrounds")
 local particlesystem 	= require("src.particlesystem")
 local terrainMath 		= require("src.terrain")
 local collision 		= require("src.collision")
-local guiutil 			= require("src.guiutil")
 
 -- list of all entities that the world "can" spawn under varying conditions
 -- NOTE: this is the list that the "summon" command uses.
@@ -40,6 +39,7 @@ local entitylist = {
 	explosion 		= require("src.entities.explosion"),
 	chest 			= require("src.entities.chestentity"),
 	floatingtext    = require("src.entities.floatingtext"),
+	itempickup      = require("src.entities.itempickuptext"),
 	-- projectiles
 	casterball      = require("src.entities.projectiles.casterball"),
 	bullet 			= require("src.entities.projectiles.bullet"),
@@ -49,6 +49,7 @@ local entitylist = {
 	glowstick 		= require("src.entities.projectiles.glowstick"),
 	magicball 		= require("src.entities.projectiles.magicball"),
 	arrow 			= require("src.entities.projectiles.arrow"),
+	flamingarrow   = require("src.entities.projectiles.flamingarrow"),
 	-- balls
 	laser 			= require("src.entities.projectiles.laser"),	
 }
@@ -68,18 +69,6 @@ local channels = {
 	returnchunk = love.thread.getChannel("returnchunk"),
 	finished 	= love.thread.getChannel("finished"),
 	io_kill 	= love.thread.getChannel("io_kill"),
-}
-
--- these get LERP'd between for sky colors
-local sky_color_table = {
-	[0] = {0, 0, 0},
-	[3] = {0.01, 0, 0},
-	[6] = {0, 0.05, 0.15},
-	[9] = {0.05, 0.2, 0.6},
-	[12] = {0.05, 0.3, 0.7},
-	[15] = {0.05, 0.2, 0.55},
-	[18] = {0.1, 0, 0.4},
-	[21] = {0.025, 0, 0.01},
 }
 
 local biome_bg_textures = {
@@ -105,8 +94,6 @@ end
 
 local ambience_birds_1
 
-
-
 local world = {} -- TODO: make world a class object instead of ghetto-rigged metatable
 world.__index = world
 
@@ -116,7 +103,6 @@ world.__index = world
 -- @param seed doesn't work
 -- @return World Instance
 function world.new(worldname, seed)
-
 	-- world constructor
 	local self = setmetatable({}, world)
 
@@ -127,46 +113,42 @@ function world.new(worldname, seed)
 
 	-- generate game threads
 	self.lightthread = love.thread.newThread("src/lighting.lua")
-	self.lightthread:start()
-
 	self.chunkthread = love.thread.newThread("src/worldloading.lua")
+
+	self.lightthread:start()
 	self.chunkthread:start(worldname)
 	love.thread.getChannel("setambient"):push(self.ambientlight)
 
 	self.worldname = worldname
 	self.seed = seed
-
 	self.camera = {
 		position = jutils.vec2.new(0, 0),
 		zoom = 2.5
 	}
-
-	-- ambience
 	self.ambientlight = 0
 	self.worldtime = 6*60
 	self.dayspassed = 0
-
 	self.player = nil
 	self.spawnPointY = (terrainMath.getSurfaceLevel(0)*config.TILE_SIZE)
 	self.focuspoint = jutils.vec2.new(0, 0)
-	
 	self.entities = {}
 	self.tileentitymap = {}
 	self.waitinglist = {}
-	
+	self.chunks = {}
+	self.finishedTerrain = false
+	self.tryingToEnd = false
+	self.update_tick = 0
+	self.random_tick_speed = 1
 	self.terrainGenerator = require("src.terraingenerator")
 	self.structureGenerator = require("src.structuregenerator")
 
-	self.chunks = {}
-	self.finishedTerrain = false
+	self:generate_tile_id_mappings()
+	self:loaddata()
 
-	-- if the world is trying to kill
-	self.tryingToEnd = false
-	
-	self.update_tick = 0
-	self.random_tick_speed = 1
-	self.no_save = false
+	return self
+end
 
+function world:generate_tile_id_mappings()
 	-- generate ID mappings for this version of the game if they don't yet exists
 	local info = love.filesystem.getInfo("conversionmaps/"..config.DATA_VERSION)
 
@@ -183,8 +165,9 @@ function world.new(worldname, seed)
 		local data = json.encode(map)
 		love.filesystem.write("conversionmaps/"..config.DATA_VERSION, data)
 	end
+end
 
-
+function world:loaddata()
 	-- world metadata
 	local info = love.filesystem.getInfo("worlds/"..self.worldname.."/metadata.json", "file")
 	if info then
@@ -236,14 +219,11 @@ function world.new(worldname, seed)
 	end
 
 	noise.setSeed(self.seed)
-
-	return self
 end
-
 
 ---
 function world:savedata()
-	if self.no_save == true then return end
+	if _G.NO_SAVE == true then return end
 
 	for key, chunk in pairs(self.chunks) do
 		channels.savechunk:push({key, chunk})
@@ -266,18 +246,14 @@ function world:savedata()
 		end
 	end
 
-
 	local jsondata = json.encode(entityTable)
 
 	love.filesystem.write("worlds/"..self.worldname.."/entities.json", jsondata)
 
-
 	love.timer.sleep(1/10)
 	channels.light_kill:push(true)
-	channels.io_kill:push(true)
-	
+	channels.io_kill:push(true)	
 	channels.finished:demand(5)
-
 	self.lightthread:release()
 	self.chunkthread:release()
 	
@@ -382,7 +358,6 @@ end
 function world:getTileDamage(tilex, tiley)
 	return self:rawget(tilex, tiley, "damage")
 end
-
 ---
 function world:getLight(tilex, tiley)
 	assert(type(tilex) == "number")
@@ -445,11 +420,7 @@ function world:damageTile(tilex, tiley, additionaldamage)
 	if tile == tiles.WATER.id or tile == tiles.LAVA.id or tile == tiles.AIR.id then return end
 
 	if newdamage >= maxdamage then
-		
-		
-
 		self:setTile(tilex, tiley, 0, true)
-		
 	else
 		self:rawset(tilex, tiley, "damage", newdamage)
 	end
@@ -503,12 +474,6 @@ function world:setBackground(tilex, tiley, id)
 end
 
 --- Sets the tile and fills the tileupdate flags of adjacent tiles.
--- @param tilex
--- @param tiley
--- @param tile
--- @param drop drop the previous tile.
--- @param ignorecallback should the onPlace callback be called for this tile
-
 function world:setTile(tilex, tiley, tile, drop, ignorecallback)
 	assert(type(tilex) == "number")
 	assert(type(tiley) == "number")
@@ -566,9 +531,7 @@ function world:setTile(tilex, tiley, tile, drop, ignorecallback)
 end
 
 --- Get chunk at chunk region (cx, cy)
--- @param cx
--- @param cy
--- @return chunk
+
 function world:getchunk(cx, cy)
 	return self.chunks[grid.coordinatesToKey(cx, cy)]
 end
@@ -800,7 +763,6 @@ local function try_zombie_spawn(gameworld, tx, ty)
 	-- NOTE: zombie spawn mechanics only check if there is a 1x3 region availible for spawning
 	-- must be night time
 	--if not (gameworld.worldtime > (60*18) or gameworld.worldtime < (60*6)) then return end
-
 	local light = gameworld:getLight(tx, ty)
 
 	-- must be fairly dark in this spot
@@ -871,16 +833,10 @@ local function try_caster_spawn(gameworld, tx, ty)
 	local light = gameworld:getLight(tx, ty)
 	if (light[1]+light[2]+light[3]) > 0.2 then return end
 
-
-
 	if is_solid(gameworld, tx, ty-1) == false then return end
 	-- needs a 2x3 of free space
-	if is_solid(gameworld, tx, ty) then return end
-	if is_solid(gameworld, tx, ty+1) then return end
-	if is_solid(gameworld, tx+1, ty) then return end
-	if is_solid(gameworld, tx+1, ty+1) then return end
-	if is_solid(gameworld, tx, ty+2) then return end
-	if is_solid(gameworld, tx+1, ty+2) then return end
+	if is_solid(gameworld, tx, ty) or is_solid(gameworld, tx, ty+1) or is_solid(gameworld, tx+1, ty) or
+	is_solid(gameworld, tx+1, ty+1) or is_solid(gameworld, tx, ty+2) or is_solid(gameworld, tx+1, ty+2) then return end
 
 	local mob = gameworld:addEntity("caster")
 
@@ -896,12 +852,9 @@ local function try_slime_spawn(gameworld, tx, ty)
 	--if (light[1]+light[2]+light[3]) < 0.6 then return end
 
 	-- needs a 2x3 of free space
-	if is_solid(gameworld, tx, ty) then return end
-	if is_solid(gameworld, tx, ty+1) then return end
-	if is_solid(gameworld, tx+1, ty) then return end
-	if is_solid(gameworld, tx+1, ty+1) then return end
-	if is_solid(gameworld, tx, ty+2) then return end
-	if is_solid(gameworld, tx+1, ty+2) then return end
+	if is_solid(gameworld, tx, ty) or is_solid(gameworld, tx, ty+1) or 
+	is_solid(gameworld, tx+1, ty) or is_solid(gameworld, tx+1, ty+1) or
+	is_solid(gameworld, tx, ty+2) or is_solid(gameworld, tx+1, ty+2) then return end
 
 	if gameworld:getTile(tx, ty-1) ~= tiles.GRASS.id then return end
 

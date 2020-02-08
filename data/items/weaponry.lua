@@ -26,7 +26,6 @@ end
 
 bullet:new("BULLET", {
     tooltip = ""
-    
 })
 
 bullet:new("SILVER_BULLET", {
@@ -45,6 +44,49 @@ bullet:new("NANOBULLET", {
     tooltip = ""
 })
 
+
+local function firearm_use(gun, player)
+
+    local gun_base_damage = gun.damage or 1
+    
+    local unit = (jutils.vec2.new(input.getTransformedMouse())-player.position):unitvec()
+    local summonPos = player.position + unit*16
+
+    if player.gui.inventory:hasItem(itemlist.BULLET.id, 1) then
+        player.gui.inventory:removeItem(itemlist.BULLET.id, 1)
+        local bullet = player.world:addEntity("bullet", summonPos, jutils.vec2.new(input.getTransformedMouse()), 400, 0.1, player)
+        return true
+    end
+
+    if player.gui.inventory:hasItem(itemlist.SILVER_BULLET.id, 1) then
+        player.gui.inventory:removeItem(itemlist.SILVER_BULLET.id, 1)
+        -- todo: silver bullet spawning
+        local bullet = player.world:addEntity("bullet", summonPos, jutils.vec2.new(input.getTransformedMouse()), 400, 0.1, player)
+        return true
+    end
+
+    if player.gui.inventory:hasItem(itemlist.NANOBULLET.id, 1) then
+        player.gui.inventory:removeItem(itemlist.NANOBULLET.id, 1)
+        -- todo: nanobullet spawning
+        local bullet = player.world:addEntity("bullet", summonPos, jutils.vec2.new(input.getTransformedMouse()), 400, 0.1, player)
+        return true
+    end
+
+    if player.gui.inventory:hasItem(itemlist.HOLY_BULLET.id, 1) then
+        player.gui.inventory:removeItem(itemlist.HOLY_BULLET.id, 1)
+        -- todo: holy bullet spawning
+        local bullet = player.world:addEntity("bullet", summonPos, jutils.vec2.new(input.getTransformedMouse()), 400, 0.1, player)
+        return true
+    end
+
+    if player.gui.inventory:hasItem(itemlist.FRAGMENT_BULLET.id, 1) then
+        player.gui.inventory:removeItem(itemlist.FRAGMENT_BULLET.id, 1)
+        -- todo: holy bullet spawning
+        local bullet = player.world:addEntity("bullet", summonPos, jutils.vec2.new(input.getTransformedMouse()), 400, 0.1, player)
+        return true
+    end
+end
+
 baseitem:new("FLINTLOCK", {
     displayname = "FLINTLOCK PISTOL",
     speed = 0.6,
@@ -57,50 +99,25 @@ baseitem:new("FLINTLOCK", {
     playerHoldPosition = jutils.vec2.new(0, 4),
     use = function(self, player)
 
-        local unit = (jutils.vec2.new(input.getTransformedMouse())-player.position):unitvec()
-
-        local summonPos = player.position + unit*16
-
-        if player.gui.inventory:hasItem(itemlist.BULLET.id, 1) then
-            player.gui.inventory:removeItem(itemlist.BULLET.id, 1)
-            local bullet = player.world:addEntity("bullet", summonPos, jutils.vec2.new(input.getTransformedMouse()), 400, 0.1, player)
-            return true
-        end
-
-        if player.gui.inventory:hasItem(itemlist.SILVER_BULLET.id, 1) then
-            player.gui.inventory:removeItem(itemlist.SILVER_BULLET.id, 1)
-            -- todo: silver bullet spawning
-            local bullet = player.world:addEntity("bullet", summonPos, jutils.vec2.new(input.getTransformedMouse()), 400, 0.1, player)
-            return true
-        end
-
-        if player.gui.inventory:hasItem(itemlist.NANOBULLET.id, 1) then
-            player.gui.inventory:removeItem(itemlist.NANOBULLET.id, 1)
-            -- todo: nanobullet spawning
-            local bullet = player.world:addEntity("bullet", summonPos, jutils.vec2.new(input.getTransformedMouse()), 400, 0.1, player)
-            return true
-        end
-
-        if player.gui.inventory:hasItem(itemlist.HOLY_BULLET.id, 1) then
-            player.gui.inventory:removeItem(itemlist.HOLY_BULLET.id, 1)
-            -- todo: holy bullet spawning
-            local bullet = player.world:addEntity("bullet", summonPos, jutils.vec2.new(input.getTransformedMouse()), 400, 0.1, player)
-            return true
-        end
-
-        if player.gui.inventory:hasItem(itemlist.FRAGMENT_BULLET.id, 1) then
-            player.gui.inventory:removeItem(itemlist.FRAGMENT_BULLET.id, 1)
-            -- todo: holy bullet spawning
-            local bullet = player.world:addEntity("bullet", summonPos, jutils.vec2.new(input.getTransformedMouse()), 400, 0.1, player)
-            return true
-        end
+       
 
     end
+})
+
+baseitem:new("BOOMSTICK", {
+    texture = "boomstick.png",
+
 })
 
 baseitem:new("ARROW", {
     texture = "arrow.png",
     displayname = "ARROW",
+    stack = 300,
+})
+
+baseitem:new("FLAMING_ARROW", {
+    texture = "flaming_arrow.png",
+    displayname = "FLAMING ARROW",
     stack = 300,
 })
 
@@ -113,15 +130,21 @@ baseitem:new("BOW", {
     stack = 1,
     use = function(self, player)
 
+        if player.gui.inventory:hasItem(itemlist.FLAMING_ARROW.id, 1) then
+            player.gui.inventory:removeItem(itemlist.FLAMING_ARROW.id, 1)
+            local unit = (jutils.vec2.new(input.getTransformedMouse())-player.position):unitvec()
+            local arrow = player.world:addEntity("flamingarrow")
+            arrow:teleport(player.position)
+            arrow.velocity = unit*350
+            return true
+        end
         -- TODO: consume arrow from player inventory
         if player.gui.inventory:hasItem(itemlist.ARROW.id, 1) then
             player.gui.inventory:removeItem(itemlist.ARROW.id, 1)
-
             local unit = (jutils.vec2.new(input.getTransformedMouse())-player.position):unitvec()
             local arrow = player.world:addEntity("arrow")
             arrow:teleport(player.position)
             arrow.velocity = unit*350
-             
             return true
         end
     

@@ -1,5 +1,5 @@
 local element = baseitem:subclass("Element")
-
+--[[
 
 element:new("HYDROGEN", {})
 element:new("HELIUM", {})
@@ -131,3 +131,4 @@ compound:new("CARBON DIOXIDE", {})
 compound:new("GLUCOSE", {})
 compound:new("POTASSIUM NITRATE", {})
 compound:new("IRON (III) OXIDE", {})
+]]

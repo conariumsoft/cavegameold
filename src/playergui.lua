@@ -568,6 +568,9 @@ function system:drawItemData(x, y, gridx, gridy, slotsize, itemid, amount, highl
 		if my > effectiveY and my < effectiveY+effectiveSize then
 			mouseon = true
 			padding = 2
+			rx = 2
+			ry = 2
+			love.graphics.setColor(1,1,1)
 		end
 	end
 

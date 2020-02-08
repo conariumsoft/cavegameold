@@ -18,12 +18,13 @@ local guiutil 		= require("src.guiutil")
 local menus 		= require("src.menus")
 
 
-local music
 
-local music_menu_timer = 3
+
 local is_playing_menu_music = false
 local game_music_timer = 15*60
 
+
+local music = nil
 
 -- callback function for main.lua
 -- this is needed to enable the same
@@ -36,6 +37,7 @@ return function(args)
 	_G.FULLBRIGHT = false
 	_G.NO_TEXTURE = false
 	_G.RUN_WITH_STEAM = false
+	_G.NO_SAVE = false
 
 	local show_debug_info = false
 
@@ -55,7 +57,7 @@ return function(args)
 		mithril_ocean = love.audio.newSource("assets/audio/mu/mithril_ocean.ogg", "stream"),
 	}
 
-	love.audio.setVolume(0.1)
+	
 
 	-- skip menu screens and load into world
 	-- as well as enabling debug info
@@ -77,6 +79,8 @@ return function(args)
 	end)
 
 	settings.load()
+
+	love.audio.setVolume(settings.get("volume")/100)
 
 	-- game launch arguments
 	if args[1] == "-dev" then
@@ -106,13 +110,9 @@ return function(args)
 	end
 
 	-- skip splash
-	if args[1] == "-nosplash" then
-		menus.go("main")
-	end
+	if args[1] == "-nosplash" then menus.go("main") end
 
-	if args[2] == "-nosave" then
-		gameworld.no_save = true
-	end
+	if args[2] == "-nosave" then _G.NO_SAVE = true end
 
 	love.window.setTitle("cavegame "..config.GAME_VERSION)
 	love.window.setMode(

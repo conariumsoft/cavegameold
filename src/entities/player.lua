@@ -133,6 +133,8 @@ end
 
 local humanoidAudio = love.audio.newSource("assets/audio/hurt.ogg", "static")
 
+local hit_sfx_3 = love.audio.newSource("assets/audio/hit3.ogg", "static")
+
 function player:damage(amount)
 
 	if self.god then return end
@@ -142,9 +144,9 @@ function player:damage(amount)
 	if final_amount then
 		self.knockbackTimer = 0.25
 
-		humanoidAudio:stop()
-		humanoidAudio:setPitch(self.hurt_yell_pitch)
-		humanoidAudio:play()
+		hit_sfx_3:stop()
+		hit_sfx_3:setPitch(self.hurt_yell_pitch)
+		hit_sfx_3:play()
 
 		particlesystem.newBloodSplatter(self.position, 1.1)
 		local e = self.world:addEntity("floatingtext", math.floor(final_amount), {1, 0.5, 0})

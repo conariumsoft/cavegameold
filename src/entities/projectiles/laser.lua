@@ -15,7 +15,6 @@ function laser:init(p1, p2, timer)
     self.timer = timer
 end
 
-
 local function sign(n)
     return n > 0 and 1 or n < 0 and -1 or 0
 end
@@ -64,7 +63,7 @@ function laser:update(dt)
         local pos = self.p1:lerp(self.p2, i/dist)
 
         local tx, ty = grid.pixelToTileXY(pos.x, pos.y)
-        self.world:setLight(tx, ty, 0.5, 1, 2)
+       -- self.world:setLight(tx, ty, 0.5, 1, 2)
 
 
         for _, entity in pairs(self.world.entities) do
@@ -82,7 +81,7 @@ function laser:update(dt)
                     local rightl  = check_intersect(self.p1, self.p2, ep3, ep4)
 
                     if topl or bottoml or leftl or rightl then
-                        entity:damage(10)
+                        entity:damage(45)
                     end
                 end
             end
@@ -97,7 +96,7 @@ function laser:draw()
 
     love.graphics.line(self.p1.x, self.p1.y, self.p2.x, self.p2.y)
 
-    local dist = self.p1:distance(self.p2)
+    local dist = self.p1:distance(self.p2)/2
     love.graphics.setLineWidth(1.25)
     love.graphics.setColor(0.75, 0.95, 1)
     for i = 1, dist do

@@ -330,6 +330,8 @@ local tileitem = consumable:subclass("TileItem") do
 	
 end
 do
+	local smash_sfx = love.audio.newSource("assets/audio/wood03.ogg", "static")
+
 	for name, data in pairs(tiles:getList()) do
 		if data.makeItem ~= false then
 			tileitem:new(data.name.."_TILE", {
@@ -386,6 +388,9 @@ do
 
 					if canPlace then
 						player.world:setTile(tx, ty, self.tileid)
+						smash_sfx:stop()
+						smash_sfx:setPitch(1)
+						smash_sfx:play()
 						return true
 					end
 					return false
@@ -473,7 +478,6 @@ do
 				animationspeed = data.animationspeed,
 				tileid = data.id,
 				consume = function(self, player)
-					local stack = player.itemHoldingStack
 					local mx, my = input.getTransformedMouse()
 
 					local tx, ty = grid.pixelToTileXY(mx, my)
@@ -490,7 +494,6 @@ do
 
 					if canPlace then
 						player.world:setBackground(tx, ty, self.tileid)
-						stack[2] = stack[2] - 1
 						return true
 					end
 					return false

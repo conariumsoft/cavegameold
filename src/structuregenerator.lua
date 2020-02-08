@@ -37,6 +37,10 @@ local function generateFromFile(structure, world, tx, ty)
 			world:rawset(tx+x, ty+y, "states", 2, true)
 			world:rawset(tx+x, ty+y, "tileupdate", true, true)
 		end
+
+		if name == "WIRE" then
+			world:rawset(tx+x, ty+y, "tileupdate", true, true)
+		end
 	end
 
 	for key, name in pairs(structure.backgrounds) do

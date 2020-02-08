@@ -83,14 +83,23 @@ end
 
 local humanoidAudio = love.audio.newSource("assets/audio/hurt.ogg", "static")
 
+local hit_sfx_1 = love.audio.newSource("assets/audio/hit1.ogg", "static")
+local hit_sfx_2 = love.audio.newSource("assets/audio/hit2.ogg", "static")
+
 function humanoid:damage(amount)
 	local final_amount = physicalentity.damage(self, amount)
 
 	if final_amount then
 		self.knockbackTimer = 0.25
-		humanoidAudio:stop()
-		humanoidAudio:setPitch(self.hurt_yell_pitch)
-		humanoidAudio:play()
+		if final_amount > 25 then
+			hit_sfx_1:stop()
+			hit_sfx_1:setPitch(self.hurt_yell_pitch)
+			hit_sfx_1:play()
+		else
+			hit_sfx_2:stop()
+			hit_sfx_2:setPitch(self.hurt_yell_pitch)
+			hit_sfx_2:play()
+		end
 
 		particlesystem.newBloodSplatter(self.position, 1)
 
@@ -123,10 +132,9 @@ end
 
 function humanoid:fell(distance)
 	
-	distance = math.floor(distance/config.TILE_SIZE)
-	
-	if distance > 15 then
-		self:damage(distance - 10)
+	local tile_distance = math.floor(distance/config.TILE_SIZE)
+	if tile_distance > 15 then
+		self:damage(tile_distance - 10)
 	end
 end
 

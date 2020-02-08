@@ -70,7 +70,7 @@ baseitem:new("NIMDICK", {
     texture = "nimdoc.png",
     stack = 1,
     rarity = 3,
-    speed = 1/5,
+    speed = 2,
     repeating = true,
     use = function(self, player)
 
@@ -79,7 +79,7 @@ baseitem:new("NIMDICK", {
         local direction = (mousePos-player.position):unitvec()
 
         local run = true
-        local limiter = 10
+        local limiter = 12
         local decayIncrease = 0
 
 
