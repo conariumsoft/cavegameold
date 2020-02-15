@@ -114,6 +114,7 @@ return function(args)
 
 	if args[2] == "-nosave" then _G.NO_SAVE = true end
 
+	love.window.setIcon(love.image.newImageData("assets/icon.png"))
 	love.window.setTitle("cavegame "..config.GAME_VERSION)
 	love.window.setMode(
 		1000, 600,
@@ -125,7 +126,6 @@ return function(args)
 			vsync = settings.get("vsync")
 		}
 	)
-
 	-- console command list
 	local commands = {
 		["entity_info"] = {
@@ -505,25 +505,23 @@ return function(args)
 
 	function love.wheelmoved(x, y)
 		input.wheelmoved:call(x, y)
+
+		if gameworld then
+			gameworld:getPlayer():onWheelMoved(x, y)
+		end
 	end
 	
 	function love.keypressed(key)
 
-		if key == "f11" then
-			love.window.setFullscreen(true)
-		end
-
-		if key == "f2" then
-			local s = love.graphics.captureScreenshot("screenshots/"..os.time() .. '.png')
-		end
+		if key == "f11" then love.window.setFullscreen(true) end
+		if key == "f2" then love.graphics.captureScreenshot("screenshots/"..os.time() .. '.png') end
 
 		if gameworld then
+			if key == "f3" then show_debug_info = not show_debug_info end
+			if key == "f9" then gameworld:getPlayer().show_ui = not gameworld:getPlayer().show_ui end
+
 			jcon.keypressed(key)
-
-			if key == "f3" then
-				show_debug_info = not show_debug_info
-			end
-
+			gameworld:getPlayer():onKeyPressed(key)
 		else
 			menus.keypressed(key)
 		end
@@ -537,10 +535,18 @@ return function(args)
 	
 	function love.mousepressed(x, y, button, istouch, presses)
 		input.mousepressed:call(x, y, button, istouch, presses)
+
+		if gameworld then
+			gameworld:getPlayer():onMousePressed(x, y, button, istouch, presses)
+		end
 	end
 	
 	function love.mousereleased(x, y, button, istouch, presses)
 		input.mousereleased:call(x, y, button, istouch, presses)
+
+		if gameworld then
+			gameworld:getPlayer():onMouseReleased(x, y, button, istouch, presses)
+		end
 	end
 	
 	function love.textinput(t)

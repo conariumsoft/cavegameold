@@ -1,4 +1,5 @@
 local projectile = require("src.entities.projectiles.projectile")
+local physicalentity = require("src.entities.physicalentity")
 local jutils = require("src.jutils")
 
 local bullet = projectile:subclass("Bullet")
@@ -7,14 +8,25 @@ local bullet = projectile:subclass("Bullet")
 local bullet_texture = love.graphics.newImage("assets/items/bullet.png")
 
 
-function bullet:init(...)
+function bullet:init(start, direction, power, damage)
 
-	projectile.init(self, ...)
+	physicalentity.init(self)
 
+	self.nextposition = start
+	self.position = start
+	self.direction = direction
+	self.propulsion = 400+power
+	self.xfriction = 0.2
+	self.mass = 0.1
 	self.texture = bullet_texture
 	self.color = {1, 1, 1}
 	self.scale = jutils.vec2.new(0.5, 0.5)
 	self.light = {0.5, 0.5, 0.5}
+	self.basedamage = 3
+	self.gundamage = damage
+
+
+	self.velocity = self.direction*self.propulsion
 end
 
 function bullet:collisionCallback(tileid, normal)
@@ -22,10 +34,12 @@ function bullet:collisionCallback(tileid, normal)
 end
 
 function bullet:entityCollision(otherEntity, separation, normal)
-	otherEntity:damage(5)
-	otherEntity.velocity.x = otherEntity.velocity.x * 0.5
-	otherEntity.velocity.y = -100
-	self.dead = true
+	if not otherEntity:isA("Bullet") then
+		otherEntity:damage(self.basedamage+self.gundamage)
+		otherEntity.velocity.x = otherEntity.velocity.x * 0.5
+		otherEntity.velocity.y = -100
+		self.dead = true
+	end
 end
 
 function bullet:draw()

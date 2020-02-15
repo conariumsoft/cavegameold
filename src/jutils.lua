@@ -547,8 +547,12 @@ jutils.vec2 = {} do
         return jutils.vec2.new(vector.x, vector.y)
     end
 
-    function jutils.vec2.angle(vector)
-        error("NOT IMPLEMENTED")
+    function jutils.vec2.angle(vec)
+        return math.atan2(vec.y, vec.x) * 180 / math.pi
+    end
+
+    function jutils.vec2.fromAngleRadians(angle)
+        return jutils.vec2.new(math.cos(angle), math.sin(angle))
     end
 
     --- Returns the angle between two vectors.

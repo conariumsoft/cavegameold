@@ -6,10 +6,10 @@
 
 local uiscale = 1
 
-local jutils = require("src.jutils")
-local jui = require("src.jui")
-local grid = require("src.grid")
-local items = require("src.items")
+local jutils   = require("src.jutils")
+local jui      = require("src.jui")
+local grid     = require("src.grid")
+local items    = require("src.items")
 local recipes = require("src.recipes")
 local rendering = require("src.rendering")
 local tiles = require("src.tiles")

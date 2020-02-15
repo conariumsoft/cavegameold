@@ -46,48 +46,56 @@ bullet:new("NANOBULLET", {
 
 
 local function firearm_use(gun, player)
-
-    local gun_base_damage = gun.damage or 1
-    
     local unit = (jutils.vec2.new(input.getTransformedMouse())-player.position):unitvec()
     local summonPos = player.position + unit*16
 
+    local acc = math.random(gun.inaccuracy) - (gun.inaccuracy/2)
+    local dir = jutils.vec2.fromAngleRadians(math.rad(unit:angle()+acc))
+
+    --local dir = unit * inaccuracy
+
     if player.gui.inventory:hasItem(itemlist.BULLET.id, 1) then
         player.gui.inventory:removeItem(itemlist.BULLET.id, 1)
-        local bullet = player.world:addEntity("bullet", summonPos, jutils.vec2.new(input.getTransformedMouse()), 400, 0.1, player)
-        return true
+        local bullet = player.world:addEntity("bullet", summonPos, dir, gun.power, gun.damage)
+        return true, bullet
     end
 
     if player.gui.inventory:hasItem(itemlist.SILVER_BULLET.id, 1) then
         player.gui.inventory:removeItem(itemlist.SILVER_BULLET.id, 1)
         -- todo: silver bullet spawning
-        local bullet = player.world:addEntity("bullet", summonPos, jutils.vec2.new(input.getTransformedMouse()), 400, 0.1, player)
-        return true
+        local bullet = player.world:addEntity("silverbullet", summonPos, dir, gun.power, gun.damage)
+        return true, bullet
     end
 
     if player.gui.inventory:hasItem(itemlist.NANOBULLET.id, 1) then
         player.gui.inventory:removeItem(itemlist.NANOBULLET.id, 1)
         -- todo: nanobullet spawning
-        local bullet = player.world:addEntity("bullet", summonPos, jutils.vec2.new(input.getTransformedMouse()), 400, 0.1, player)
-        return true
+        local bullet = player.world:addEntity("bullet", summonPos, dir, gun.power, gun.damage)
+        return true, bullet
     end
 
     if player.gui.inventory:hasItem(itemlist.HOLY_BULLET.id, 1) then
         player.gui.inventory:removeItem(itemlist.HOLY_BULLET.id, 1)
         -- todo: holy bullet spawning
-        local bullet = player.world:addEntity("bullet", summonPos, jutils.vec2.new(input.getTransformedMouse()), 400, 0.1, player)
-        return true
+        local bullet = player.world:addEntity("bullet", summonPos, dir, gun.power, gun.damage)
+        return true, bullet
     end
 
     if player.gui.inventory:hasItem(itemlist.FRAGMENT_BULLET.id, 1) then
         player.gui.inventory:removeItem(itemlist.FRAGMENT_BULLET.id, 1)
         -- todo: holy bullet spawning
-        local bullet = player.world:addEntity("bullet", summonPos, jutils.vec2.new(input.getTransformedMouse()), 400, 0.1, player)
-        return true
+        local bullet = player.world:addEntity("bullet", summonPos, dir, gun.power, gun.damage)
+        return true, bullet
     end
 end
 
-baseitem:new("FLINTLOCK", {
+local gun = baseitem:subclass("Gun") do
+    gun.damage = 1
+    gun.power = 0
+    gun.inaccuracy = 12
+end
+
+gun:new("FLINTLOCK", {
     displayname = "FLINTLOCK PISTOL",
     speed = 0.6,
     texture = "flintlock.png",
@@ -97,16 +105,70 @@ baseitem:new("FLINTLOCK", {
     inWorldScale = 2,
     --defaultRotation = math.rad(90),
     playerHoldPosition = jutils.vec2.new(0, 4),
-    use = function(self, player)
-
-       
-
-    end
+    use = firearm_use,
+    damage = 3,
+    power = 4,
+    inaccuracy = 4,
 })
 
-baseitem:new("BOOMSTICK", {
-    texture = "boomstick.png",
+gun:new("LUGER", {
+    displayname = "LUGER",
+    speed = 1,
+    texture = "flintlock.png",
+    stack = 1,
+    use = firearm_use,
+    damage = 10,
+})
 
+gun:new("BOOMSTICK", {
+    texture = "boomstick.png",
+    speed = 0.75,
+    stack = 1,
+    playeranim = pointanim(false),
+    inWorldScale = 2,
+    damage = 8,
+    playerHoldPosition = jutils.vec2.new(0, 4),
+    inaccuracy = 20,
+    use = function(gun, player)
+        local unit = (jutils.vec2.new(input.getTransformedMouse())-player.position):unitvec()
+        local summonPos = player.position + unit*16
+
+        local acc = math.random(gun.inaccuracy) - (gun.inaccuracy/2)
+        local dir = jutils.vec2.fromAngleRadians(math.rad(unit:angle()+acc))
+
+        --local dir = unit * inaccuracy
+
+        local bullet_type = nil
+
+        if player.gui.inventory:hasItem(itemlist.BULLET.id, 1) then
+            player.gui.inventory:removeItem(itemlist.BULLET.id, 1)
+            bullet_type = "bullet"
+        end
+        if player.gui.inventory:hasItem(itemlist.SILVER_BULLET.id, 1) then
+            player.gui.inventory:removeItem(itemlist.SILVER_BULLET.id, 1)
+            bullet_type = "silverbullet"
+        end
+        if player.gui.inventory:hasItem(itemlist.NANOBULLET.id, 1) then
+            player.gui.inventory:removeItem(itemlist.NANOBULLET.id, 1)
+            bullet_type = "bullet"
+        end
+        if player.gui.inventory:hasItem(itemlist.HOLY_BULLET.id, 1) then
+            player.gui.inventory:removeItem(itemlist.HOLY_BULLET.id, 1)
+            bullet_type = "bullet"
+        end
+        if player.gui.inventory:hasItem(itemlist.FRAGMENT_BULLET.id, 1) then
+            player.gui.inventory:removeItem(itemlist.FRAGMENT_BULLET.id, 1)
+            bullet_type = "bullet"
+        end
+
+        if bullet_type ~= nil then
+            for i = 1, 3 do
+                local bullet = player.world:addEntity(bullet_type, summonPos, dir, gun.power, gun.damage)
+            end
+            return true
+        end
+
+    end
 })
 
 baseitem:new("ARROW", {

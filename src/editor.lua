@@ -295,12 +295,16 @@ local commands = {
 	},
 }
 
+local erase_mode, careful_mode
+local counter = 0
 return function(args)
 
 	_G.ENTITY_DEBUG = false
 	_G.FULLBRIGHT = false
 	_G.NO_TEXTURE = false
 
+	love.filesystem.setIdentity("editor")
+	love.keyboard.setKeyRepeat(true)
 	love.window.setTitle("cavegame structure editor")
 	love.window.setMode(1280, 720, {resizable = true, vsync = false})
 
@@ -342,7 +346,6 @@ return function(args)
 	function love.keypressed(key)
 		jcon.keypressed(key)
 		if jcon.open then
-			
 			return
 		end
 
@@ -379,7 +382,6 @@ return function(args)
 			end
 
 			if key == "z" then
-				print(pointing_history)
 				pointing_history = pointing_history - inc
 				if pointing_history < 1 then pointing_history = 1 end
 				tilemap.tiles = jutils.table.copy(history[pointing_history].tiles)
@@ -431,22 +433,19 @@ return function(args)
 	end
 	
 	function love.update(dt)
-
+		counter = counter + dt
 		view.zoom = jutils.math.lerp(view.zoom, view.magnification, 0.25)
 
 		jcon:update(dt)
 		rendering.update(dt)
-	
+
+		erase_mode = love.keyboard.isDown("e")
+		careful_mode = love.keyboard.isDown("lctrl")
 		
 		if love.mouse.isDown(1) then
 			local mkey = getMouseKey()
-	
-			local erase_mode = love.keyboard.isDown("e")
-			local careful_mode = love.keyboard.isDown("lctrl")
 			
 			-- erase mode
-
-			
 			if erase_mode then
 				if view.pointbg then
 					tilemap.backgrounds[mkey] = nil
@@ -555,11 +554,18 @@ return function(args)
 	
 		local mousex, mousey = input.getTransformedMouse()
 		local mx, my = grid_pixelToTileXY(mousex, mousey)
+
+		-- blinking indicator :()
+		local color = {0.5, 0.5, 0.5}
+		if math.floor(counter*4) % 2 == 0 then
+			if careful_mode then color = {0.25, 0.25, 1} end
+			if erase_mode then color = {1, 0.5, 0.5} end
+		end
+
 		if view.pointbg then
-			rendering.queuebackground(view.bgselection, 0.5, 0.5, 0.5, mx, my)
+			rendering.queuebackground(view.bgselection, color[1], color[2], color[3], mx, my)
 		else
-			print(view.selection)
-			rendering.queuetile(view.selection, 0, 0, 0.5, 0.5, 0.5, mx, my)
+			rendering.queuetile(view.selection, 0, 0, color[1], color[2], color[3], mx, my)
 		end
 		rendering.drawqueue()
 		

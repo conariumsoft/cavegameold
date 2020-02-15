@@ -202,7 +202,6 @@ armour_item:new("WITCH_DRESS_TOP", {
 	chestplate = true,
 })
 
-
 armour_item:new("WITCH_DRESS_BOTTOM", {
 	set = "witch",
 	texture = "leggings.png",

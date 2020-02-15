@@ -27,30 +27,24 @@ function player:init()
 	self.openContainer = nil
 	self.guiscale = 2
 	self.gui = playergui:new(self)
-
 	self.showMouseTileDistance = -1
 	self.hotbarslot = 1
 	self.currentSelectedSlot = 0
 	self.fast = false
 	self.save = true
 	self.freemove = false
-
 	self.itemHolding = nil
 	self.lastItemHolding = nil
 	self.equipDebounce = false
 	self.god = false
-
 	self.itemCooldown = 0
 	self.itemIsRunning = false
-
 	self.spawntimer = 3
-	
 	self.mouse = {
 		down = false, bounce = false,
 		position = jutils.vec2.new(0, 0)
 	}
 	self.itemdata = {}
-
 	self.lclicked = false
 	self.rclicked = false
 	self.lusecooldown = 0
@@ -67,25 +61,8 @@ function player:init()
 	}
 
 	self.show_ui = true
-
 	self.waiting_for_chunks = true
 
-	-- ghetto retard workaround for emptying input callbacks when player is destroyed
-	self.inputcallbacks = {
-		mousepressed = input.mousepressed:connect(function(...)
-			self:onMousePressed(...)
-		end),
-		mousereleased = input.mousereleased:connect(function(...)
-			self:onMouseReleased(...)
-		end),
-		wheelmoved = input.wheelmoved:connect(function(...)
-			self:onWheelMoved(...)
-		end),
-		keypressed = input.keypressed:connect(function(...)
-			self:onKeyPressed(...)
-		end),
-	}
-	
 	self:scroll(0)
 end
 
@@ -109,10 +86,6 @@ function player:serialize()
 	data.items = self.gui.inventory.items
 	data.equipment = self.gui.equipment.items
 
-	input.mousepressed:disconnect(self.inputcallbacks.mousepressed)
-	input.mousereleased:disconnect(self.inputcallbacks.mousereleased)
-	input.wheelmoved:disconnect(self.inputcallbacks.wheelmoved)
-	input.keypressed:disconnect(self.inputcallbacks.keypressed)
 	return data
 end
 
@@ -222,7 +195,7 @@ function player:onKeyPressed(key)
 		end
 	end
 
-	if key == "f9" then self.show_ui = not self.show_ui end
+	--if key == "f9" then self.show_ui = not self.show_ui end
 
 	if key == "p" then self.nextposition = self.mouse.position end
 

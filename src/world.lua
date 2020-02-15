@@ -43,6 +43,7 @@ local entitylist = {
 	-- projectiles
 	casterball      = require("src.entities.projectiles.casterball"),
 	bullet 			= require("src.entities.projectiles.bullet"),
+	silverbullet    = require("src.entities.projectiles.silverbullet"),
 	bombentity 		= require("src.entities.projectiles.bombentity"),
 	stickybomb 		= require("src.entities.projectiles.stickybombentity"),
 	dynamite 		= require("src.entities.projectiles.dynamiteentity"),

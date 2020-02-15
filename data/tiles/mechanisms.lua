@@ -84,6 +84,10 @@ local function propagatePower(world, x, y)
 	if t == tilelist.BUFFER.id then
 		world:setTileState(x, y, 100)
 	end
+
+	if t == tilelist.PUMP.id then
+		world:setTileState(x, y, 1)
+	end
 end
 
 local function dePower(world, x, y)
@@ -104,6 +108,10 @@ local function dePower(world, x, y)
 	if t == tilelist.TOGGLE_BRICK.id then
 		world:setTile(x, y, tilelist.SOLID_TOGGLE_BRICK.id)
 	end
+
+--	if t == tilelist.PUMP.id then
+	--	world:setTileState(x, y, 0)
+	--end
 end
 
 newtile("LAMP", {
@@ -307,7 +315,6 @@ local function explodeTNT(world, x, y)
 	end
 end
 
-
 newtile("TNT", {
 	tags = {"mechanism", "transmitter"},
 	texture = "tnt",
@@ -500,7 +507,6 @@ newtile("OR_GATE", {
 		dePower(world, x, y-1)
 	end,
 })
-
 
 newtile("NOR_GATE", {
 	tags = {"mechanism"},
@@ -779,5 +785,64 @@ newtile("BUFFER", {
 			world:setTileState(x, y, 0)
 		end
 	end,
+})
 
+
+local function pump_search(world, x, y)
+	for dx = -20, 20 do
+		for dy = -20, 20 do
+			if dx ~= 0 and dy ~= 0 then
+				if world:getTile(x+dx, y+dy) == tilelist.PUMP.id then
+					if world:getTileState(x+dx, y+dy) == 1 then
+						for cy = 0, 10 do
+							if world:getTile(x+dx, y+dy-cy) == tilelist.AIR.id then
+								world:setTile(x+dx, y+dy-cy, tilelist.WATER.id)
+								return true
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+	return false
+end
+
+newtile("PUMP", {
+	tileupdate = function(world, x, y)
+		local state = world:getTileState(x, y)
+
+		if state == 1 then
+
+			local water_left  = (world:getTile(x-1, y) == tilelist.WATER.id)
+			local water_right = (world:getTile(x+1, y) == tilelist.WATER.id)
+			local water_below = (world:getTile(x, y+1) == tilelist.WATER.id)
+			local water_above = (world:getTile(x, y-1) == tilelist.WATER.id)
+
+			if water_left then
+				local found = pump_search(world, x, y)
+				if found then
+					world:setTile(x-1, y, tilelist.AIR.id)
+				end
+			elseif water_right then
+				local found = pump_search(world, x, y)
+				if found then
+					world:setTile(x+1, y, tilelist.AIR.id)
+				end
+			elseif water_below then
+				local found = pump_search(world, x, y)
+				if found then
+					world:setTile(x, y+1, tilelist.AIR.id)
+				end
+			elseif water_above then
+				local found = pump_search(world, x, y)
+				if found then
+					world:setTile(x, y-1, tilelist.AIR.id)
+				end
+			end
+
+
+			world:setTileState(x, y, 0)
+		end
+	end,
 })

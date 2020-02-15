@@ -52,7 +52,7 @@ newtile("SAND", {
 	color = {0.7, 0.7, 0.3},
 	hardness = 1,
 	tileupdate = function(world, x, y)
-		if world:getTile(x, y+1) == 0 then
+		if world:getTile(x, y+1) == 0 or world:getTile(x, y+1) == tilelist.WATER.id or world:getTile(x, y+1) == tilelist.LAVA.id or tilemanager:tileHasTag(world:getTile(x, y+1), "fakeempty") then
 			world:setTile(x, y, 0)
 			world:setTile(x, y+1, tilelist.SAND.id)
 		end
@@ -221,7 +221,6 @@ newtile("SANDSTONE", {
 	color = {0.8, 0.6, 0.3},
 	texture = "sandstone",
 	hardness = 2.5,
-
 })
 
 newtile("OBSIDIAN", {
@@ -241,7 +240,6 @@ newtile("TIMELESS_BRICK", {
 	texture = "brick",
 	color = {1, 1, 1},
 	hardness = math.huge
-
 })
 
 -- TODO: make pot drop various items from a set
