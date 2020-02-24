@@ -30,9 +30,6 @@ for k, file in ipairs(files) do
 	setfenv(d, env)
 	d()
 end
---print("done")
-
--- recipe verification
 
 for station, list in pairs(recipes) do
 	for _, recipe in pairs(list) do

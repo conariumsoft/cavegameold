@@ -308,22 +308,21 @@ local function oretile(name, color, hardness)
 	})
 end
 
-
-oretile("IRON_ORE", {1, 0.8, 0.8}, 5)
 oretile("COPPER_ORE", {1, 0.45, 0}, 3)
+oretile("TIN_ORE", {0.6, 0.4, 0.4}, 4)
+oretile("IRON_ORE", {1, 0.8, 0.8}, 5)
 oretile("LEAD_ORE", {0.35, 0.35, 0.45}, 3)
-oretile("SILVER_ORE", {1,1,1}, 4)
 oretile("PALLADIUM_ORE", {0.9, 0.5, 0.9}, 6)
 oretile("CHROMIUM_ORE", {0.5, 1, 1}, 6)
+oretile("SILVER_ORE", {1,1,1}, 4)
 oretile("GOLD_ORE", {1,1,0.5}, 3)
-oretile("TIN_ORE", {0.6, 0.4, 0.4}, 4)
 oretile("ALUMINIUM_ORE", {0.9, 0.9, 0.9}, 5)
 oretile("NICKEL_ORE", {1, 0.5, 0.5}, 6)
-oretile("VANADIUM_ORE", {0.5, 1, 0.8}, 6)
 oretile("COBALT_ORE", {0.3, 0.3, 1}, 8)
 oretile("TITANIUM_ORE", {0.6, 0.6, 0.6}, 8)
 oretile("URANIUM_ORE", {0.4, 0.8, 0.4}, 12)
 tilelist.URANIUM_ORE.light = {0, 0.2, 0}
+oretile("BOWIUM_ORE", {0.5, 0.5, 0.5}, 20)
 --[[
 -- playing around with this :D
 tilelist.URANIUM_ORE.customRenderLogic = function(tx, ty, state, dmg)

@@ -104,6 +104,8 @@ local scene = jui.scene:new({}, {
 	})
 })
 
+
+
 local splash_ui = jui.scene:new({}, {
 	rect = jui.layoutbox:new({
 		scaleSize = jutils.vec2.new(0.75, 0.75),
@@ -478,6 +480,9 @@ Karl Darling - marketing
 William Tomasine - testing & design
 Tyler Stewart - business
 _
+Music
+Logan Caughlin
+_
 Special Thanks To our Alpha Testers
 "Bumpy"
 "squidthonkv2"
@@ -485,7 +490,7 @@ Evan Walter
 "bosswalrus"
 "AndrewJ"
 "Sorci"
-Courtland Phillips
+Cortland Phillips
 ]],
 		font = guiutil.fonts.font_20,
 		textColor = jutils.color.fromHex("#FFFFFF"),

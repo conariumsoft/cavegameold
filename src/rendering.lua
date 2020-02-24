@@ -149,9 +149,9 @@ function renderer.queuetile(tileid, state, dmg, r, g, b, tx, ty)
 			local endg = color[2] * g
 			local endb = color[3] * b
 			local a = color[4]
+
 			spriteBatch:setColor(endr, endg, endb, a)
 			spriteBatch:add(textureReference.tiles[texturename], (tx*config.TILE_SIZE)+4, (ty*config.TILE_SIZE) + 4, math.rad(rotation), 1, 1, 4, 4)
-			
 		end
 
 		if dmg > 0 then

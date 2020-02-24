@@ -36,7 +36,6 @@
 		function onbreak
 		function customCollision(Entity entity, Vec2 separation, Vec2 normal)
 		function playerInteract(Player player, int x, int y, int button)
-
 		function layeredRender(int x, int y, var state, number dmg)
 	}
 	

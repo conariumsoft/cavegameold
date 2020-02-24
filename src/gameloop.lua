@@ -18,8 +18,6 @@ local guiutil 		= require("src.guiutil")
 local menus 		= require("src.menus")
 
 
-
-
 local is_playing_menu_music = false
 local game_music_timer = 15*60
 

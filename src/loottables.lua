@@ -21,6 +21,24 @@ local lootvalues = {
 			{item = items.MANLET_POTION.id, chance = 10, min = 1, max = 1, once = false},
 			{item = items.FLINTLOCK.id, chance = 1, min = 1, max = 1, once = true}
 		},
+	},
+	["DUNGEON_GENERIC_1"] = {
+		rolls = 30,
+		items = {
+
+		},
+	},
+	["DUNGEON_GENERIC_2"] = {
+		rolls = 30,
+		items = {
+
+		},
+	},
+	["DUNGEON_GENERIC_3"] = {
+		rolls = 30,
+		items = {
+
+		},
 	}
 }
 
@@ -46,7 +64,6 @@ function mod:getLootForChest(lootid)
 			end
 		end
 	end
-
 	return getting
 end
 

@@ -207,3 +207,8 @@ armour_item:new("WITCH_DRESS_BOTTOM", {
 	texture = "leggings.png",
 	leggings = true,
 })
+
+
+baseitem:new("BART", {
+	accessory = true,
+})

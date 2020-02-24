@@ -107,7 +107,7 @@ gun:new("FLINTLOCK", {
     playerHoldPosition = jutils.vec2.new(0, 4),
     use = firearm_use,
     damage = 3,
-    power = 4,
+    power = 0,
     inaccuracy = 4,
 })
 
@@ -127,16 +127,13 @@ gun:new("BOOMSTICK", {
     playeranim = pointanim(false),
     inWorldScale = 2,
     damage = 8,
-    playerHoldPosition = jutils.vec2.new(0, 4),
-    inaccuracy = 20,
-    use = function(gun, player)
+    playerHoldPosition = jutils.vec2.new(2, 5),
+    defaultRotation = math.rad(45),
+    inaccuracy = 25,
+    power = 5,
+    use = function(self, player)
         local unit = (jutils.vec2.new(input.getTransformedMouse())-player.position):unitvec()
         local summonPos = player.position + unit*16
-
-        local acc = math.random(gun.inaccuracy) - (gun.inaccuracy/2)
-        local dir = jutils.vec2.fromAngleRadians(math.rad(unit:angle()+acc))
-
-        --local dir = unit * inaccuracy
 
         local bullet_type = nil
 
@@ -163,7 +160,10 @@ gun:new("BOOMSTICK", {
 
         if bullet_type ~= nil then
             for i = 1, 3 do
-                local bullet = player.world:addEntity(bullet_type, summonPos, dir, gun.power, gun.damage)
+                local acc = math.random(self.inaccuracy) - (self.inaccuracy/2)
+                local dir = jutils.vec2.fromAngleRadians(math.rad(unit:angle()+acc))
+
+                local bullet = player.world:addEntity(bullet_type, summonPos:copy(), dir:copy(), self.power, self.damage)
             end
             return true
         end
@@ -182,6 +182,10 @@ baseitem:new("FLAMING_ARROW", {
     displayname = "FLAMING ARROW",
     stack = 300,
 })
+
+--[[
+    slingshot item:
+]]
 
 baseitem:new("BOW", {
     displayname = "TEST BOW",

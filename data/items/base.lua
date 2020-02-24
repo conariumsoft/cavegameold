@@ -44,9 +44,7 @@ baseitem:new("ALUMINIUM_INGOT",
 baseitem:new("NICKEL_INGOT",
 {displayname = "NICKEL INGOT", texture = "ingot.png", color = {1, 0.5, 0.5}, stack = 999}
 )
-baseitem:new("VANADIUM_INGOT",
-{displayname = "VANADIUM INGOT", texture = "ingot.png", color = {0.5, 1, 0.8}, stack = 999}
-)
+
 baseitem:new("COBALT_INGOT",
 {displayname = "COBALT INGOT", texture = "ingot.png", color = {0.3, 0.3, 1}, stack = 999}
 )

@@ -15,11 +15,11 @@ function bullet:init(start, direction, power, damage)
 	self.nextposition = start
 	self.position = start
 	self.direction = direction
-	self.propulsion = 400+power
+	self.propulsion = 400+(power*10)
 	self.xfriction = 0.2
 	self.mass = 0.1
 	self.texture = bullet_texture
-	self.color = {1, 1, 1}
+	self.color = {1, 0.25, 0.25}
 	self.scale = jutils.vec2.new(0.5, 0.5)
 	self.light = {0.5, 0.5, 0.5}
 	self.basedamage = 3
@@ -43,13 +43,21 @@ function bullet:entityCollision(otherEntity, separation, normal)
 end
 
 function bullet:draw()
-	love.graphics.setColor(jutils.color.multiply(self.light, self.color))
+	love.graphics.setColor(self.color)
 
-	love.graphics.draw(
+
+	love.graphics.setLineWidth(0.5)
+
+	local unit = self.velocity:unitvec()
+
+	love.graphics.line(self.position.x+(unit.x*10), self.position.y+(unit.y*10), self.position.x, self.position.y)
+
+
+	--[[love.graphics.draw(
 		self.texture,
 		self.position.x, self.position.y, self.rotation, self.scale.x, self.scale.y,
 		self.textureorigin.x, self.textureorigin.y
-	)
+	)]]
 
 end
 

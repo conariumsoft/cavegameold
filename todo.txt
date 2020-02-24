@@ -1,2 +1,9 @@
 Make item pickup sound
 Make item pickup text objects stack if they are of the same type.
+Slingshot item
+Boss Idea - Iron Blimp (led zeppelin pun) (craftable spawner)
+Snow biome
+Viking Steel Armour - gives a buff in cold weather
+DOOMstick - demonic double barreled upgrade to the boomstick.
+Make loottables load from data folder
+Make backgrounds load from data folder

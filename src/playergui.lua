@@ -98,13 +98,19 @@ function system:scroll(diff)
 	return false
 end
 
+local function itemHasTag(itemid, tag)
+	local data = items:getByID(itemid)
+	if data.tags and jutils.table.contains(data.tags, tag) then
+		return true
+	end
+end
+
 local function haveItemWithTag(inv, tag, amount)
 	amount = amount or 1
 	for _, invitem in pairs(inv.items) do
 		local id = invitem[1]
 		if id ~= 0 then
-			local data = items:getByID(id)
-			if data.tags and jutils.table.contains(data.tags, tag) then
+			if itemHasTag(id, tag) then
 				if invitem[2] >= amount then
 					return true
 				end
@@ -119,7 +125,7 @@ local function getItemWithTag(inv, tag)
 		local id = invitem[1]
 		if id ~= 0 then
 			local data = items:getByID(id)
-			if data.tags and jutils.table.contains(data.tags, tag) then
+			if itemHasTag(id, tag) then
 				return data, index
 			end
 		end
@@ -148,27 +154,31 @@ function system:getEquippedItem()
 	return nil
 end
 
+function system:recipe_click(button)
+	for _, reactant in pairs(self.recipeLookingAt.reactants) do
+		if reactant[1]:sub(1, 4) == "tag:" then
+			--print(reactantItemID:sub(1, 4), reactantItemID:sub(5))
+			local reactantTag = reactant[1]:sub(5)
+			local data = getItemWithTag(self.inventory, reactantTag)
+			self.inventory:removeItem(data.id, reactant[2])
+		else
+			self.inventory:removeItem(items[reactant[1]].id, reactant[2])
+		end
+	end
+
+	for _, product in pairs(self.recipeLookingAt.products) do
+		self.inventory:addItem(items[product[1]].id, product[2])
+	end
+	if button == 2 then
+		self.craftcounting = true
+	end
+end
+
 function system:clicked(button, istouch, presses)
 	local menuhandled = false
+
 	if self.recipeLookingAt ~= nil then
-		for _, reactant in pairs(self.recipeLookingAt.reactants) do
-			if reactant[1]:sub(1, 4) == "tag:" then
-				--print(reactantItemID:sub(1, 4), reactantItemID:sub(5))
-				local reactantTag = reactant[1]:sub(5)
-				local data = getItemWithTag(self.inventory, reactantTag)
-				self.inventory:removeItem(data.id, reactant[2])
-			else
-				self.inventory:removeItem(items[reactant[1]].id, reactant[2])
-			end
-		end
-
-		for _, product in pairs(self.recipeLookingAt.products) do
-			self.inventory:addItem(items[product[1]].id, product[2])
-		end
-		if button == 2 then
-			self.craftcounting = true
-		end
-
+		self:recipe_click(button)
 		return true
 	end
 

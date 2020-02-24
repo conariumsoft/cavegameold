@@ -379,7 +379,6 @@ local function chunkOrePass(chunk, seed)
 				if worldy+y > 800 then
 					oretest(tiles.CHROMIUM_ORE.id, x, y, 555, 8, 0.48)
 					oretest(tiles.NICKEL_ORE.id, x, y, 666, 15, 0.48)
-					oretest(tiles.VANADIUM_ORE.id, x, y, 44, 16, 0.48)
 				end
 
 				-- cobalt, titanium
