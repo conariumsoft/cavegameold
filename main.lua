@@ -29,6 +29,7 @@
 	
 	contributors:
 	Nate "WheezyNewports" Hayes	Scripting, Art
+	squidthonk
 	
 	support team:
 	Karl Darling			Testing, Marketing Help
