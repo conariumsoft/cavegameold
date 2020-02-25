@@ -12,7 +12,7 @@ local grid = require("src.grid")
 local terrainMath = require("src.terrain")
 
 local treeGroveDensity = 0.3 -- 0 - 1, how dense groves of trees are populated
-
+local pine_tree_density = 0.6
 
 local houses = {
 	"data.structures.underhouse.house1",
@@ -89,11 +89,10 @@ return function(world, tilex, tiley)
 		end
 
 		if chosen_biome == "alpine" then
-			local tree3Noise = noise.noise(tilex+128, tiley, 18, 18)
 			local doTree = math.random()
-			if treeGroveDensity > doTree and tilex%4 == 0 then
+			if pine_tree_density > doTree and tilex%4 == 0 then
 
-				if world:getTile(tilex, tiley) == tiles.DIRT.id and world:getTile(tilex, tiley-1) == tiles.AIR.id then
+				if world:getTile(tilex, tiley) == tiles.SNOW.id and world:getTile(tilex, tiley-1) == tiles.AIR.id then
 					pine_tree_gen(world, tilex, tiley)
 				end
 			end
