@@ -8,7 +8,6 @@ local noise = {}
 
 local seed = -(4444)
 
-
 function noise.octave_1d(x, octaves, persistence)
 
 	local total = 0

@@ -189,6 +189,22 @@ armour_item:new("COBALT_LEGGINGS", {
 	protection = 6,
 })
 
+armour_item:new("VIKING_HELMET", {
+	displayname = "NORDIC STEEL HELM",
+	helmet = true,
+
+})
+
+armour_item:new("VIKING_CHAIN", {
+	displayname = "NORDIC STEEL CHAINMAIL",
+	chestplate = true,
+})
+
+armour_item:new("VIKING_LEGGINGS", {
+	displayname = "NORDIC STEEL LEGGINGS",
+	leggings = true,
+})
+
 armour_item:new("WITCH_HAT", {
 	set = "witch",
 	texture = "helmet.png",
@@ -207,7 +223,6 @@ armour_item:new("WITCH_DRESS_BOTTOM", {
 	texture = "leggings.png",
 	leggings = true,
 })
-
 
 baseitem:new("BART", {
 	accessory = true,

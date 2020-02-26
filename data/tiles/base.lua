@@ -153,6 +153,27 @@ newtile("GREEN_TORCH", {
 	hardness = 1,
 })
 
+newtile("ICE_TORCH", {
+	color = {0.7, 0.7, 0.9},
+	solid = false,
+	collide = false,
+	animation = {
+		[1] = "torch_a",
+		[2] = "torch_b",
+		[3] = "torch_c",
+		[4] = "torch_d",
+	},
+	tags = {"fakeempty"},
+	light = {0.75, 0.75, 1.5},
+	tileupdate = function(world, x, y)
+		if not torchValid(world, x, y) then
+			world:setTile(x, y, tilelist.AIR.id, true)
+		end
+	end,
+	validplacement = torchValid,
+	hardness = 1,
+})
+
 local function ropeValid(world, x, y)
 	if not (isSolid(world:getTile(x, y-1)) or world:getTile(x, y-1)==tilelist.ROPE.id) then
 		return false
@@ -288,6 +309,10 @@ brickTile("RED_BRICK",    {0.9, 0.5, 0.5}) -- CLAY
 brickTile("DARK_BRICK",   {0.2, 0.2, 0.2})
 brickTile("WHITE_BRICK",  {  1,   1,   1})
 brickTile("MUD_BRICK", {0.4, 0.2, 0.1})
+
+
+brickTile("ICE_BRICK", {0.7, 0.7, 0.85})
+
 newtile("MOSSY_GRAY_BRICK", {
 	texture = "mossybrick",
 	hardness = 3,
@@ -338,4 +363,16 @@ newtile("SULPHUR", {
 	texture = "ore",
 	color = {1.5, 1.5, 0},
 	hardness = 1,
+})
+
+newtile("SNOW", {
+	texture = "soil",
+	color = {1,1,1},
+	hardness = 1,
+})
+
+newtile("ICE", {
+	texture = "soil",
+	color = {0.35, 0.35, 0.9, 0.8},
+	hardness = 2,
 })

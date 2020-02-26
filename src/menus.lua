@@ -104,8 +104,6 @@ local scene = jui.scene:new({}, {
 	})
 })
 
-
-
 local splash_ui = jui.scene:new({}, {
 	rect = jui.layoutbox:new({
 		scaleSize = jutils.vec2.new(0.75, 0.75),
@@ -195,6 +193,22 @@ local world_name_input = jui.textinput:new({
 	end
 })
 
+local world_seed_input = jui.textinput:new({
+	defaultText = "0",
+	grabFocusOnReturn = true,
+	clearOnReturn = false,
+	clearTextOnFocus = true,
+	clearDefaultOnFocus = true,
+	isFocused = true,
+	font = guiutil.fonts.font_16,
+	textColor = {1, 1, 1},
+	textXAlign = "center",
+	textYAlign = "bottom",
+	onInput = function(self, text)
+		
+	end
+})
+
 new_world_ui = jui.scene:new({}, {
 	title_box = jui.layoutbox:new({
 		pixelSize = vec2.new(0, 30),
@@ -210,13 +224,34 @@ new_world_ui = jui.scene:new({}, {
 			
 		})
 	}),
+	box2 = jui.layoutbox:new({
+		pixelSize = vec2.new(500, 40),
+		scalePosition = vec2.new(0.5, 0.5),
+		pixelPosition = vec2.new(-250, 20),
+	}, {
+		seedtxt = jui.text:new({
+			text = "World Seed:",
+			textYAlign = "top",
+			textXAlign = "center",
+			textColor = {0.8, 0.8, 0.8},
+			font = guiutil.fonts.font_16,
+		}),
+		secondlilbox = jui.rectangle:new({
+			scaleSize = vec2.new(0.5, 0.5),
+			scalePosition = vec2.new(0.25, 0.5),
+			backgroundColor = {0.15, 0.15, 0.15},
+			borderColor = {0.25, 0.25, 0.25},
+		}, {
+			input = world_seed_input,
+		})
+	}),
 	box = jui.layoutbox:new({
 		pixelSize = vec2.new(500, 40),
 		scalePosition = vec2.new(0.5, 0.5),
 		pixelPosition = vec2.new(-250, -20),
 	
 	}, {
-		txt = jui.text:new({
+		worldtxt = jui.text:new({
 			text = "World Name:",
 			textYAlign = "top",
 			textXAlign = "center",
@@ -230,10 +265,9 @@ new_world_ui = jui.scene:new({}, {
 			borderColor = {0.25, 0.25, 0.25}
 		}, {
 			input = world_name_input,
-		})
+		}),
 		
 	}),
-	
 
 	infotext = jui.text:new({
 		text = "ENTER: Confirm\tESCAPE: Back",
@@ -245,7 +279,6 @@ new_world_ui = jui.scene:new({}, {
 })
 
 local function world_load_box(worldname, data)
-
 	local box = jui.rectangle:new({
 		backgroundColor = {1, 1, 1, 0},
 		scaleSize = jutils.vec2.new(1, 0),

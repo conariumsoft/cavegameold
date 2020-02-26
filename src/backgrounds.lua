@@ -243,4 +243,9 @@ background("WHITE_BRICK", {
 	texture = "brick2",
 })
 
+background("ICE_BRICK", {
+	color = {0.7, 0.7, 0.85},
+	texture = "brick2",
+})
+
 return bgcollector

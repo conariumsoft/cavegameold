@@ -60,7 +60,3 @@ newtile("WOOB", {
 newtile("BUBBLEGUM", {
 	
 })
-
-newtile("ICE", {
-    texture = "glass",
-})

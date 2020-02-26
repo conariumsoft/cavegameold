@@ -31,7 +31,7 @@ local music = nil
 return function(args)
 
 	-- globals
-	_G.ENTITY_DEBUG = false
+	_G.ENTITY_DEBUG = true
 	_G.FULLBRIGHT = false
 	_G.NO_TEXTURE = false
 	_G.RUN_WITH_STEAM = false
@@ -92,7 +92,7 @@ return function(args)
 		show_debug_info = true
 		in_menu = false
 		gameworld = world.new("gen_world", 0)
-		gameworld.no_save = true
+		_G.NO_SAVE = true
 		gameworld.camera.zoom = 1.5
 		gameworld.worldtime = 12*60
 		local p = gameworld:getPlayer()

@@ -18,7 +18,7 @@ function item_pickup:update(dt)
     floating_text.update(self, dt)
     for _, entity in pairs(self.world.entities) do
         if entity:isA("ItemPickupText") and entity ~= self then
-            if self.position:distance(entity.position) < 15 then
+            if self.position:distance(entity.position) < 30 then
                 if self.name == entity.name and self.age < entity.age then
                     self.amount = self.amount + entity.amount
                     self.text = self.name.." x"..self.amount

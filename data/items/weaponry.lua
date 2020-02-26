@@ -44,7 +44,6 @@ bullet:new("NANOBULLET", {
     tooltip = ""
 })
 
-
 local function firearm_use(gun, player)
     local unit = (jutils.vec2.new(input.getTransformedMouse())-player.position):unitvec()
     local summonPos = player.position + unit*16
@@ -52,39 +51,31 @@ local function firearm_use(gun, player)
     local acc = math.random(gun.inaccuracy) - (gun.inaccuracy/2)
     local dir = jutils.vec2.fromAngleRadians(math.rad(unit:angle()+acc))
 
-    --local dir = unit * inaccuracy
+    local bullet_type
 
     if player.gui.inventory:hasItem(itemlist.BULLET.id, 1) then
         player.gui.inventory:removeItem(itemlist.BULLET.id, 1)
-        local bullet = player.world:addEntity("bullet", summonPos, dir, gun.power, gun.damage)
-        return true, bullet
+        bullet_type = "bullet"
     end
-
     if player.gui.inventory:hasItem(itemlist.SILVER_BULLET.id, 1) then
         player.gui.inventory:removeItem(itemlist.SILVER_BULLET.id, 1)
-        -- todo: silver bullet spawning
-        local bullet = player.world:addEntity("silverbullet", summonPos, dir, gun.power, gun.damage)
-        return true, bullet
+        bullet_type = "silver_bullet"
     end
-
     if player.gui.inventory:hasItem(itemlist.NANOBULLET.id, 1) then
         player.gui.inventory:removeItem(itemlist.NANOBULLET.id, 1)
-        -- todo: nanobullet spawning
-        local bullet = player.world:addEntity("bullet", summonPos, dir, gun.power, gun.damage)
-        return true, bullet
+        bullet_type = "bullet"
     end
-
     if player.gui.inventory:hasItem(itemlist.HOLY_BULLET.id, 1) then
         player.gui.inventory:removeItem(itemlist.HOLY_BULLET.id, 1)
-        -- todo: holy bullet spawning
-        local bullet = player.world:addEntity("bullet", summonPos, dir, gun.power, gun.damage)
-        return true, bullet
+        bullet_type = "bullet"
     end
-
     if player.gui.inventory:hasItem(itemlist.FRAGMENT_BULLET.id, 1) then
         player.gui.inventory:removeItem(itemlist.FRAGMENT_BULLET.id, 1)
-        -- todo: holy bullet spawning
-        local bullet = player.world:addEntity("bullet", summonPos, dir, gun.power, gun.damage)
+        bullet_type = "bullet"
+    end
+
+    if bullet_type then
+        local bullet = player.world:addEntity(bullet_type, summonPos, dir, gun.power, gun.damage)
         return true, bullet
     end
 end
@@ -114,7 +105,7 @@ gun:new("FLINTLOCK", {
 gun:new("LUGER", {
     displayname = "LUGER",
     speed = 1,
-    texture = "flintlock.png",
+    texture = "luger.png",
     stack = 1,
     use = firearm_use,
     damage = 10,
@@ -187,14 +178,12 @@ baseitem:new("FLAMING_ARROW", {
     slingshot item:
 ]]
 
-baseitem:new("BOW", {
-    displayname = "TEST BOW",
-    speed = 1/2,
-    texture = "bow.png",
-    playeranim = pointanim(true),
-    inWorldScale = 2,
-    stack = 1,
-    use = function(self, player)
+local bow = baseitem:subclass("Bow") do
+    bow.stack = 1
+    bow.inWorldScale = 1
+    bow.playeranim = pointanim(true)
+
+    bow.use = function(self, player)
 
         if player.gui.inventory:hasItem(itemlist.FLAMING_ARROW.id, 1) then
             player.gui.inventory:removeItem(itemlist.FLAMING_ARROW.id, 1)
@@ -213,10 +202,20 @@ baseitem:new("BOW", {
             arrow.velocity = unit*350
             return true
         end
-    
-    end,
+    end
+end
+
+bow:new("WOODEN_BOW", {
+    displayname = "WOODEN BOW",
+    speed = 1/2,
+    texture = "bow.png",
 })
 
+bow:new("COPPER_BOW", {
+    displayname = "COPPER BOW",
+    speed = 1/3,
+    texture = "bow.png",
+})
 
 consumable:new("BOMB", {
     texture = "bomb.png",
@@ -291,8 +290,6 @@ consumable:new("DYNAMITE", {
         return true
     end
 })
-
-
 
 local SWORD_TOOLTIP =
 [[
