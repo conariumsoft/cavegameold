@@ -52,7 +52,9 @@ local entitylist = {
 	arrow 			= require("src.entities.projectiles.arrow"),
 	flamingarrow   = require("src.entities.projectiles.flamingarrow"),
 	-- balls
-	laser 			= require("src.entities.projectiles.laser"),	
+	laser 			= require("src.entities.projectiles.laser"),
+	-- bosses
+	zeppelin        = require("src.entities.hostile.zeppelin")
 }
 
 local channels = {

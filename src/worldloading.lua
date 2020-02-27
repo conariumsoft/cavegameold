@@ -60,7 +60,6 @@ local function saveChunkToFile(key, chunk)
 	if #serialized > 0 then 
 		local success, err = love.filesystem.write("worlds/"..worldname.."/chunks/"..key, serialized)
 
-
 		if not success then
 			print("error saving chunk:", err)
 			error("error saving chunk")
