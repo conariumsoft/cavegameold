@@ -26,9 +26,7 @@ local collision 		= require("src.collision")
 local entitylist = {
 	player    		= require("src.entities.player"),
 	-- hostile enemy entities
-	bee       		= require("src.entities.hostile.bee"),
 	zombie    		= require("src.entities.hostile.zombie"),
-	bat       		= require("src.entities.hostile.bat"),
 	slime     		= require("src.entities.hostile.slime"),
 	flower 	 		= require("src.entities.hostile.flower"),
 	skull 			= require("src.entities.hostile.skull"),
@@ -115,8 +113,8 @@ function world.new(worldname, seed)
 	love.filesystem.createDirectory("worlds/"..worldname.."/chunks")
 
 	-- generate game threads
-	self.lightthread = love.thread.newThread("src/lighting.lua")
-	self.chunkthread = love.thread.newThread("src/worldloading.lua")
+	self.lightthread = love.thread.newThread("src/threads/lighting.lua")
+	self.chunkthread = love.thread.newThread("src/threads/worldloading.lua")
 
 	self.lightthread:start()
 	self.chunkthread:start(worldname)

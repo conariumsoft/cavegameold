@@ -72,17 +72,13 @@ function player:serialize()
 	data.type = "player"
 	data.x = self.position.x
 	data.y = self.position.y
-
 	-- tile coordinates, not pixel coordinates
 	if self.spawn_position then
 		data.spawn_x = self.spawn_position.x
 		data.spawn_y = self.spawn_position.y
 	end
-
 	data.health = self.health
-
 	data.defense = self.defense
-
 	data.items = self.gui.inventory.items
 	data.equipment = self.gui.equipment.items
 
@@ -104,7 +100,44 @@ function player:deserialize(data)
 	end
 end
 
-local humanoidAudio = love.audio.newSource("assets/audio/hurt.ogg", "static")
+function player:getHelmet()
+	return self.gui.equipment.items[1][1]
+end
+
+function player:getChestplate()
+	return self.gui.equipment.items[3][1]
+end
+
+function player:getLeggings()
+	return self.gui.equipment.items[5][1]
+end
+
+function player:getAccessories()
+	return {
+		self.gui.equipment.items[2][1],
+		self.gui.equipment.items[4][1],
+		self.gui.equipment.items[6][1],
+	}
+end
+
+function player:equipment_callback(callback, ...)
+	for slot, item in pairs(self.gui.equipment.items) do
+		local id = item[1]
+
+		if id ~= 0 then
+			local data = items:getByID(id)
+
+			if data[callback] then
+				data[callback](data, self, ...)
+			end
+		end
+	end
+end
+
+function player:collisionCallback(tileid, tilepos, separation, normal)
+	humanoid.collisionCallback(self, tileid, tilepos, separation, normal)
+	self:equipment_callback("onCollide", tileid, tilepos, separation, normal)
+end
 
 local hit_sfx_3 = love.audio.newSource("assets/audio/hit3.ogg", "static")
 
@@ -113,6 +146,8 @@ function player:damage(amount)
 	if self.god then return end
 
 	local final_amount = physicalentity.damage(self, amount)
+
+	self:equipment_callback("onDamage", final_amount)
 
 	if final_amount then
 		self.knockbackTimer = 0.25
@@ -128,7 +163,7 @@ function player:damage(amount)
 end
 
 function player:dies()
-	
+	-- TODO: do something not gay
 	self.health = self.maxhealth
 	if self.spawn_position then
 		print(self.spawn_position)
@@ -146,9 +181,7 @@ function player:onMousePressed(x, y, button, istouch, presses)
 	end
 
 	local mousex, mousey = grid.pixelToTileXY(input.getTransformedMouse())
-
 	local tile = self.world:getTile(mousex, mousey)
-
 	local tiledata = tiles:getByID(tile)
 
 	if tiledata.playerInteract then
@@ -161,22 +194,15 @@ function player:onMouseReleased(x, y, button, istouch, presses)
 end
 
 local hotbarKeys = {
-	["1"] = 1,
-	["2"] = 2,
-	["3"] = 3,
-	["4"] = 4,
-	["5"] = 5,
-	["6"] = 6,
-	["7"] = 7,
-	["8"] = 8,
-	["9"] = 9,
-	["0"] = 10,
+	["1"] = 1, ["2"] = 2, ["3"] = 3, ["4"] = 4, ["5"] = 5, ["6"] = 6, ["7"] = 7, ["8"] = 8, ["9"] = 9, ["0"] = 10,
 }
 
 function player:onKeyPressed(key)
 	if key == "escape" then
 		self.gui.open = not self.gui.open
 	end
+
+	self:equipment_callback("keyPress", key)
 
 	-- item dropping
 	-- TODO: make it's own method
@@ -195,7 +221,6 @@ function player:onKeyPressed(key)
 		end
 	end
 
-	--if key == "f9" then self.show_ui = not self.show_ui end
 
 	if key == "p" then self.nextposition = self.mouse.position end
 
@@ -293,7 +318,6 @@ function player:update(dt)
 	-- item usage
 	
 	if self.itemIsRunning then
-
 		if self.itemHolding.usestep then
 			local res = self.itemHolding:usestep(self, dt)
 
@@ -337,25 +361,16 @@ function player:update(dt)
 	-- rope and platform controls
 	if self.spawntimer < 0 then
 
-		if _G.CONTROLLER then
-			self.grabrope = _G.CONTROLLER:isGamepadDown("dpup")
-			self.fallthrough = _G.CONTROLLER:isGamepadDown("dpdown")
-			self.moveUp = _G.CONTROLLER:isGamepadDown("dpup")
-			self.moveDown = _G.CONTROLLER:isGamepadDown("dpdown")
-			self.moveLeft = _G.CONTROLLER:isGamepadDown("dpleft")
-			self.moveRight = _G.CONTROLLER:isGamepadDown("dpright")
-			self.jumping = _G.CONTROLLER:isGamepadDown("a")
-
-		else
-			self.grabrope = love.keyboard.isDown(config.keybinds.PLAYER_MOVE_UP)
-			self.fallthrough = love.keyboard.isDown(config.keybinds.PLAYER_MOVE_DOWN)
-			self.moveUp = love.keyboard.isDown(config.keybinds.PLAYER_MOVE_UP)
-			self.moveDown = love.keyboard.isDown(config.keybinds.PLAYER_MOVE_DOWN)
-			self.moveLeft = love.keyboard.isDown(config.keybinds.PLAYER_MOVE_LEFT)
-			self.moveRight = love.keyboard.isDown(config.keybinds.PLAYER_MOVE_RIGHT)
-			self.jumping = love.keyboard.isDown(config.keybinds.PLAYER_JUMP)
-		end
+		self.grabrope = love.keyboard.isDown(config.keybinds.PLAYER_MOVE_UP)
+		self.fallthrough = love.keyboard.isDown(config.keybinds.PLAYER_MOVE_DOWN)
+		self.moveUp = love.keyboard.isDown(config.keybinds.PLAYER_MOVE_UP)
+		self.moveDown = love.keyboard.isDown(config.keybinds.PLAYER_MOVE_DOWN)
+		self.moveLeft = love.keyboard.isDown(config.keybinds.PLAYER_MOVE_LEFT)
+		self.moveRight = love.keyboard.isDown(config.keybinds.PLAYER_MOVE_RIGHT)
+		self.jumping = love.keyboard.isDown(config.keybinds.PLAYER_JUMP)
 	end
+
+	self:equipment_callback("tick", dt)
 
 	self.gui:update(dt)
 end
@@ -363,8 +378,12 @@ end
 local function magnitude(x1, y1, x2, y2)
 	return math.sqrt( (x2 - x1)^2 + (y2-y1)^2 )
 end
+
 local oscillator = 0
 
+
+--! this is where armour sets are coded in
+-- this should probably be moved 
 local armor_textures = {
 	base  = love.graphics.newImage("assets/armor/basearmor.png"),
 	witch = love.graphics.newImage("assets/armor/witch.png"),

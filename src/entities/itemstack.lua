@@ -54,7 +54,6 @@ function itemstack:update(dt)
 						if self.amount - amountleft >= 1 then
 							local data = items:getByID(self.id)
 							
-							-- TODO: make labels offset from each other.
 							local label = entity.world:addEntity("itempickup", data.displayname, self.amount-amountleft, {1, 1, 1})
 							label:teleport(entity.position)
 							label.position = label.position + jutils.vec2.new(-10, -20)

@@ -556,9 +556,9 @@ function system:drawItemData(x, y, gridx, gridy, slotsize, itemid, amount, highl
 	local finalY = y + (gridy*slotsize) + (self.slotpadding*gridy)
 
 	if highlighted then
-		love.graphics.setColor(1,1,1)
+		love.graphics.setColor(0.5,0.5,0.5)
 	else
-		love.graphics.setColor(1,1,1, 0.5)
+		love.graphics.setColor(0.5,0.5,0.5, 0.5)
 	end
 	
 	local rx, ry = 0, 0
@@ -580,7 +580,7 @@ function system:drawItemData(x, y, gridx, gridy, slotsize, itemid, amount, highl
 			padding = 2
 			rx = 2
 			ry = 2
-			love.graphics.setColor(1,1,1)
+			love.graphics.setColor(0.5,0.5,0.5)
 		end
 	end
 

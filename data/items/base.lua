@@ -175,30 +175,6 @@ baseitem:new("ELECTRON_SCROLL", {
 	rarity = 3,
 })
 
-
-baseitem:new("JETPACK", {
-	displayname = "JETPACK",
-	speed = 1/30,
-	texture = "jetpack.png",
-	repeating = false,
-	use = function(self, player) return true end,
-	useend = function(self, player) end,
-	usestep = function(self, player, dt)
-		
-		local yThrust = -1000
-		local xThrust = 0
-
-		if player.moveLeft or player.moveRight then
-			yThrust = -800
-			xThrust = 1000*player.direction
-		end
-		player.velocity = player.velocity + (jutils.vec2.new(xThrust, yThrust)*dt)
-
-		if player.mouse.down == false then return true end
-		
-	end
-})
-
 baseitem:new("FERTILIZER", {
 	displayname = "FERTILIZER",
 	texture = "fertilizer.png",

@@ -831,7 +831,6 @@ function menu_module.draw()
 		end
 	end
 
-	-- TODO: make cloud layer scroll at 1.25 speed correctly!
 	local bgscroll = 2
 	local texsize = 512
 	

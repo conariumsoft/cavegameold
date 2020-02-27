@@ -7,7 +7,6 @@ local jutils = require("src.jutils")
 
 local inventory = jutils.object:subclass("Inventory")
 
--- TODO: Add item tag whitelists
 
 --- Create a new inventory instance with <code>width</code> * <code>height</code> item slots.
 -- @name inventory:new
@@ -86,8 +85,7 @@ function inventory:hasItem(item, amount)
 	return false
 end
 
--- TODO: this still is buggy
----
+
 function inventory:removeItem(item, amount)
 	local amountleft = amount
 	for _, data in pairs(self.items) do

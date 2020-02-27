@@ -10,3 +10,5 @@ Make backgrounds load from data folder
 * take fall damage when under effect of low mass potion
 * item hoppers
 * lua computers?
+shoe spikes accessory
+jetpack accessory

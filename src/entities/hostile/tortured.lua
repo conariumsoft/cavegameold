@@ -62,8 +62,7 @@ function tortured:update(dt)
 
 	self.velocity.x = self.velocity.x * 0.999
 	self.velocity.y = self.velocity.y * 0.999
-
-	-- TODO: optimize zombie
+	
 	local player = self.world:getPlayer()
 
 	if player then

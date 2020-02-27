@@ -9,7 +9,6 @@ local arrow = projectile:subclass("Arrow")
 local arrowTexture = love.graphics.newImage("assets/entities/arrow.png")
 
 
--- TODO: use arrow health as impact force (decrease health on impact, and slowly over travel time)
 
 function arrow:init()
 	projectile.init(self, jutils.vec2.new(0, 0), jutils.vec2.new(0, 0), 0, 0)

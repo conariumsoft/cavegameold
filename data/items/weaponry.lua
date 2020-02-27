@@ -193,7 +193,6 @@ local bow = baseitem:subclass("Bow") do
             arrow.velocity = unit*350
             return true
         end
-        -- TODO: consume arrow from player inventory
         if player.gui.inventory:hasItem(itemlist.ARROW.id, 1) then
             player.gui.inventory:removeItem(itemlist.ARROW.id, 1)
             local unit = (jutils.vec2.new(input.getTransformedMouse())-player.position):unitvec()

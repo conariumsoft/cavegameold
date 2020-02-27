@@ -31,7 +31,7 @@ local music = nil
 return function(args)
 
 	-- globals
-	_G.ENTITY_DEBUG = true
+	_G.ENTITY_DEBUG = false
 	_G.FULLBRIGHT = false
 	_G.NO_TEXTURE = false
 	_G.RUN_WITH_STEAM = false
@@ -69,7 +69,7 @@ return function(args)
 	end)
 
 	settings.changed("particles", function(val)
-		-- TODO: make some kind of global flag for particles
+		_G.SHOW_PARTICLES = val
 	end)
 
 	settings.changed("vsync", function(val)
@@ -485,7 +485,6 @@ return function(args)
 					gameworld:savedata()
 					in_menu = true
 					menus.go_to_screen("main")
-					-- TODO: confirm that gameworld gets fully cleaned up after exit
 					gameworld = nil
 				end
 			end

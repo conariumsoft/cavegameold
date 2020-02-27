@@ -227,3 +227,106 @@ armour_item:new("WITCH_DRESS_BOTTOM", {
 baseitem:new("BART", {
 	accessory = true,
 })
+
+--[[
+Walking side-by-side with death
+The devil mocks their every step, ooh
+The snow drives back the foot that's slow
+The dogs of doom are howling more
+]]
+
+baseitem:new("SHOE_SPIKES", {
+	accessory = true,
+	stack = 1,
+	displayname = "SHOE SPIKES",
+	tooltip = "Allows climbing on walls",
+	onEquip = function(self, player)
+		print("bruh")
+	end,
+	onUnequip = function(self, player)
+		print("poop")
+	end,
+	onDamage = function(self, player, damage)
+		print("fucc")
+	end,
+	tick = function(self, player, dt)
+		
+		if player.falling then
+			if player.moveLeft then
+				player.lock_left = true
+				print("DDD")
+			else
+				player.lock_left = false
+				player.grab_wall_left = false
+			end
+			if player.moveRight then
+				player.lock_right = true
+			else
+				player.lock_right = false
+				player.grab_wall_right = false
+			end
+		end
+
+		if player.jumping then
+			if player.grab_wall_left then
+				player.grab_wall_left = false
+				player.lock_left = false
+				player.velocity.x = 350
+				player.velocity.y = -250
+			end
+			if player.grab_wall_right then
+				player.grab_wall_right = false
+				player.lock_right = false
+				player.velocity.x = -350
+				player.velocity.y = -250
+			end
+		end
+	end,
+	onCollide = function(self, player, tid, tpos, svec, nvec, dd)
+		if nvec.y == 0 then
+			if nvec.x == 1 then
+				if player.lock_left then
+					player.grab_wall_left = true
+					player.velocity.y = 0
+				end
+			end
+
+			if nvec.x == -1 then
+				if player.lock_right then
+					player.grab_wall_right = true
+					player.velocity.y = 0
+				end
+			end
+		end
+	end,
+})
+
+--[[
+	TODO: a jump debounce like in terraria. to make this shit feel much nicer and fun to use.
+	getting kinda tired. think i'll stop for now.
+]]
+baseitem:new("JETPACK", {
+	displayname = "JETPACK",
+	texture = "jetpack.png",
+	accessory = true,
+	stack = 1,
+	tick = function(self, player, dt)
+		
+		if player.jumping then
+			player.jetpack_power = player.jetpack_power - dt
+			if player.velocity.y > -150 and player.jetpack_power > 0 then
+				player.velocity.y = player.velocity.y - (900*dt)
+			end
+		elseif player.falling == false then
+			player.jetpack_power = 2
+		end
+	end,
+	keyPress = function(self, player, key)
+		if key == "space" then
+			if player.falling then
+				player.jetpack_enabled = true
+			end
+		end
+	end,
+	
+})
