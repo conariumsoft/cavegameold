@@ -125,6 +125,7 @@ local references = {
 		wire = tileQuad(1, 7),
 		wire_base = tileQuad(2, 7),
 		switch = tileQuad(2, 6),
+		pump = tileQuad(3, 6),
 		
 		anvil_1_1 = tileQuad(8, 7),
 		anvil_2_1 = tileQuad(9, 7),
