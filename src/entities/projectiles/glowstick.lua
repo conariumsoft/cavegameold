@@ -3,9 +3,6 @@ local physicalentity = require("src.entities.physicalentity")
 local tiles = require("src.tiles")
 local jutils = require("src.jutils")
 
-
-local glowstick_texture = love.graphics.newImage("assets/items/glowstick.png")
-
 local glowstick = projectile:subclass("Glowstick")
 
 function glowstick:init(...)
@@ -13,7 +10,7 @@ function glowstick:init(...)
 
 	self.lightemitter = {0.25, 1, 0.25}
 
-	self.mass = 0.75
+	self.mass = 0.5
 	self.xfriction = 0.2
 	self.save = false
 	self.boundingbox = jutils.vec2.new(3, 3)

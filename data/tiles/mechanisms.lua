@@ -788,34 +788,56 @@ newtile("BUFFER", {
 })
 
 
+local function pump_search(world, x, y)
+	for dx = -20, 20 do
+		for dy = -20, 20 do
+			if dx ~= 0 and dy ~= 0 then
+				if world:getTile(x+dx, y+dy) == tilelist.PUMP.id then
+					if world:getTileState(x+dx, y+dy) == 1 then
+						for cy = 0, 10 do
+							if world:getTile(x+dx, y+dy-cy) == tilelist.AIR.id then
+								world:setTile(x+dx, y+dy-cy, tilelist.WATER.id)
+								return true
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+	return false
+end
+
 newtile("PUMP", {
-	texture = "pump",
 	tileupdate = function(world, x, y)
 		local state = world:getTileState(x, y)
 
 		if state == 1 then
 
-			local tile_below = world:getTile(x, y+1)
+			local water_left  = (world:getTile(x-1, y) == tilelist.WATER.id)
+			local water_right = (world:getTile(x+1, y) == tilelist.WATER.id)
+			local water_below = (world:getTile(x, y+1) == tilelist.WATER.id)
+			local water_above = (world:getTile(x, y-1) == tilelist.WATER.id)
 
-			local water_below = (tile_below == tilelist.WATER.id)
-			local lava_below = (tile_below == tilelist.LAVA.id)
-			local blood_below = (tile_below == tilelist.BLOOD.id)
-			local air_above = (world:getTile(x, y-1) == tilelist.AIR.id)
-
-			if air_above then
-				if water_below  then
-					world:setTile(x, y+1, tilelist.AIR.id)
-					world:setTile(x, y-1, tilelist.WATER.id)
+			if water_left then
+				local found = pump_search(world, x, y)
+				if found then
+					world:setTile(x-1, y, tilelist.AIR.id)
 				end
-
-				if blood_below then
-					world:setTile(x, y+1, tilelist.AIR.id)
-					world:setTile(x, y-1, tilelist.BLOOD.id)
+			elseif water_right then
+				local found = pump_search(world, x, y)
+				if found then
+					world:setTile(x+1, y, tilelist.AIR.id)
 				end
-
-				if lava_below then
+			elseif water_below then
+				local found = pump_search(world, x, y)
+				if found then
 					world:setTile(x, y+1, tilelist.AIR.id)
-					world:setTile(x, y-1, tilelist.LAVA.id)
+				end
+			elseif water_above then
+				local found = pump_search(world, x, y)
+				if found then
+					world:setTile(x, y-1, tilelist.AIR.id)
 				end
 			end
 

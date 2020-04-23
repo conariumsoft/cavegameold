@@ -162,9 +162,6 @@ function world:generate_tile_id_mappings()
 		for name, data in pairs(backgrounds:getList()) do
 			map.backgrounds[name] = data.id
 		end
-		for name, data in pairs(items:getList()) do
-			map.items[name] = data.id
-		end
 
 		local data = json.encode(map)
 		love.filesystem.write("conversionmaps/"..config.DATA_VERSION, data)

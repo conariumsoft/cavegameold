@@ -7,10 +7,8 @@ Viking Steel Armour - gives a buff in cold weather
 DOOMstick - demonic double barreled upgrade to the boomstick.
 Make loottables load from data folder
 Make backgrounds load from data folder
-* bug: player will take fall damage when under effect of low mass potion
+* take fall damage when under effect of low mass potion
 * item hoppers
 * lua computers?
 shoe spikes accessory
 jetpack accessory
-* glowstick entity needs texture, also tweak properties
-* system to keep track of item ids (or eliminate them entirely)
