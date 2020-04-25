@@ -274,7 +274,8 @@ jutils.string = {} do
         jutils.misc.check(divider, "string")
         local o = {}
 		while true do
-			local pos1, pos2 = str:find(divider)
+            local pos1, pos2 = str:find(divider)
+
 			if not pos1 then
 				o[#o+1] = str
 				break

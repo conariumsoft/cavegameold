@@ -54,7 +54,6 @@ function collision.test(ax, ay, aw, ah, bx, by, bw, bh)
 		if sx > 0 then
 			sy = 0
 		end
-		
 	end
 
 	if distanceX < 0 then

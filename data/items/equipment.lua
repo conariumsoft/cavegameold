@@ -224,6 +224,23 @@ armour_item:new("WITCH_DRESS_BOTTOM", {
 	leggings = true,
 })
 
+armour_item:new("THERMAL_HOOD", {
+	helmet = true,
+	tick = function(self, player, dt)
+
+
+	end
+})
+
+armour_item:new("THERMAL_JACKET", {
+	tick = function(self, player, dt)
+
+	end,
+})
+
+armour_item:new("THERMAL_PANTS", {
+})
+
 baseitem:new("BART", {
 	accessory = true,
 })
@@ -301,10 +318,6 @@ baseitem:new("SHOE_SPIKES", {
 	end,
 })
 
---[[
-	TODO: a jump debounce like in terraria. to make this shit feel much nicer and fun to use.
-	getting kinda tired. think i'll stop for now.
-]]
 baseitem:new("JETPACK", {
 	displayname = "JETPACK",
 	texture = "jetpack.png",
@@ -312,21 +325,39 @@ baseitem:new("JETPACK", {
 	stack = 1,
 	tick = function(self, player, dt)
 		
-		if player.jumping then
-			player.jetpack_power = player.jetpack_power - dt
-			if player.velocity.y > -150 and player.jetpack_power > 0 then
-				player.velocity.y = player.velocity.y - (900*dt)
+		if player.jetpack_enabled then
+			if player.jumping then
+				player.jetpack_power = player.jetpack_power - dt
+				if player.velocity.y > -150 and player.jetpack_power > 0 then
+					player.velocity.y = player.velocity.y - (900*dt)
+				end
 			end
-		elseif player.falling == false then
-			player.jetpack_power = 2
+		end
+		
+		if player.falling == false then
+			player.jetpack_enabled = false
 		end
 	end,
 	keyPress = function(self, player, key)
 		if key == "space" then
 			if player.falling then
 				player.jetpack_enabled = true
+				player.jetpack_power = 2
 			end
 		end
 	end,
-	
+})
+
+-- TODO: make onEquip callback run for equipped items when the game starts
+baseitem:new("SPEED_SHOES", {
+	onEquip = function(self, player)
+		player.walkspeed = player.walkspeed + 50
+		player.acceleration = player.acceleration + 1000
+	end,
+	onUnequip = function(self, player)
+		player.walkspeed = player.walkspeed - 50
+		player.acceleration = player.acceleration - 1000
+	end,
+	accessory = true,
+	stack = 1,
 })

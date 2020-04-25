@@ -8,8 +8,6 @@ local arrow = projectile:subclass("Arrow")
 
 local arrowTexture = love.graphics.newImage("assets/entities/arrow.png")
 
-
-
 function arrow:init()
 	projectile.init(self, jutils.vec2.new(0, 0), jutils.vec2.new(0, 0), 0, 0)
 

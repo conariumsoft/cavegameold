@@ -136,6 +136,7 @@ return function(args)
 			desc = "gives the player an item",
 			arg = "[itemname] [amount]",
 			func = function(args)
+				
 				local player = gameworld:getPlayer()
 
 				local amount = args[2]

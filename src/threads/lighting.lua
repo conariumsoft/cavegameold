@@ -108,6 +108,17 @@ local channels = {
 	this is the BIGBOY workhorse of the lighting system...
 	fairly self explainatory though
 ]]
+local function solve(y, tileat, bgat, current, input)
+	local rlight = math.max(tileat, bgat)
+
+	if rlight == -1 then
+		rlight = ambientLight
+		if y > 250 then rlight = 0 end
+	end
+
+	local result = math.max(rlight, input, current)
+	return result
+end
 
 local function recursiveFloodFillRGB(x, y, inputr, inputg, inputb, recursions)
 	recursions = recursions or 0
@@ -117,18 +128,6 @@ local function recursiveFloodFillRGB(x, y, inputr, inputg, inputb, recursions)
 	local bgid = getBackground(x, y)
 	-- out of bounds
 	if tileid == -1 then return end
-
-	local function solve(tileat, bgat, current, input)
-		local rlight = math.max(tileat, bgat)
-
-		if rlight == -1 then
-			rlight = ambientLight
-			if y > 250 then rlight = 0 end
-		end
-
-		local result = math.max(rlight, input, current)
-		return result
-	end
 
 	local bgdata = backgrounds:getByID(bgid)
 	local tiledata = tiles:getByID(tileid)
@@ -152,9 +151,9 @@ local function recursiveFloodFillRGB(x, y, inputr, inputg, inputb, recursions)
 
 	local absorb = math.max(tiledata.absorb, bgdata.absorb)
 
-	local red = solve(tlight[1], bglight[1], cr, inputr)
-	local green = solve(tlight[2], bglight[2], cg, inputg)
-	local blue = solve(tlight[3], bglight[3], cb, inputb)
+	local red   = solve(y, tlight[1], bglight[1], cr, inputr)
+	local green = solve(y, tlight[2], bglight[2], cg, inputg)
+	local blue  = solve(y, tlight[3], bglight[3], cb, inputb)
 
 	absorb = absorb + minabsorb
 
