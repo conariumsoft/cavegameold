@@ -7,29 +7,22 @@
 	modify, repurpose, and distribute all or portions of the software, including code,
 	game art, and sound assets, for the purposes of fun, education, and entertainment. 
 
-	You ARE permitted to:
-	- Redistribute all or some of the software (ie. code) freely.
-	- Make, redistribute and/or sell modifications ("Mods") to the software.
-	- Use the code as you please, under condition of including this notice.
-
-	You ARE NOT permitted to:
-	- Sell the game without our (Conarium Software's) permission.
-	- Steal our work and pass it off as your own.
-
-	We can't realistically enforce this copyright notice,
-	but please, don't be a dick. :)
+	-------------------------------------------------------------------------------------
+	This project is somewhat abandoned, but I'm planning to pick it back up soon, clean
+	up the code, and gear it more towards coding education as an open source project.
+	If you have any questions at all relating to the game or the code base, feel free to
+	hit me up on Discord.
+	joshuu#6360
 	-------------------------------------------------------------------------------------
 
 	Conarium Software:
-	Karl Darling, Nate Hayes, Tyler Stewart, Joshua O'Leary, William Tomasine
-
 
 	lead developer:
 	Joshua "joshuu" O'Leary 	Programming, Art, Game Design, Content
 	
 	contributors:
 	Nate "WheezyNewports" Hayes	Scripting, Art
-	squidthonk
+	"squidthonkv2"
 	
 	support team:
 	Karl Darling			Testing, Marketing Help
@@ -39,7 +32,7 @@
 	special thanks to:
 	"bumpylegoman02"		Stability Testing
 	"squidthonkv2"			PlayTesting
-	Evan Walter			Consultation, Moral Support
+	Evan Walter			    Consultation, Moral Support
 ]]
 
 function love.load(cmdlineargs)

@@ -9,7 +9,6 @@ local config      = require("config")
 local tiles       = require("src.tiles")
 local backgrounds = require("src.backgrounds")
 
-
 -- what the fuck:
 -- https://luajit.org/ext_ffi.html
 -- why the fuck:
@@ -25,8 +24,6 @@ require("love.timer")
 
 local mirroredchunks = {}
 local lights = {}
-
-
 local ambientLight = 0.5
 
 local function getChunk(cx, cy)
@@ -109,7 +106,7 @@ local channels = {
 	fairly self explainatory though
 ]]
 local function solve(y, tileat, bgat, current, input)
-	local rlight = math.max(tileat, bgat)
+	local rlight = math.max(tileat, bgat);
 
 	if rlight == -1 then
 		rlight = ambientLight
@@ -128,6 +125,9 @@ local function recursiveFloodFillRGB(x, y, inputr, inputg, inputb, recursions)
 	local bgid = getBackground(x, y)
 	-- out of bounds
 	if tileid == -1 then return end
+
+
+	backgrounds.getById(backgrounds, bgid)
 
 	local bgdata = backgrounds:getByID(bgid)
 	local tiledata = tiles:getByID(tileid)
@@ -252,9 +252,6 @@ while running do
 	local package = channels.light_kill:pop()
 
 	if package then running = false end
-
-	
-
 
 	----------------------------- 
 	-- light calculation gets done here

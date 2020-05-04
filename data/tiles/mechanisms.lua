@@ -787,25 +787,35 @@ newtile("BUFFER", {
 	end,
 })
 
+local function getWaterLevel(world, x, y)
+    local id = world:getTile(x, y)
+    if id == tilelist.AIR.id then return 0 end
+    if id == tilelist.WATER.id then return world:getTileState(x, y) end
+    if tilemanager:tileHasTag(id, "fakeempty") then return 0 end
+    return -1
+end
 
-local function pump_search(world, x, y)
-	for dx = -20, 20 do
-		for dy = -20, 20 do
-			if dx ~= 0 and dy ~= 0 then
-				if world:getTile(x+dx, y+dy) == tilelist.PUMP.id then
-					if world:getTileState(x+dx, y+dy) == 1 then
-						for cy = 0, 10 do
-							if world:getTile(x+dx, y+dy-cy) == tilelist.AIR.id then
-								world:setTile(x+dx, y+dy-cy, tilelist.WATER.id)
-								return true
-							end
-						end
-					end
-				end
-			end
-		end
+local function attemptPump(world, x, y, waterPressure, pumpIters)
+	if pumpIters > 3 then return end
+	local id = world:getTile(x, y)
+	local usedSpace
+	if id == tilelist.AIR.id then
+		usedSpace = 8
+		world:setTile(x, y, tilelist.WATER.id)
+
+		local subtr = math.max(waterPressure, 8)
+
+		world:setTileState(x, y, subtr)
+		waterPressure = waterPressure - subtr
 	end
-	return false
+	if id == tilelist.WATER.id then
+		 usedSpace = world:getTileState(x, y) 
+	end
+	if tilemanager:tileHasTag(id, "fakeempty") then return 0 end
+	
+	if waterPressure > 0.1 then
+		attemptPump(world, x, y-1, waterPressure, pumpIters+1)
+	end
 end
 
 newtile("PUMP", {
@@ -814,11 +824,20 @@ newtile("PUMP", {
 
 		if state == 1 then
 
-			local water_left  = (world:getTile(x-1, y) == tilelist.WATER.id)
-			local water_right = (world:getTile(x+1, y) == tilelist.WATER.id)
-			local water_below = (world:getTile(x, y+1) == tilelist.WATER.id)
-			local water_above = (world:getTile(x, y-1) == tilelist.WATER.id)
+			local is_water_below = (world:getTile(x, y+1) == tilelist.WATER.id)
+			local tile_above = (world:getTile(x, y-1))
 
+			if (is_water_below) then
+				attemptPump()
+				local water_level_below = getWaterLevel(world, x, y+1)
+
+				local tdata = tilemanager:getByID(tile_above)
+
+			--	if tile
+
+			--end
+
+--[[
 			if water_left then
 				local found = pump_search(world, x, y)
 				if found then
@@ -840,9 +859,10 @@ newtile("PUMP", {
 					world:setTile(x, y-1, tilelist.AIR.id)
 				end
 			end
+]]
 
-
-			world:setTileState(x, y, 0)
+				world:setTileState(x, y, 0)
+			end
 		end
 	end,
 })

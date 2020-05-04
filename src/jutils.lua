@@ -495,7 +495,6 @@ jutils.vec2 = {} do
     function jutils.vec2.__sub(vec1, vec2)
         return jutils.vec2.new(vec1.x-vec2.x, vec1.y-vec2.y)
     end
-
     --- Linear interpolation between two vectors.
     -- @usage jutils.vec2.lerp(vec2, vec2, alpha)
     -- @usage vec2:lerp(vec2, alpha)
