@@ -182,7 +182,6 @@ function physicalentity:update(dt)
 	end
 
 	if self.touching_lava then
-		-- TODO: fix this shit fucktard
 		self.health = self.health - (dt*10)
 		if self:isA("Humanoid") then
 			self:addStatusEffect("BURNING", 1)

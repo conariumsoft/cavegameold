@@ -2,7 +2,6 @@
 -- @author Joshua O'Leary
 -- @copyright 2019 Conarium Software
 
--- TODO: this whole script is fucky, fix it
 
 local uiscale = 1
 
@@ -16,13 +15,11 @@ local tiles = require("src.tiles")
 local inventory = require("src.inventory")
 local guiutil = require("src.guiutil")
 
--- why the fuck is this an object?
 -- this is actually a question i continually ask.
 -- TODO: seriously sit down and figure out a monolithic playergui
 --! not now though, focus on finishing up the game
 local system = jutils.object:subclass("PlayerGui")
 
--- ! ghetto retard hack because im lazy
 local the_player = nil
 
 local menu = jui.scene:new({}, {
@@ -64,7 +61,6 @@ local menu = jui.scene:new({}, {
 	})
 })
 
--- why the fuck is it instanced?
 -- should just make it a monolith module
 function system:init(player)
 	self.open = false

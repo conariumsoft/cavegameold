@@ -514,7 +514,6 @@ return function(args)
 		local screen_half_width = love.graphics.getWidth()/2
 		local screen_half_height = love.graphics.getHeight()/2
 
-		--? this names suck but im fucking high right now
 		local screen_grid_num_width = (love.graphics.getWidth()/2) / gridsize
 		local screen_grid_num_height = (love.graphics.getHeight()/2) / gridsize
 

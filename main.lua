@@ -55,12 +55,10 @@ function love.load(cmdlineargs)
 end
 
 local funny_crash_messages = {
-	"FUCK! I thought I fixed this.",
 	"Something broke.",
 	"Oops.",
 	"REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE.",
 	"Sorry m8",
-	"Josh fucked up again!",
 	"We need to hire some better programmers.",
 	"Don't be scared. This screen just means everything's wrong.",
 	"My bad, i'll fix this soon.",

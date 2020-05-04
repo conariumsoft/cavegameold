@@ -453,7 +453,7 @@ function player:draw()
 	local accessory_2 = self.gui.equipment.items[4][1]
 	local accessory_3 = self.gui.equipment.items[6][1]
 
-	-- TODO: make this shit reflect the lighting of the equipment
+	-- TODO: make this reflect the lighting of the equipment
 
 	-- draw helmet
 	local scale = 1
@@ -498,7 +498,7 @@ function player:draw()
 	-- TODO: draw armor and accessories on top of the player
 
 	-- draw the currently using item
-	--! this needs to be fixed up, the animations are wonky as fuck.
+	--! this needs to be fixed up, the animations are wonky.
 	if self.animation.running then
 		local data = self.animation.item
 		local item = data.id
@@ -553,7 +553,7 @@ function player:draw()
 				local angleFixed = (startang + currentDist) * self.direction
 				local adjusted = math.rad( ((-self.direction)*data.defaultRotation)+angleFixed)
 				
-				-- radius, no fucking clue why I have to flip this as well
+				-- radius, no clue why I have to flip this as well
 				local r = 8 * self.direction
 				-- shift item by dx and dy for swivel effect
 				local dx, dy = math.cos(math.rad(angleFixed))*r, math.sin(math.rad(angleFixed))*r

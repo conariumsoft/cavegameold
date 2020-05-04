@@ -65,7 +65,7 @@ baseitem:new("WICKED_FLAME", {
 
 
 
-baseitem:new("NIMDICK", {
+baseitem:new("NIMDOC", {
     displayname = "NIMDOC",
     texture = "nimdoc.png",
     stack = 1,

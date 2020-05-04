@@ -45,7 +45,7 @@ function itemstack:update(dt)
 			if dist <= 35 then
 				if self.playermagnet > 0 then
 					local attraction = 1.2
-					-- holy fuck
+					-- holy crap
 					self.velocity = self.velocity + ((entity.position-self.position):unitvec() * math.max(((35-dist)^attraction), 0.1))
 
 					if dist <= 12 then

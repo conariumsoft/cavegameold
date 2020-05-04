@@ -9,15 +9,16 @@ local config      = require("config")
 local tiles       = require("src.tiles")
 local backgrounds = require("src.backgrounds")
 
--- what the fuck:
+-- I wanted to make this a C module, but I never got around to it.
+-- I'm sure that'd be a fun project
+
+-- extremely informative and interesting reading:
 -- https://luajit.org/ext_ffi.html
--- why the fuck:
--- make lighting faster LAWL
 
 local ffi = require("ffi")
 
 ffi.cdef[[
-	typedef double grid[33][33]; // why the actual SHIT is this 33?
+	typedef double grid[33][33]; // TODO: fix this instead of being lazy hack
 ]]
 
 require("love.timer")
